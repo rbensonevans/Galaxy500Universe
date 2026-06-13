@@ -1,0 +1,246 @@
+@import "tailwindcss";
+
+:root {
+  --background: #03020a;
+  --foreground: #ededed;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+html,
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Cosmic background                                                  */
+/*  A fixed, full-viewport scene rendered behind all page content:    */
+/*  a deep-space gradient, layered parallax starfields, drifting       */
+/*  nebula clouds, and the occasional shooting star. Pure CSS, so it   */
+/*  is hydration-safe and costs no JavaScript.                         */
+/* ------------------------------------------------------------------ */
+
+.cosmos {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      ellipse at 50% 18%,
+      #2a1a5e 0%,
+      #160d3a 38%,
+      #07051c 68%,
+      #03020a 100%
+    );
+}
+
+/* Nebula clouds: large, soft, slowly drifting color washes. */
+.nebula {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.5;
+  mix-blend-mode: screen;
+  will-change: transform;
+}
+
+.nebula--violet {
+  width: 46vw;
+  height: 46vw;
+  top: -8vw;
+  left: -6vw;
+  background: radial-gradient(circle, #7b2ff7 0%, transparent 70%);
+  animation: drift-a 32s ease-in-out infinite;
+}
+
+.nebula--cyan {
+  width: 40vw;
+  height: 40vw;
+  top: 30%;
+  right: -8vw;
+  background: radial-gradient(circle, #1fb6ff 0%, transparent 70%);
+  animation: drift-b 38s ease-in-out infinite;
+}
+
+.nebula--rose {
+  width: 34vw;
+  height: 34vw;
+  bottom: -10vw;
+  left: 24%;
+  background: radial-gradient(circle, #ff2f9e 0%, transparent 70%);
+  animation: drift-c 44s ease-in-out infinite;
+}
+
+@keyframes drift-a {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(6vw, 4vw) scale(1.12);
+  }
+}
+
+@keyframes drift-b {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1.05);
+  }
+  50% {
+    transform: translate(-5vw, 3vw) scale(0.95);
+  }
+}
+
+@keyframes drift-c {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-4vw, -5vw) scale(1.1);
+  }
+}
+
+/* Starfields: three tiled layers of varying size/speed for parallax. */
+.stars {
+  position: absolute;
+  inset: 0;
+  background-repeat: repeat;
+  will-change: transform, opacity;
+}
+
+.stars--far {
+  background-image:
+    radial-gradient(1px 1px at 24px 32px, #ffffff, transparent),
+    radial-gradient(1px 1px at 88px 12px, #cfe3ff, transparent),
+    radial-gradient(1px 1px at 140px 96px, #ffffff, transparent),
+    radial-gradient(1px 1px at 196px 54px, #e9d6ff, transparent),
+    radial-gradient(1px 1px at 60px 150px, #ffffff, transparent),
+    radial-gradient(1px 1px at 170px 180px, #d6f1ff, transparent);
+  background-size: 220px 220px;
+  opacity: 0.7;
+  animation:
+    twinkle 6s ease-in-out infinite,
+    pan-far 220s linear infinite;
+}
+
+.stars--mid {
+  background-image:
+    radial-gradient(1.6px 1.6px at 40px 60px, #ffffff, transparent),
+    radial-gradient(1.6px 1.6px at 130px 20px, #bcd8ff, transparent),
+    radial-gradient(1.6px 1.6px at 220px 130px, #ffffff, transparent),
+    radial-gradient(1.6px 1.6px at 300px 80px, #ffe9c7, transparent),
+    radial-gradient(1.6px 1.6px at 90px 240px, #ffffff, transparent);
+  background-size: 360px 360px;
+  opacity: 0.85;
+  animation:
+    twinkle 4.5s ease-in-out infinite,
+    pan-mid 140s linear infinite;
+}
+
+.stars--near {
+  background-image:
+    radial-gradient(2.4px 2.4px at 80px 110px, #ffffff, transparent),
+    radial-gradient(2.2px 2.2px at 280px 40px, #fff3da, transparent),
+    radial-gradient(2.6px 2.6px at 420px 220px, #ffffff, transparent),
+    radial-gradient(2.2px 2.2px at 180px 330px, #d9ecff, transparent);
+  background-size: 520px 520px;
+  animation:
+    twinkle 3.2s ease-in-out infinite,
+    pan-near 90s linear infinite;
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes pan-far {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -220px 660px;
+  }
+}
+
+@keyframes pan-mid {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 360px 720px;
+  }
+}
+
+@keyframes pan-near {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -520px 1040px;
+  }
+}
+
+/* Shooting stars: a thin streak that crosses the sky on a long loop. */
+.shooting-star {
+  position: absolute;
+  width: 140px;
+  height: 2px;
+  background: linear-gradient(90deg, #ffffff, transparent);
+  border-radius: 999px;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.8));
+  opacity: 0;
+  transform: rotate(18deg);
+}
+
+.shooting-star--1 {
+  top: 18%;
+  left: 12%;
+  animation: shoot 9s ease-in 2s infinite;
+}
+
+.shooting-star--2 {
+  top: 42%;
+  left: 55%;
+  animation: shoot 11s ease-in 6s infinite;
+}
+
+@keyframes shoot {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) rotate(18deg);
+  }
+  4% {
+    opacity: 1;
+  }
+  14% {
+    opacity: 0;
+    transform: translate(420px, 140px) rotate(18deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(420px, 140px) rotate(18deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nebula,
+  .stars,
+  .shooting-star {
+    animation: none !important;
+  }
+}
