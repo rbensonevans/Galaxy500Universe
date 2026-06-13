@@ -12,19 +12,24 @@
   --font-mono: var(--font-geist-mono);
 }
 
-html,
-body {
+html {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
 }
 
+/* Transparent so the fixed `.cosmos` layer (z-index: -1) shows through.
+   An opaque body background would paint over it and the scene would vanish. */
+body {
+  background: transparent;
+}
+
 /* ------------------------------------------------------------------ */
 /*  Cosmic background                                                  */
-/*  A fixed, full-viewport scene rendered behind all page content:    */
-/*  a deep-space gradient, layered parallax starfields, drifting       */
-/*  nebula clouds, and the occasional shooting star. Pure CSS, so it   */
-/*  is hydration-safe and costs no JavaScript.                         */
+/*  A fixed, full-viewport galaxy scene rendered behind all content:   */
+/*  a deep-space gradient, a glowing galactic core, a tilted Milky Way */
+/*  dust band, drifting nebulae, layered parallax starfields, and the  */
+/*  occasional shooting star. Pure CSS — hydration-safe, zero JS.      */
 /* ------------------------------------------------------------------ */
 
 .cosmos {
@@ -34,12 +39,75 @@ body {
   overflow: hidden;
   background:
     radial-gradient(
-      ellipse at 50% 18%,
-      #2a1a5e 0%,
-      #160d3a 38%,
-      #07051c 68%,
+      ellipse 70% 55% at 50% 38%,
+      rgba(124, 92, 255, 0.22) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 130% 90% at 50% 50%,
+      #1a1142 0%,
+      #110b32 35%,
+      #08051d 68%,
       #03020a 100%
     );
+}
+
+/* Glowing galactic core — a warm, bright heart fading into violet. */
+.galaxy-core {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  width: 95vw;
+  height: 42vw;
+  transform: translate(-50%, -50%) rotate(-21deg);
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 244, 222, 0.95) 0%,
+    rgba(255, 196, 140, 0.5) 9%,
+    rgba(214, 142, 255, 0.32) 22%,
+    rgba(120, 92, 255, 0.16) 40%,
+    transparent 62%
+  );
+  filter: blur(18px);
+  opacity: 0.7;
+  animation: core-pulse 12s ease-in-out infinite;
+}
+
+/* Tilted Milky Way band — an elongated luminous dust lane across the sky. */
+.milky-way {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  width: 160vw;
+  height: 50vw;
+  transform: translate(-50%, -50%) rotate(-21deg);
+  background:
+    radial-gradient(
+      ellipse 60% 24% at 50% 46%,
+      rgba(120, 70, 40, 0.35) 0%,
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 75% 16% at 50% 50%,
+      rgba(200, 180, 255, 0.28) 0%,
+      transparent 72%
+    );
+  filter: blur(10px);
+  opacity: 0.8;
+  mix-blend-mode: screen;
+}
+
+@keyframes core-pulse {
+  0%,
+  100% {
+    opacity: 0.6;
+    filter: blur(18px);
+  }
+  50% {
+    opacity: 0.82;
+    filter: blur(22px);
+  }
 }
 
 /* Nebula clouds: large, soft, slowly drifting color washes. */
@@ -79,6 +147,16 @@ body {
   animation: drift-c 44s ease-in-out infinite;
 }
 
+.nebula--teal {
+  width: 30vw;
+  height: 30vw;
+  top: 8%;
+  left: 38%;
+  background: radial-gradient(circle, #2ff7c3 0%, transparent 70%);
+  opacity: 0.32;
+  animation: drift-b 50s ease-in-out infinite;
+}
+
 @keyframes drift-a {
   0%,
   100% {
@@ -109,7 +187,7 @@ body {
   }
 }
 
-/* Starfields: three tiled layers of varying size/speed for parallax. */
+/* Starfields: parallax-tiled layers of varying size/speed. */
 .stars {
   position: absolute;
   inset: 0;
@@ -124,7 +202,9 @@ body {
     radial-gradient(1px 1px at 140px 96px, #ffffff, transparent),
     radial-gradient(1px 1px at 196px 54px, #e9d6ff, transparent),
     radial-gradient(1px 1px at 60px 150px, #ffffff, transparent),
-    radial-gradient(1px 1px at 170px 180px, #d6f1ff, transparent);
+    radial-gradient(1px 1px at 170px 180px, #d6f1ff, transparent),
+    radial-gradient(1px 1px at 112px 210px, #ffffff, transparent),
+    radial-gradient(1px 1px at 8px 120px, #fff0d6, transparent);
   background-size: 220px 220px;
   opacity: 0.7;
   animation:
@@ -138,7 +218,9 @@ body {
     radial-gradient(1.6px 1.6px at 130px 20px, #bcd8ff, transparent),
     radial-gradient(1.6px 1.6px at 220px 130px, #ffffff, transparent),
     radial-gradient(1.6px 1.6px at 300px 80px, #ffe9c7, transparent),
-    radial-gradient(1.6px 1.6px at 90px 240px, #ffffff, transparent);
+    radial-gradient(1.6px 1.6px at 90px 240px, #ffffff, transparent),
+    radial-gradient(1.6px 1.6px at 250px 300px, #d8c7ff, transparent),
+    radial-gradient(1.6px 1.6px at 340px 200px, #ffffff, transparent);
   background-size: 360px 360px;
   opacity: 0.85;
   animation:
@@ -151,7 +233,8 @@ body {
     radial-gradient(2.4px 2.4px at 80px 110px, #ffffff, transparent),
     radial-gradient(2.2px 2.2px at 280px 40px, #fff3da, transparent),
     radial-gradient(2.6px 2.6px at 420px 220px, #ffffff, transparent),
-    radial-gradient(2.2px 2.2px at 180px 330px, #d9ecff, transparent);
+    radial-gradient(2.2px 2.2px at 180px 330px, #d9ecff, transparent),
+    radial-gradient(2.4px 2.4px at 470px 410px, #ffe0f0, transparent);
   background-size: 520px 520px;
   animation:
     twinkle 3.2s ease-in-out infinite,
@@ -238,6 +321,7 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .galaxy-core,
   .nebula,
   .stars,
   .shooting-star {

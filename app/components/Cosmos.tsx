@@ -3,9 +3,12 @@
 export default function Cosmos() {
   return (
     <div className="cosmos" aria-hidden="true">
+      <div className="milky-way" />
+      <div className="galaxy-core" />
       <div className="nebula nebula--violet" />
       <div className="nebula nebula--cyan" />
       <div className="nebula nebula--rose" />
+      <div className="nebula nebula--teal" />
       <div className="stars stars--far" />
       <div className="stars stars--mid" />
       <div className="stars stars--near" />
