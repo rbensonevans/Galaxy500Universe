@@ -1,5 +1,15 @@
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import ProfileForm from "./ProfileForm";
+
+// Quick links surfaced on the profile. The destination pages are placeholders
+// for now and will be built out later.
+const PROFILE_LINKS = [
+  { name: "Marketplace", href: "/life/marketplace" },
+  { name: "Blockchain", href: "/life/blockchain" },
+  { name: "Safe Wallet", href: "/life/safe-wallet" },
+  { name: "Daily Wallet", href: "/life/daily-wallet" },
+];
 
 export default async function ProfilePage() {
   const supabase = await createClient();
@@ -69,6 +79,26 @@ export default async function ProfilePage() {
 
       <div className="mt-8 max-w-2xl">
         <ProfileForm profile={profile ?? null} email={email} />
+      </div>
+
+      <div className="mt-10 max-w-2xl">
+        <h2 className="text-sm font-medium uppercase tracking-[0.25em] text-white/50">
+          Links
+        </h2>
+        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+          {PROFILE_LINKS.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="group flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white/80 backdrop-blur-md transition hover:border-white/25 hover:bg-white/10 hover:text-white"
+            >
+              <span className="font-medium">{link.name}</span>
+              <svg viewBox="0 0 24 24" className="h-4 w-4 text-white/40 transition group-hover:translate-x-0.5 group-hover:text-white/70" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </Link>
+          ))}
+        </div>
       </div>
     </div>
   );
