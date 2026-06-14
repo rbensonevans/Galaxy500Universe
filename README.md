@@ -27,9 +27,12 @@ with authentication and data backed by **Supabase**.
    **SQL Editor → New query** and run each migration in `supabase/migrations/`:
    - `0001_startups.sql` — `startups` table
    - `0002_profiles.sql` — `profiles` table
+   - `0003_feed.sql` — `posts`, `comments`, `reactions` tables, a public
+     `post-images` storage bucket, and read access to other members' profiles
 
-   Each enables row-level security so members only access their own rows.
-   (Until a migration runs, its section shows a setup banner.)
+   Each enables row-level security (members write only their own rows; the feed
+   and profiles are readable by any signed-in member). Until a migration runs,
+   its section shows a setup banner.
 
 4. **(Optional) Smooth out local signups.** By default Supabase requires email
    confirmation, so a new account can't sign in until the link is clicked. For
@@ -65,9 +68,18 @@ with authentication and data backed by **Supabase**.
 
 ## The Life area
 
-After signing in, members land on **Life** (`/life`), a dashboard linking to
-four sections. The shared layout (`app/life/layout.tsx`) provides the cosmic
-background, navigation, and sign-out; everything under `/life` is auth-guarded.
+After signing in, members land on **Life** (`/life`), a shared social feed:
+post text and images ("How is it going?"), comment on posts, and react to both
+posts and comments with emojis (with like counts). The shared layout
+(`app/life/layout.tsx`) provides the cosmic background, navigation, and
+sign-out; everything under `/life` is auth-guarded.
+
+Feed internals: `Composer` (new post + image upload), `PostCard` /
+`CommentForm` (comments), and `ReactionBar` (emoji toggles — pure server-action
+forms, no client JS). Server actions live in `app/life/actions.ts`; the page
+assembles posts, comments, reactions, and author names in `app/life/page.tsx`.
+
+The top nav also links to the member sections:
 
 - **Startups** (`/life/startups`) — register, list, and delete the companies you
   create. Backed by the `startups` table (server actions in
