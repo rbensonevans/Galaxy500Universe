@@ -45,6 +45,15 @@ function GlobeIcon(props: IconProps) {
   );
 }
 
+function MoviesIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <rect x="2" y="3" width="20" height="18" rx="2" />
+      <path d="M7 3v18M17 3v18M2 9h5M2 15h5M17 9h5M17 15h5" />
+    </svg>
+  );
+}
+
 function MusicIcon(props: IconProps) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" {...props}>
@@ -101,6 +110,14 @@ export const SECTIONS: Section[] = [
     blurb: "Your closest orbits — the people who matter most.",
     icon: HeartIcon,
     accent: "from-rose-500/30 to-orange-500/10",
+  },
+  {
+    slug: "movies",
+    name: "Movies",
+    href: "/life/movies",
+    blurb: "Films, shows, and what to watch next.",
+    icon: MoviesIcon,
+    accent: "from-amber-500/30 to-rose-500/10",
   },
   {
     slug: "music",
