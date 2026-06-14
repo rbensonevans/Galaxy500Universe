@@ -1,7 +1,7 @@
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { isMissingTableError } from "@/lib/supabase/errors";
 import { deleteStartup } from "./actions";
-import StartupForm from "./StartupForm";
 
 type Startup = {
   id: string;
@@ -13,6 +13,20 @@ type Startup = {
   created_at: string;
 };
 
+function RegisterButton() {
+  return (
+    <Link
+      href="/life/startups/register"
+      className="inline-flex shrink-0 items-center gap-2 rounded-lg bg-gradient-to-r from-violet-500 via-fuchsia-500 to-cyan-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-fuchsia-500/20 transition hover:brightness-110"
+    >
+      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 5v14M5 12h14" />
+      </svg>
+      Register a startup
+    </Link>
+  );
+}
+
 export default async function StartupsPage() {
   const supabase = await createClient();
   const { data, error } = await supabase
@@ -20,22 +34,25 @@ export default async function StartupsPage() {
     .select("id, name, tagline, description, website, industry, created_at")
     .order("created_at", { ascending: false });
 
-  // The startups table hasn't been created yet — guide the user to set it up.
   const tableMissing = isMissingTableError(error);
-
   const startups = (data ?? []) as Startup[];
 
   return (
     <div>
-      <p className="text-sm font-medium uppercase tracking-[0.35em] text-violet-300/80">
-        Startups
-      </p>
-      <h1 className="mt-3 text-3xl font-bold text-white sm:text-4xl">
-        Your startups
-      </h1>
-      <p className="mt-3 max-w-xl text-white/60">
-        Register the companies you create and keep them in your orbit.
-      </p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="text-sm font-medium uppercase tracking-[0.35em] text-violet-300/80">
+            Startups
+          </p>
+          <h1 className="mt-3 text-3xl font-bold text-white sm:text-4xl">
+            Your startups
+          </h1>
+          <p className="mt-3 max-w-xl text-white/60">
+            Register the companies you create and keep them in your orbit.
+          </p>
+        </div>
+        {!tableMissing && <RegisterButton />}
+      </div>
 
       {tableMissing && (
         <div className="mt-8 rounded-2xl border border-amber-500/30 bg-amber-500/10 p-6 text-sm text-amber-100">
@@ -58,17 +75,30 @@ export default async function StartupsPage() {
         </div>
       )}
 
-      <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-2">
-        <StartupForm />
-
-        <div className="flex flex-col gap-4">
-          {startups.length === 0 && !tableMissing ? (
-            <div className="rounded-2xl border border-dashed border-white/15 bg-white/[0.03] p-8 text-center text-white/50">
-              No startups yet. Register your first one to launch it into your
-              universe.
+      {!tableMissing &&
+        (startups.length === 0 ? (
+          <div className="mt-10 flex flex-col items-center text-center">
+            {/* On-theme illustration served from /public — plain img keeps it simple. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/happy-team.svg"
+              alt="A happy team ready to build"
+              className="w-full max-w-sm"
+            />
+            <h2 className="mt-6 text-2xl font-bold text-white sm:text-3xl">
+              Let&apos;s build a startup
+            </h2>
+            <p className="mt-2 max-w-md text-white/60">
+              You haven&apos;t registered any startups yet. Launch your first one
+              into your universe.
+            </p>
+            <div className="mt-6">
+              <RegisterButton />
             </div>
-          ) : (
-            startups.map((s) => (
+          </div>
+        ) : (
+          <div className="mt-8 flex max-w-2xl flex-col gap-4">
+            {startups.map((s) => (
               <article
                 key={s.id}
                 className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-md"
@@ -114,10 +144,9 @@ export default async function StartupsPage() {
                   )}
                 </div>
               </article>
-            ))
-          )}
-        </div>
-      </div>
+            ))}
+          </div>
+        ))}
     </div>
   );
 }

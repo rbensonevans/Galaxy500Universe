@@ -26,12 +26,7 @@ export default function StartupForm() {
       action={formAction}
       className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md"
     >
-      <h2 className="text-lg font-semibold text-white">Register a startup</h2>
-      <p className="mt-1 text-sm text-white/50">
-        Add a company you&apos;re building to your universe.
-      </p>
-
-      <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <label className="flex flex-col gap-1.5 text-sm sm:col-span-2">
           <span className="text-white/70">Name *</span>
           <input name="name" required placeholder="Nebula Labs" className={inputClass} />
