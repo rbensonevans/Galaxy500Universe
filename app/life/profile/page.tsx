@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { isMissingTableError } from "@/lib/supabase/errors";
-import ProfileForm from "./ProfileForm";
 
 // Quick links surfaced on the profile. The destination pages are placeholders
 // for now and will be built out later.
@@ -34,9 +33,21 @@ export default async function ProfilePage() {
 
   return (
     <div>
-      <p className="text-sm font-medium uppercase tracking-[0.35em] text-violet-300/80">
-        Profile
-      </p>
+      <div className="flex items-start justify-between gap-4">
+        <p className="text-sm font-medium uppercase tracking-[0.35em] text-violet-300/80">
+          Profile
+        </p>
+        <Link
+          href="/life/profile/settings"
+          className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-sm text-white/80 backdrop-blur transition hover:bg-white/10 hover:text-white"
+        >
+          <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="3" />
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" />
+          </svg>
+          Settings
+        </Link>
+      </div>
 
       <div className="mt-3 flex items-center gap-4">
         <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 via-fuchsia-500 to-cyan-500 text-2xl font-bold text-white shadow-lg shadow-fuchsia-500/20">
@@ -49,11 +60,6 @@ export default async function ProfilePage() {
           <p className="text-white/50">{email}</p>
         </div>
       </div>
-
-      <p className="mt-4 max-w-xl text-white/60">
-        This is how you appear across Galaxy500Universe. Update your details
-        below.
-      </p>
 
       {tableMissing && (
         <div className="mt-8 rounded-2xl border border-amber-500/30 bg-amber-500/10 p-6 text-sm text-amber-100">
@@ -76,9 +82,52 @@ export default async function ProfilePage() {
         </div>
       )}
 
-      <div className="mt-8 max-w-2xl">
-        <ProfileForm profile={profile ?? null} email={email} />
-      </div>
+      {!tableMissing && (
+        <div className="mt-8 max-w-2xl rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md">
+          {profile?.bio ? (
+            <p className="whitespace-pre-wrap text-white/80">{profile.bio}</p>
+          ) : (
+            <p className="text-white/40">
+              No bio yet.{" "}
+              <Link
+                href="/life/profile/settings"
+                className="text-violet-300 hover:text-violet-200"
+              >
+                Add one in Settings
+              </Link>
+              .
+            </p>
+          )}
+
+          {(profile?.location || profile?.website) && (
+            <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-white/50">
+              {profile?.location && (
+                <span className="inline-flex items-center gap-1.5">
+                  <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>
+                  {profile.location}
+                </span>
+              )}
+              {profile?.website && (
+                <a
+                  href={profile.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-cyan-300/80 hover:text-cyan-200"
+                >
+                  <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10Z" />
+                  </svg>
+                  {profile.website}
+                </a>
+              )}
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="mt-10 max-w-2xl">
         <h2 className="text-sm font-medium uppercase tracking-[0.25em] text-white/50">
