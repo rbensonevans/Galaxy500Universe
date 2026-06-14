@@ -16,8 +16,9 @@ create table if not exists public.startups (
   created_at  timestamptz not null default now()
 );
 alter table public.startups enable row level security;
-drop policy if exists "startups_select_own" on public.startups;
-create policy "startups_select_own" on public.startups for select using (auth.uid() = user_id);
+-- Readable by any signed-in member (they are listed on the Stock Exchange).
+drop policy if exists "startups_select_all" on public.startups;
+create policy "startups_select_all" on public.startups for select using (auth.uid() is not null);
 drop policy if exists "startups_insert_own" on public.startups;
 create policy "startups_insert_own" on public.startups for insert with check (auth.uid() = user_id);
 drop policy if exists "startups_update_own" on public.startups;
