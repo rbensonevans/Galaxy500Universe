@@ -9,6 +9,7 @@ const PROFILE_LINKS = [
   { name: "Blockchain", href: "/life/blockchain" },
   { name: "Wallet", href: "/life/wallet" },
   { name: "Startups", href: "/life/startups" },
+  { name: "Galaxy500 Crypto Bank", href: "/life/crypto-bank" },
 ];
 
 export default async function ProfilePage() {
