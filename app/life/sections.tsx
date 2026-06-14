@@ -108,14 +108,6 @@ function CommunitiesIcon(props: IconProps) {
 
 export const SECTIONS: Section[] = [
   {
-    slug: "startups",
-    name: "Startups",
-    href: "/life/startups",
-    blurb: "Register and grow the companies you create.",
-    icon: RocketIcon,
-    accent: "from-violet-500/30 to-fuchsia-500/10",
-  },
-  {
     slug: "friends-family",
     name: "Friends & Family",
     href: "/life/friends-family",
@@ -146,6 +138,14 @@ export const SECTIONS: Section[] = [
     blurb: "Chart the places you've been and worlds to explore.",
     icon: GlobeIcon,
     accent: "from-cyan-500/30 to-emerald-500/10",
+  },
+  {
+    slug: "startups",
+    name: "Startups",
+    href: "/life/startups",
+    blurb: "Register and grow the companies you create.",
+    icon: RocketIcon,
+    accent: "from-violet-500/30 to-fuchsia-500/10",
   },
   {
     slug: "profile",
