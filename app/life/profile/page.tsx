@@ -5,12 +5,8 @@ import { isMissingTableError } from "@/lib/supabase/errors";
 // Quick links surfaced on the profile. The destination pages are placeholders
 // for now and will be built out later.
 const PROFILE_LINKS = [
-  { name: "Galaxy500 Stock Exchange", href: "/life/stockexchange" },
-  { name: "Blockchain", href: "/life/blockchain" },
-  { name: "Wallet", href: "/life/wallet" },
   { name: "Startups", href: "/life/startups" },
-  { name: "Galaxy500 Crypto Bank", href: "/life/crypto-bank" },
-  { name: "Send Galaxy Credits", href: "/life/profile/transfer" },
+  { name: "CryptoWallStreet", href: "/life/cryptowallstreet" },
 ];
 
 export default async function ProfilePage() {

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SECTIONS, MORE_SECTIONS } from "@/app/life/sections";
+import { CRYPTO_LINKS } from "@/app/life/cryptowallstreet/links";
 
 // Top navigation for the Life area. Highlights the active section based on the
 // current path. "Life" (the dashboard) is active only on an exact match;
@@ -22,6 +23,15 @@ export default function LifeNav() {
       exact: false,
       extra: [] as string[],
     })),
+    {
+      name: "CryptoWallStreet",
+      href: "/life/cryptowallstreet",
+      exact: false,
+      // Highlight when on any of its finance pages (excluding /life/profile/*).
+      extra: CRYPTO_LINKS.map((l) => l.href).filter(
+        (h) => !h.startsWith("/life/profile"),
+      ),
+    },
     {
       name: "More",
       href: "/life/more",
