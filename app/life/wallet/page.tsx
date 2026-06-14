@@ -97,6 +97,10 @@ export default async function WalletPage() {
               · Reserve pool:{" "}
               <span className="tabular-nums text-white/70">
                 {fmtGlxy(Number(pool))} GLXY
+              </span>{" "}
+              · Ledger cold storage (simulated):{" "}
+              <span className="tabular-nums text-white/70">
+                {fmtGlxy(Number(pool) * 0.5)} GLXY
               </span>
             </>
           )}
