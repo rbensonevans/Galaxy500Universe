@@ -45,6 +45,16 @@ function GlobeIcon(props: IconProps) {
   );
 }
 
+function MusicIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M9 18V5l12-2v13" />
+      <circle cx="6" cy="18" r="3" />
+      <circle cx="18" cy="16" r="3" />
+    </svg>
+  );
+}
+
 function SportsIcon(props: IconProps) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" {...props}>
@@ -91,6 +101,14 @@ export const SECTIONS: Section[] = [
     blurb: "Your closest orbits — the people who matter most.",
     icon: HeartIcon,
     accent: "from-rose-500/30 to-orange-500/10",
+  },
+  {
+    slug: "music",
+    name: "Music",
+    href: "/life/music",
+    blurb: "Tracks, artists, and the sounds you love.",
+    icon: MusicIcon,
+    accent: "from-fuchsia-500/30 to-indigo-500/10",
   },
   {
     slug: "sports",
