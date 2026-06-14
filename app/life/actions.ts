@@ -25,9 +25,11 @@ const FEED_PATHS: Record<string, string> = {
 };
 const ALLOWED_FEEDS = Object.keys(FEED_PATHS);
 
-// A mutation can affect a post in any feed, so refresh every feed page.
+// A mutation can affect a post in any feed, so refresh every feed page plus
+// all company "Startup Feed" pages (a dynamic route).
 function revalidateFeeds() {
   for (const path of Object.values(FEED_PATHS)) revalidatePath(path);
+  revalidatePath("/life/startups/[id]", "page");
 }
 
 export async function createPost(
@@ -41,8 +43,14 @@ export async function createPost(
   if (!user) return { error: "You must be signed in." };
 
   const content = String(formData.get("content") ?? "").trim();
+  const startupId = String(formData.get("startup_id") ?? "").trim() || null;
   const feedRaw = String(formData.get("feed") ?? "life");
-  const feed = ALLOWED_FEEDS.includes(feedRaw) ? feedRaw : "life";
+  // Startup-scoped posts use the 'startup' feed; otherwise a known global feed.
+  const feed = startupId
+    ? "startup"
+    : ALLOWED_FEEDS.includes(feedRaw)
+      ? feedRaw
+      : "life";
   const image = formData.get("image");
   const hasImage = image instanceof File && image.size > 0;
 
@@ -83,11 +91,16 @@ export async function createPost(
     content: content || null,
     image_url: imageUrl,
     feed,
+    startup_id: startupId,
   });
 
   if (error) return { error: error.message };
 
-  revalidatePath(FEED_PATHS[feed]);
+  if (startupId) {
+    revalidatePath(`/life/startups/${startupId}`);
+  } else {
+    revalidatePath(FEED_PATHS[feed]);
+  }
   return { success: true };
 }
 

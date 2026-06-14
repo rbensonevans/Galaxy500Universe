@@ -71,6 +71,16 @@ export default async function TradePage({
         <p className="mt-1 text-violet-200/80">{startup.tagline}</p>
       )}
 
+      <Link
+        href={`/life/startups/${startup.id}`}
+        className="mt-3 inline-flex items-center gap-1.5 text-sm text-cyan-300/80 transition hover:text-cyan-200"
+      >
+        <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+        </svg>
+        View company feed
+      </Link>
+
       {/* Price */}
       <div className="mt-6 flex items-baseline gap-3">
         <span className="text-3xl font-bold tabular-nums text-white">

@@ -29,9 +29,13 @@ function RegisterButton() {
 
 export default async function StartupsPage() {
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   const { data, error } = await supabase
     .from("startups")
     .select("id, name, tagline, description, website, industry, created_at")
+    .eq("user_id", user!.id)
     .order("created_at", { ascending: false });
 
   const tableMissing = isMissingTableError(error);
@@ -143,6 +147,16 @@ export default async function StartupsPage() {
                     </a>
                   )}
                 </div>
+
+                <Link
+                  href={`/life/startups/${s.id}`}
+                  className="mt-4 inline-flex items-center gap-1.5 rounded-lg border border-white/15 bg-white/5 px-3 py-1.5 text-sm font-medium text-white/80 transition hover:bg-white/10 hover:text-white"
+                >
+                  <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                  </svg>
+                  Startup Feed
+                </Link>
               </article>
             ))}
           </div>

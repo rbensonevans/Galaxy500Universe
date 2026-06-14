@@ -57,12 +57,21 @@ create table if not exists public.posts (
   created_at timestamptz not null default now()
 );
 alter table public.posts add column if not exists feed text not null default 'life';
+-- Company "Startup Feed" posts are scoped to a startup; only its owner may post.
+alter table public.posts add column if not exists startup_id uuid references public.startups (id) on delete cascade;
 create index if not exists posts_feed_created_idx on public.posts (feed, created_at desc);
+create index if not exists posts_startup_created_idx on public.posts (startup_id, created_at desc);
 alter table public.posts enable row level security;
 drop policy if exists "posts_select_all" on public.posts;
 create policy "posts_select_all" on public.posts for select using (auth.uid() is not null);
 drop policy if exists "posts_insert_own" on public.posts;
-create policy "posts_insert_own" on public.posts for insert with check (auth.uid() = user_id);
+create policy "posts_insert_own" on public.posts for insert with check (
+  auth.uid() = user_id
+  and (
+    startup_id is null
+    or exists (select 1 from public.startups s where s.id = startup_id and s.user_id = auth.uid())
+  )
+);
 drop policy if exists "posts_delete_own" on public.posts;
 create policy "posts_delete_own" on public.posts for delete using (auth.uid() = user_id);
 

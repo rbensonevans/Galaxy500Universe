@@ -7,9 +7,11 @@ const initialState: PostState = {};
 
 export default function Composer({
   feed = "life",
+  startupId,
   placeholder = "How is it going?",
 }: {
   feed?: string;
+  startupId?: string;
   placeholder?: string;
 }) {
   const [state, formAction, isPending] = useActionState(
@@ -35,6 +37,7 @@ export default function Composer({
       className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-md"
     >
       <input type="hidden" name="feed" value={feed} />
+      {startupId && <input type="hidden" name="startup_id" value={startupId} />}
       <textarea
         name="content"
         rows={3}

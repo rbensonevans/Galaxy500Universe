@@ -36,10 +36,19 @@ function group<T>(map: Map<string, T[]>, key: string, value: T) {
 // pages. The page provides its own heading.
 export default async function Feed({
   feed,
+  startupId,
+  canPost = true,
+  postAuthorName,
   placeholder,
   emptyText = "No posts yet. Be the first to share something.",
 }: {
   feed: string;
+  /** When set, scope to a single startup's company feed instead of a stream. */
+  startupId?: string;
+  /** Whether to show the composer (e.g. only the company admin can post). */
+  canPost?: boolean;
+  /** Override the author label on posts (e.g. the company name). */
+  postAuthorName?: string;
   placeholder?: string;
   emptyText?: string;
 }) {
@@ -49,10 +58,13 @@ export default async function Feed({
   } = await supabase.auth.getUser();
   const me = user!.id;
 
-  const { data: postRows, error } = await supabase
+  const base = supabase
     .from("posts")
-    .select("id, user_id, content, image_url, created_at")
-    .eq("feed", feed)
+    .select("id, user_id, content, image_url, created_at");
+  const { data: postRows, error } = await (startupId
+    ? base.eq("startup_id", startupId)
+    : base.eq("feed", feed)
+  )
     .order("created_at", { ascending: false })
     .limit(50);
 
@@ -151,16 +163,18 @@ export default async function Feed({
     image_url: p.image_url,
     created_at: p.created_at,
     user_id: p.user_id,
-    authorName: authorName(p.user_id),
+    authorName: postAuthorName ?? authorName(p.user_id),
     reactions: summarize(reactsByPost.get(p.id) ?? [], me),
     comments: commentsByPost.get(p.id) ?? [],
   }));
 
   return (
     <>
-      <div className="mt-6">
-        <Composer feed={feed} placeholder={placeholder} />
-      </div>
+      {canPost && (
+        <div className="mt-6">
+          <Composer feed={feed} startupId={startupId} placeholder={placeholder} />
+        </div>
+      )}
 
       {error && (
         <div className="mt-6 rounded-2xl border border-rose-500/30 bg-rose-500/10 p-5 text-sm text-rose-100">
