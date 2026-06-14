@@ -1,11 +1,20 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { tickerFor, priceFor, changeFor, formatUsd } from "../market";
+import { tickerFor, formatUsd } from "../market";
 import TradePanel from "./TradePanel";
 
 type TradePageProps = {
   params: Promise<{ id: string }>;
   searchParams: Promise<{ side?: string }>;
+};
+
+type MarketRow = {
+  startup_id: string;
+  price: string;
+  change_24h: string;
+  score: string;
+  available: string;
+  tradable: boolean;
 };
 
 export default async function TradePage({
@@ -17,9 +26,13 @@ export default async function TradePage({
   const side = rawSide === "sell" ? "sell" : "buy";
 
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   const { data: startup } = await supabase
     .from("startups")
-    .select("id, name, tagline, description, industry, website")
+    .select("id, name, tagline")
     .eq("id", id)
     .maybeSingle();
 
@@ -39,12 +52,27 @@ export default async function TradePage({
     );
   }
 
-  const ticker = tickerFor(startup.name);
-  const price = priceFor(startup.id);
-  const change = changeFor(startup.id);
-  const up = change >= 0;
+  // Engagement-driven market data + the member's current holding.
+  const [{ data: marketRows }, { data: holdingRow }] = await Promise.all([
+    supabase.rpc("startup_market"),
+    supabase
+      .from("share_holdings")
+      .select("shares")
+      .eq("startup_id", id)
+      .eq("user_id", user!.id)
+      .maybeSingle(),
+  ]);
+  const market = ((marketRows ?? []) as MarketRow[]).find(
+    (m) => m.startup_id === id,
+  );
 
-  const buyActive = side === "buy";
+  const ticker = tickerFor(startup.name);
+  const price = market ? Number(market.price) : 1;
+  const change = market ? Number(market.change_24h) : 0;
+  const available = market ? Number(market.available) : 0;
+  const tradable = market ? market.tradable : false;
+  const holding = holdingRow ? Number(holdingRow.shares) : 0;
+  const up = change >= 0;
 
   return (
     <div className="max-w-2xl">
@@ -93,13 +121,30 @@ export default async function TradePage({
           {change.toFixed(2)}% (24h)
         </span>
       </div>
+      <p className="mt-1 text-xs text-white/40">
+        Price is driven by feed activity — the company&apos;s posts and members&apos;
+        comments and reactions. Build value to raise it.
+      </p>
+      {holding > 0 && (
+        <p className="mt-2 text-sm text-white/60">
+          You hold{" "}
+          <span className="font-semibold text-white">
+            {holding.toLocaleString()}
+          </span>{" "}
+          shares · {formatUsd(holding * price)}
+        </p>
+      )}
 
-      {/* Trade panel (wallet-aware) */}
+      {/* Trade panel */}
       <div className="mt-8">
         <TradePanel
+          startupId={startup.id}
           ticker={ticker}
           price={price}
-          initialSide={buyActive ? "buy" : "sell"}
+          available={available}
+          holding={holding}
+          tradable={tradable}
+          initialSide={side}
         />
       </div>
     </div>

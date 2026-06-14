@@ -102,10 +102,30 @@ supply and the universe's equity holdings.
 | Reserve account | none | create **`iglobecreator`** system account + holdings |
 | Startup funding | none | initial + annual funding requests, repayment |
 | Share pledging | none | pledge shares to `iglobecreator` on funding |
-| Two-layer flow | DEX listing exists (placeholder pricing) | wire GLXY ↔ shares trading (trading model TBD) |
+| Two-layer flow | GLXY ↔ shares trading live (Phase 3) | engagement-driven pricing; universe is market maker |
 | Bots as agents | none | bots hold wallets, earn/spend, found startups |
 
-## 9. Open design questions
+## 9. Trading model (Phase 3): engagement-driven valuation
+
+Share prices are **driven by real-world actions**, not by trading flow — money
+is easy to come by (funding), so the onus is on founders to build genuine value:
+
+```
+price = funding_price × (1 + score/100)
+score = 1·posts + 3·comments + 1·reactions + 5·unique_engagers
+```
+
+- Signals come from each startup's **Startup Feed**: the founder's posts, plus
+  **other members'** comments and reactions. The founder's own engagement is
+  excluded, so value can't be self-pumped.
+- Members **buy/sell shares for GLXY** with the **universe as market maker** at
+  the engagement price (GLXY flows to/from the currency reserve). Trading does
+  not move the price — only real engagement does.
+- A startup is **tradable once funded** (Phase 2 pledged its shares to the
+  universe). `available = pledged_shares − member-held shares`.
+- 24h change compares the price now vs. the price from activity ≥24h old.
+
+## 10. Open design questions
 
 - **Bot agents**: when do bots get wallets and the ability to found/fund
   startups? (Conceptual backing now, active agents later.)

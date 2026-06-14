@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { isMissingTableError } from "@/lib/supabase/errors";
-import { tickerFor, priceFor, changeFor, formatUsd } from "./market";
+import { tickerFor, formatUsd } from "./market";
 
 type Listing = {
   id: string;
@@ -10,15 +10,29 @@ type Listing = {
   industry: string | null;
 };
 
+type MarketRow = {
+  startup_id: string;
+  price: string;
+  change_24h: string;
+  available: string;
+  tradable: boolean;
+};
+
 export default async function StockExchangePage() {
   const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("startups")
-    .select("id, name, tagline, industry")
-    .order("name", { ascending: true });
+  const [{ data, error }, { data: marketRows }] = await Promise.all([
+    supabase
+      .from("startups")
+      .select("id, name, tagline, industry")
+      .order("name", { ascending: true }),
+    supabase.rpc("startup_market"),
+  ]);
 
   const tableMissing = isMissingTableError(error);
   const listings = (data ?? []) as Listing[];
+  const market = new Map<string, MarketRow>(
+    ((marketRows ?? []) as MarketRow[]).map((m) => [m.startup_id, m]),
+  );
 
   return (
     <div>
@@ -76,8 +90,10 @@ export default async function StockExchangePage() {
             <ul className="divide-y divide-white/10">
               {listings.map((s) => {
                 const ticker = tickerFor(s.name);
-                const price = priceFor(s.id);
-                const change = changeFor(s.id);
+                const m = market.get(s.id);
+                const price = m ? Number(m.price) : 1;
+                const change = m ? Number(m.change_24h) : 0;
+                const tradable = m ? m.tradable : false;
                 const up = change >= 0;
                 return (
                   <li
@@ -121,18 +137,30 @@ export default async function StockExchangePage() {
 
                     {/* Trade actions */}
                     <div className="col-span-2 flex justify-end gap-2 sm:col-span-3">
-                      <Link
-                        href={`/life/stockexchange/${s.id}?side=buy`}
-                        className="rounded-lg bg-emerald-500/90 px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-emerald-400"
-                      >
-                        Buy
-                      </Link>
-                      <Link
-                        href={`/life/stockexchange/${s.id}?side=sell`}
-                        className="rounded-lg bg-rose-500/90 px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-rose-400"
-                      >
-                        Sell
-                      </Link>
+                      {tradable ? (
+                        <>
+                          <Link
+                            href={`/life/stockexchange/${s.id}?side=buy`}
+                            className="rounded-lg bg-emerald-500/90 px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-emerald-400"
+                          >
+                            Buy
+                          </Link>
+                          <Link
+                            href={`/life/stockexchange/${s.id}?side=sell`}
+                            className="rounded-lg bg-rose-500/90 px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-rose-400"
+                          >
+                            Sell
+                          </Link>
+                        </>
+                      ) : (
+                        <Link
+                          href={`/life/stockexchange/${s.id}`}
+                          className="rounded-lg border border-white/15 bg-white/5 px-3 py-1.5 text-sm font-medium text-white/50 transition hover:bg-white/10"
+                          title="Not yet funded — no equity on the market"
+                        >
+                          Not listed
+                        </Link>
+                      )}
                     </div>
                   </li>
                 );
@@ -142,8 +170,8 @@ export default async function StockExchangePage() {
         ))}
 
       <p className="mt-4 text-xs text-white/30">
-        Prices shown are placeholder values until trading settles on-chain on
-        Base.
+        Prices are driven by each company&apos;s feed activity — posts, comments,
+        and reactions. Startups become tradable once funded.
       </p>
     </div>
   );
