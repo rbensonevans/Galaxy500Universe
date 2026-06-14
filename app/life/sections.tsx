@@ -45,6 +45,18 @@ function GlobeIcon(props: IconProps) {
   );
 }
 
+function GamingIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <line x1="6" y1="11" x2="10" y2="11" />
+      <line x1="8" y1="9" x2="8" y2="13" />
+      <line x1="15" y1="12" x2="15.01" y2="12" />
+      <line x1="18" y1="10" x2="18.01" y2="10" />
+      <rect x="2" y="6" width="20" height="12" rx="6" />
+    </svg>
+  );
+}
+
 function MoviesIcon(props: IconProps) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" {...props}>
@@ -158,5 +170,18 @@ export const SECTIONS: Section[] = [
     blurb: "How you appear across the universe.",
     icon: ProfileIcon,
     accent: "from-sky-500/30 to-fuchsia-500/10",
+  },
+];
+
+// Overflow feeds surfaced on the /life/more page (keeps the top nav tidy).
+// Add new social feeds here and they appear on the More page automatically.
+export const MORE_SECTIONS: Section[] = [
+  {
+    slug: "gaming",
+    name: "Gaming",
+    href: "/life/gaming",
+    blurb: "Games, streams, and squads.",
+    icon: GamingIcon,
+    accent: "from-indigo-500/30 to-emerald-500/10",
   },
 ];

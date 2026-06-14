@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { SECTIONS } from "@/app/life/sections";
+import { SECTIONS, MORE_SECTIONS } from "@/app/life/sections";
 
 // Top navigation for the Life area. Highlights the active section based on the
 // current path. "Life" (the dashboard) is active only on an exact match;
@@ -10,9 +10,28 @@ import { SECTIONS } from "@/app/life/sections";
 export default function LifeNav() {
   const pathname = usePathname();
 
+  // Primary sections, then "More" (overflow feeds), then Profile last.
+  const primary = SECTIONS.filter((s) => s.slug !== "profile");
+  const profile = SECTIONS.find((s) => s.slug === "profile");
+
   const links = [
-    { name: "Life", href: "/life", exact: true },
-    ...SECTIONS.map((s) => ({ name: s.name, href: s.href, exact: false })),
+    { name: "Life", href: "/life", exact: true, extra: [] as string[] },
+    ...primary.map((s) => ({
+      name: s.name,
+      href: s.href,
+      exact: false,
+      extra: [] as string[],
+    })),
+    {
+      name: "More",
+      href: "/life/more",
+      exact: false,
+      // Highlight "More" when on any overflow feed too.
+      extra: MORE_SECTIONS.map((s) => s.href),
+    },
+    ...(profile
+      ? [{ name: profile.name, href: profile.href, exact: false, extra: [] as string[] }]
+      : []),
   ];
 
   return (
@@ -20,7 +39,8 @@ export default function LifeNav() {
       {links.map((link) => {
         const active = link.exact
           ? pathname === link.href
-          : pathname.startsWith(link.href);
+          : pathname.startsWith(link.href) ||
+            link.extra.some((p) => pathname.startsWith(p));
         return (
           <Link
             key={link.href}
