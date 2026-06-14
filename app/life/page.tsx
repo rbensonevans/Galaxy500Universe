@@ -3,6 +3,7 @@ import { isMissingTableError } from "@/lib/supabase/errors";
 import { type ReactionSummary } from "./reactions";
 import Composer from "./Composer";
 import PostCard, { type FeedPost, type FeedComment } from "./PostCard";
+import StarDate from "./StarDate";
 
 type ReactionRow = {
   emoji: string;
@@ -37,7 +38,6 @@ export default async function LifePage() {
     data: { user },
   } = await supabase.auth.getUser();
   const me = user!.id;
-  const greetingName = user?.email?.split("@")[0] ?? "traveler";
 
   const { data: postRows, error } = await supabase
     .from("posts")
@@ -141,8 +141,8 @@ export default async function LifePage() {
       <p className="text-sm font-medium uppercase tracking-[0.35em] text-violet-300/80">
         Life
       </p>
-      <h1 className="mt-3 text-3xl font-bold text-white sm:text-4xl">
-        Welcome back, <span className="capitalize">{greetingName}</span>
+      <h1 className="mt-3 whitespace-nowrap text-sm font-bold text-white sm:text-lg">
+        Welcome. Star date: <StarDate />
       </h1>
       <p className="mt-2 text-white/60">Share what&apos;s happening in your universe.</p>
 
