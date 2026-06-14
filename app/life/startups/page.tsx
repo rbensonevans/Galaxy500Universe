@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { isMissingTableError } from "@/lib/supabase/errors";
 import { deleteStartup } from "./actions";
 import StartupForm from "./StartupForm";
 
@@ -20,9 +21,7 @@ export default async function StartupsPage() {
     .order("created_at", { ascending: false });
 
   // The startups table hasn't been created yet — guide the user to set it up.
-  const tableMissing =
-    error?.code === "42P01" ||
-    error?.message?.toLowerCase().includes("does not exist");
+  const tableMissing = isMissingTableError(error);
 
   const startups = (data ?? []) as Startup[];
 

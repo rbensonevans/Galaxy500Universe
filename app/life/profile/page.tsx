@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { isMissingTableError } from "@/lib/supabase/errors";
 import ProfileForm from "./ProfileForm";
 
 // Quick links surfaced on the profile. The destination pages are placeholders
@@ -25,9 +26,7 @@ export default async function ProfilePage() {
     .eq("id", user!.id)
     .maybeSingle();
 
-  const tableMissing =
-    error?.code === "42P01" ||
-    error?.message?.toLowerCase().includes("does not exist");
+  const tableMissing = isMissingTableError(error);
 
   const initial = (profile?.display_name || email || "?")
     .charAt(0)

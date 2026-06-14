@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { isMissingTableError } from "@/lib/supabase/errors";
 import { type ReactionSummary } from "./reactions";
 import Composer from "./Composer";
 import PostCard, { type FeedPost, type FeedComment } from "./PostCard";
@@ -44,9 +45,7 @@ export default async function LifePage() {
     .order("created_at", { ascending: false })
     .limit(50);
 
-  const tableMissing =
-    error?.code === "42P01" ||
-    error?.message?.toLowerCase().includes("does not exist");
+  const tableMissing = isMissingTableError(error);
 
   const posts = postRows ?? [];
   const postIds = posts.map((p) => p.id);

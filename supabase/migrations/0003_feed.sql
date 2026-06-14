@@ -106,24 +106,30 @@ insert into storage.buckets (id, name, public)
   values ('post-images', 'post-images', true)
   on conflict (id) do nothing;
 
-drop policy if exists "post_images_read" on storage.objects;
-create policy "post_images_read" on storage.objects for select
-  using (bucket_id = 'post-images');
+-- Storage policies require ownership of storage.objects, which the SQL Editor
+-- role may not have. Run them best-effort so a permission error here does NOT
+-- roll back the tables created above. If this block is skipped, add the same
+-- policies via Dashboard -> Storage -> post-images -> Policies.
+do $do$
+begin
+  execute $p$drop policy if exists "post_images_read" on storage.objects$p$;
+  execute $p$create policy "post_images_read" on storage.objects for select
+    using (bucket_id = 'post-images')$p$;
 
--- Members may upload/delete only within their own user-id folder.
-drop policy if exists "post_images_insert" on storage.objects;
-create policy "post_images_insert" on storage.objects for insert
-  with check (
-    bucket_id = 'post-images'
-    and auth.uid()::text = (storage.foldername(name))[1]
-  );
+  execute $p$drop policy if exists "post_images_insert" on storage.objects$p$;
+  execute $p$create policy "post_images_insert" on storage.objects for insert
+    with check (bucket_id = 'post-images'
+      and auth.uid()::text = (storage.foldername(name))[1])$p$;
 
-drop policy if exists "post_images_delete" on storage.objects;
-create policy "post_images_delete" on storage.objects for delete
-  using (
-    bucket_id = 'post-images'
-    and auth.uid()::text = (storage.foldername(name))[1]
-  );
+  execute $p$drop policy if exists "post_images_delete" on storage.objects$p$;
+  execute $p$create policy "post_images_delete" on storage.objects for delete
+    using (bucket_id = 'post-images'
+      and auth.uid()::text = (storage.foldername(name))[1])$p$;
+exception
+  when others then
+    raise notice 'Skipped storage.objects policies (%). Add them via Dashboard -> Storage -> Policies if image upload fails.', sqlerrm;
+end
+$do$;
 
 -- ----------------------------------------------------------------------------
 -- Indexes
