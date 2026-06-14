@@ -40,6 +40,17 @@ function BlockchainIcon(props: IconProps) {
   );
 }
 
+function PortfolioIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M3 3v18h18" />
+      <rect x="7" y="11" width="3" height="6" />
+      <rect x="12" y="7" width="3" height="10" />
+      <rect x="17" y="13" width="3" height="4" />
+    </svg>
+  );
+}
+
 function SendIcon(props: IconProps) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" {...props}>
@@ -64,6 +75,13 @@ export const CRYPTO_LINKS: CryptoLink[] = [
     blurb: "Trade startup shares on the DEX.",
     icon: ExchangeIcon,
     accent: "from-violet-500/30 to-fuchsia-500/10",
+  },
+  {
+    name: "Portfolio",
+    href: "/life/portfolio",
+    blurb: "Your share holdings and their value.",
+    icon: PortfolioIcon,
+    accent: "from-emerald-500/30 to-violet-500/10",
   },
   {
     name: "Galaxy500 Crypto Bank",

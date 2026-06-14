@@ -37,9 +37,23 @@ export default async function StockExchangePage() {
 
   return (
     <div>
-      <p className="text-sm font-medium uppercase tracking-[0.35em] text-violet-300/80">
-        Galaxy500 Stock Exchange
-      </p>
+      <div className="flex items-start justify-between gap-4">
+        <p className="text-sm font-medium uppercase tracking-[0.35em] text-violet-300/80">
+          Galaxy500 Stock Exchange
+        </p>
+        <Link
+          href="/life/portfolio"
+          className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-sm text-white/80 backdrop-blur transition hover:bg-white/10 hover:text-white"
+        >
+          <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 3v18h18" />
+            <rect x="7" y="11" width="3" height="6" />
+            <rect x="12" y="7" width="3" height="10" />
+            <rect x="17" y="13" width="3" height="4" />
+          </svg>
+          Portfolio
+        </Link>
+      </div>
       <h1 className="mt-3 text-3xl font-bold text-white sm:text-4xl">
         Trade startups on Base
       </h1>
