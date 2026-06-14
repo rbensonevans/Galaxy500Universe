@@ -90,13 +90,17 @@ export default async function LifePage() {
         .select("id, display_name")
         .in("id", authorIds)
     : { data: [] };
-  const nameById = new Map<string, string>(
-    (profileRows ?? []).map((p) => [
-      p.id,
-      p.display_name?.trim() || "Galaxy member",
-    ]),
-  );
-  const authorName = (id: string) => nameById.get(id) ?? "Galaxy member";
+  const nameById = new Map<string, string>();
+  for (const p of profileRows ?? []) {
+    const displayName = p.display_name?.trim();
+    if (displayName) nameById.set(p.id, displayName);
+  }
+  // Prefer the profile display name. Otherwise fall back to the signed-in
+  // user's own email username (we can't read other members' emails), and only
+  // then to a generic label.
+  const myFallback = user?.email?.split("@")[0] ?? "Galaxy member";
+  const authorName = (id: string) =>
+    nameById.get(id) ?? (id === me ? myFallback : "Galaxy member");
 
   // Group reactions by target.
   const reactsByPost = new Map<string, ReactionRow[]>();
