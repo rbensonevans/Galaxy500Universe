@@ -124,14 +124,6 @@ export const SECTIONS: Section[] = [
     accent: "from-rose-500/30 to-orange-500/10",
   },
   {
-    slug: "movies",
-    name: "Movies",
-    href: "/life/movies",
-    blurb: "Films, shows, and what to watch next.",
-    icon: MoviesIcon,
-    accent: "from-amber-500/30 to-rose-500/10",
-  },
-  {
     slug: "music",
     name: "Music",
     href: "/life/music",
@@ -176,6 +168,14 @@ export const SECTIONS: Section[] = [
 // Overflow feeds surfaced on the /life/more page (keeps the top nav tidy).
 // Add new social feeds here and they appear on the More page automatically.
 export const MORE_SECTIONS: Section[] = [
+  {
+    slug: "movies",
+    name: "Movies",
+    href: "/life/movies",
+    blurb: "Films, shows, and what to watch next.",
+    icon: MoviesIcon,
+    accent: "from-amber-500/30 to-rose-500/10",
+  },
   {
     slug: "gaming",
     name: "Gaming",
