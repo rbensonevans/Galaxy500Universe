@@ -16,6 +16,7 @@ const MAX_IMAGE_BYTES = 5 * 1024 * 1024; // 5 MB
 const FEED_PATHS: Record<string, string> = {
   life: "/life",
   family: "/life/friends-family",
+  travel: "/life/travel",
 };
 const ALLOWED_FEEDS = Object.keys(FEED_PATHS);
 
