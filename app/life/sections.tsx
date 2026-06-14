@@ -45,6 +45,16 @@ function GlobeIcon(props: IconProps) {
   );
 }
 
+function SportsIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <circle cx="12" cy="12" r="10" />
+      <path d="M12 2a10 10 0 0 0-3.5 19.4M12 2a10 10 0 0 1 3.5 19.4" />
+      <path d="M2.5 9.5 12 12l9.5-2.5M12 12v9.8" />
+    </svg>
+  );
+}
+
 function ProfileIcon(props: IconProps) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" {...props}>
@@ -81,6 +91,14 @@ export const SECTIONS: Section[] = [
     blurb: "Your closest orbits — the people who matter most.",
     icon: HeartIcon,
     accent: "from-rose-500/30 to-orange-500/10",
+  },
+  {
+    slug: "sports",
+    name: "Sports",
+    href: "/life/sports",
+    blurb: "Game day, teams, and everything in play.",
+    icon: SportsIcon,
+    accent: "from-emerald-500/30 to-lime-500/10",
   },
   {
     slug: "travel",
