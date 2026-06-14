@@ -25,15 +25,16 @@ export default function TransferCard({ balance }: { balance: number | null }) {
       action={formAction}
       className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md"
     >
-      <h2 className="text-lg font-semibold text-white">Send Galaxy Credits</h2>
-      <p className="mt-1 text-sm text-white/50">
-        Transfer GLXY to another member by their @handle.
-        {balance != null &&
-          ` Available: ${balance.toLocaleString(undefined, {
+      {balance != null && (
+        <p className="text-sm text-white/50">
+          Available:{" "}
+          {balance.toLocaleString(undefined, {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
-          })} GLXY.`}
-      </p>
+          })}{" "}
+          GLXY
+        </p>
+      )}
 
       <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
         <label className="flex flex-col gap-1.5 text-sm">

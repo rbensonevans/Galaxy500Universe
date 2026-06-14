@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { isMissingTableError } from "@/lib/supabase/errors";
-import TransferCard from "./TransferCard";
 
 // Quick links surfaced on the profile. The destination pages are placeholders
 // for now and will be built out later.
@@ -11,6 +10,7 @@ const PROFILE_LINKS = [
   { name: "Wallet", href: "/life/wallet" },
   { name: "Startups", href: "/life/startups" },
   { name: "Galaxy500 Crypto Bank", href: "/life/crypto-bank" },
+  { name: "Send Galaxy Credits", href: "/life/profile/transfer" },
 ];
 
 export default async function ProfilePage() {
@@ -26,13 +26,6 @@ export default async function ProfilePage() {
     .select("username, display_name, bio, location, website")
     .eq("id", user!.id)
     .maybeSingle();
-
-  const { data: wallet } = await supabase
-    .from("wallets")
-    .select("balance")
-    .eq("user_id", user!.id)
-    .maybeSingle();
-  const balance = wallet ? Number(wallet.balance) : null;
 
   const tableMissing = isMissingTableError(error);
 
@@ -150,12 +143,6 @@ export default async function ProfilePage() {
               )}
             </div>
           )}
-        </div>
-      )}
-
-      {!tableMissing && (
-        <div className="mt-6 max-w-2xl">
-          <TransferCard balance={balance} />
         </div>
       )}
 
