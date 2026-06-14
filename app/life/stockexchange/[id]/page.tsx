@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { tickerFor, priceFor, changeFor, formatUsd } from "../market";
+import TradePanel from "./TradePanel";
 
 type TradePageProps = {
   params: Promise<{ id: string }>;
@@ -83,54 +84,13 @@ export default async function TradePage({
         </span>
       </div>
 
-      {/* Trade panel */}
-      <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md">
-        <div className="grid grid-cols-2 gap-1 rounded-full bg-black/30 p-1 text-sm">
-          <Link
-            href={`/life/stockexchange/${startup.id}?side=buy`}
-            className={`rounded-full py-2 text-center font-medium transition ${
-              buyActive ? "bg-emerald-500 text-white" : "text-white/70 hover:text-white"
-            }`}
-          >
-            Buy
-          </Link>
-          <Link
-            href={`/life/stockexchange/${startup.id}?side=sell`}
-            className={`rounded-full py-2 text-center font-medium transition ${
-              !buyActive ? "bg-rose-500 text-white" : "text-white/70 hover:text-white"
-            }`}
-          >
-            Sell
-          </Link>
-        </div>
-
-        <div className="mt-5">
-          <label className="flex flex-col gap-1.5 text-sm">
-            <span className="text-white/70">Amount (shares)</span>
-            <input
-              type="number"
-              min={0}
-              placeholder="0"
-              disabled
-              className="rounded-lg border border-white/10 bg-black/40 px-3 py-2.5 text-white placeholder:text-white/30 disabled:cursor-not-allowed"
-            />
-          </label>
-
-          <button
-            type="button"
-            disabled
-            className={`mt-4 w-full rounded-lg px-4 py-2.5 font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60 ${
-              buyActive ? "bg-emerald-500" : "bg-rose-500"
-            }`}
-          >
-            {buyActive ? "Buy" : "Sell"} ${ticker}
-          </button>
-
-          <p className="mt-3 text-center text-xs text-white/40">
-            On-chain trading on Base is coming soon. This is a preview of the
-            {buyActive ? " buy" : " sell"} flow.
-          </p>
-        </div>
+      {/* Trade panel (wallet-aware) */}
+      <div className="mt-8">
+        <TradePanel
+          ticker={ticker}
+          price={price}
+          initialSide={buyActive ? "buy" : "sell"}
+        />
       </div>
     </div>
   );

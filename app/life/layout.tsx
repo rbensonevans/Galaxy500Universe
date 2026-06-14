@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/app/auth/actions";
 import Cosmos from "@/app/components/Cosmos";
 import LifeNav from "@/app/components/LifeNav";
+import ConnectWallet from "@/app/components/ConnectWallet";
 
 // Shared shell for the entire authenticated Life area: cosmic background,
 // header with section navigation, and sign-out. The proxy middleware already
@@ -36,9 +37,10 @@ export default async function LifeLayout({
             <LifeNav />
           </div>
           <div className="flex items-center gap-4">
-            <span className="hidden text-sm text-white/40 sm:inline">
+            <span className="hidden text-sm text-white/40 lg:inline">
               {user.email}
             </span>
+            <ConnectWallet />
             <form action={signOut}>
               <button
                 type="submit"
