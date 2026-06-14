@@ -7,8 +7,8 @@ import { isMissingTableError } from "@/lib/supabase/errors";
 const PROFILE_LINKS = [
   { name: "Marketplace", href: "/life/marketplace" },
   { name: "Blockchain", href: "/life/blockchain" },
-  { name: "Safe Wallet", href: "/life/safe-wallet" },
-  { name: "Daily Wallet", href: "/life/daily-wallet" },
+  { name: "Wallet", href: "/life/wallet" },
+  { name: "Startups", href: "/life/startups" },
 ];
 
 export default async function ProfilePage() {
