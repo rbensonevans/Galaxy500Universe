@@ -4,6 +4,7 @@ import { useActionState } from "react";
 import { updateProfile, type ProfileState } from "./actions";
 
 type Profile = {
+  username: string | null;
   display_name: string | null;
   bio: string | null;
   location: string | null;
@@ -42,6 +43,24 @@ export default function ProfileForm({
           />
           <span className="text-xs text-white/30">
             Your email is managed by your account and can&apos;t be changed here.
+          </span>
+        </label>
+
+        <label className="flex flex-col gap-1.5 text-sm">
+          <span className="text-white/70">Handle</span>
+          <div className="flex items-center gap-2">
+            <span className="text-white/40">@</span>
+            <input
+              name="username"
+              defaultValue={profile?.username ?? ""}
+              placeholder="yourhandle"
+              pattern="[a-zA-Z0-9_]{3,20}"
+              className={`${inputClass} flex-1`}
+            />
+          </div>
+          <span className="text-xs text-white/30">
+            3–20 letters, numbers, or underscores. Others use this to send you
+            Galaxy Credits.
           </span>
         </label>
 

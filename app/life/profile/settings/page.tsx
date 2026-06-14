@@ -13,7 +13,7 @@ export default async function ProfileSettingsPage() {
 
   const { data: profile, error } = await supabase
     .from("profiles")
-    .select("display_name, bio, location, website")
+    .select("username, display_name, bio, location, website")
     .eq("id", user!.id)
     .maybeSingle();
 

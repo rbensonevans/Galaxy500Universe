@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { isMissingTableError } from "@/lib/supabase/errors";
+import TransferCard from "./TransferCard";
 
 // Quick links surfaced on the profile. The destination pages are placeholders
 // for now and will be built out later.
@@ -22,9 +23,16 @@ export default async function ProfilePage() {
 
   const { data: profile, error } = await supabase
     .from("profiles")
-    .select("display_name, bio, location, website")
+    .select("username, display_name, bio, location, website")
     .eq("id", user!.id)
     .maybeSingle();
+
+  const { data: wallet } = await supabase
+    .from("wallets")
+    .select("balance")
+    .eq("user_id", user!.id)
+    .maybeSingle();
+  const balance = wallet ? Number(wallet.balance) : null;
 
   const tableMissing = isMissingTableError(error);
 
@@ -58,6 +66,21 @@ export default async function ProfilePage() {
           <h1 className="text-3xl font-bold text-white sm:text-4xl">
             {profile?.display_name || "Your profile"}
           </h1>
+          {profile?.username ? (
+            <p className="font-mono text-sm text-violet-200/80">
+              @{profile.username}
+            </p>
+          ) : (
+            <p className="text-sm text-white/40">
+              <Link
+                href="/life/profile/settings"
+                className="text-violet-300 hover:text-violet-200"
+              >
+                Set a @handle
+              </Link>{" "}
+              to receive transfers
+            </p>
+          )}
           <p className="text-white/50">{email}</p>
         </div>
       </div>
@@ -127,6 +150,12 @@ export default async function ProfilePage() {
               )}
             </div>
           )}
+        </div>
+      )}
+
+      {!tableMissing && (
+        <div className="mt-6 max-w-2xl">
+          <TransferCard balance={balance} />
         </div>
       )}
 
