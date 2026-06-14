@@ -50,9 +50,10 @@ export default async function WalletPage() {
   const tableMissing = isMissingTableError(error);
 
   // Computed economy stats (population-driven money supply).
-  const [{ data: supply }, { data: pop }] = await Promise.all([
+  const [{ data: supply }, { data: pop }, { data: pool }] = await Promise.all([
     supabase.rpc("money_supply"),
     supabase.rpc("population"),
+    supabase.rpc("reserve_pool"),
   ]);
 
   const { data: txnRows } = !tableMissing
@@ -90,6 +91,15 @@ export default async function WalletPage() {
           <span className="tabular-nums text-white/70">
             {Number(pop ?? 0).toLocaleString()}
           </span>
+          {pool != null && (
+            <>
+              {" "}
+              · Reserve pool:{" "}
+              <span className="tabular-nums text-white/70">
+                {fmtGlxy(Number(pool))} GLXY
+              </span>
+            </>
+          )}
         </p>
       )}
 

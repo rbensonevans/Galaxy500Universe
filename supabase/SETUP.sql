@@ -345,11 +345,28 @@ insert into public.system_accounts (user_id, role)
   select id, 'shares_reserve' from public.profiles where lower(username) = 'iglobeshares'
   on conflict (user_id) do update set role = excluded.role;
 
--- Initialize the currency reserve wallet (its balance trends negative as it
--- issues birth grants; money supply is computed separately).
+-- Initialize the currency reserve wallet (its balance is the issuance pool;
+-- money supply is computed separately and excludes this account).
 insert into public.wallets (user_id, balance)
   select user_id, 0 from public.system_accounts where role = 'currency_reserve'
   on conflict (user_id) do nothing;
+
+-- One-time: seed the currency reserve with a vast issuance pool — 100 trillion
+-- GLXY — representing the wealth backing a huge population. Guarded by a
+-- 'reserve_seed' marker tx so re-running SETUP never resets it (which would
+-- erase issuance accounting since the seed).
+do $seed$
+declare reserve uuid;
+begin
+  select user_id into reserve from public.system_accounts where role = 'currency_reserve' limit 1;
+  if reserve is null then return; end if;
+  if exists (select 1 from public.wallet_transactions where user_id = reserve and kind = 'reserve_seed') then
+    return;
+  end if;
+  update public.wallets set balance = balance + 100000000000000 where user_id = reserve;
+  insert into public.wallet_transactions (user_id, amount, kind, memo)
+    values (reserve, 100000000000000, 'reserve_seed', 'Galaxy reserve funding pool');
+end $seed$;
 
 -- Birth grant: a new member is "born" with 1,000,000 GLXY, minted from the
 -- currency reserve. System accounts never receive it. Idempotent per member.
@@ -422,10 +439,18 @@ $ms$;
 create or replace function public.population() returns bigint language sql security definer set search_path = public stable as $pop$
   select count(*)::bigint from public.wallets w where w.user_id not in (select user_id from public.system_accounts);
 $pop$;
+-- Remaining balance of the currency reserve issuance pool.
+create or replace function public.reserve_pool() returns numeric language sql security definer set search_path = public stable as $rp$
+  select coalesce((select w.balance from public.wallets w
+    join public.system_accounts sa on sa.user_id = w.user_id
+    where sa.role = 'currency_reserve' limit 1), 0);
+$rp$;
 revoke all on function public.money_supply() from public;
 revoke all on function public.population() from public;
+revoke all on function public.reserve_pool() from public;
 grant execute on function public.money_supply() to authenticated;
 grant execute on function public.population() to authenticated;
+grant execute on function public.reserve_pool() to authenticated;
 
 -- ============================ STARTUP FUNDING & EQUITY (Phase 2) ===========
 -- The "shares reserve" (iglobeshares) is a pure system construct — no auth
