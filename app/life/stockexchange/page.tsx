@@ -24,6 +24,7 @@ export default async function StockExchangePage() {
     supabase
       .from("startups")
       .select("id, name, tagline, industry")
+      .eq("is_public", true)
       .order("name", { ascending: true }),
     supabase.rpc("startup_market"),
   ]);

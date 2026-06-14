@@ -15,6 +15,9 @@ create table if not exists public.startups (
   industry    text,
   created_at  timestamptz not null default now()
 );
+-- Public startups are listed and tradable on the Stock Exchange; private ones
+-- are hidden from the exchange and cannot be traded.
+alter table public.startups add column if not exists is_public boolean not null default true;
 alter table public.startups enable row level security;
 -- Readable by any signed-in member (they are listed on the Stock Exchange).
 drop policy if exists "startups_select_all" on public.startups;
@@ -656,7 +659,8 @@ language sql security definer set search_path = public stable as $mk$
     public.startup_score(s.id, now()),
     greatest(s.pledged_shares - coalesce((select sum(shares) from public.share_holdings h where h.startup_id = s.id), 0), 0),
     (s.pledged_shares > 0)
-  from public.startups s;
+  from public.startups s
+  where s.is_public;
 $mk$;
 revoke all on function public.startup_market() from public;
 grant execute on function public.startup_market() to authenticated;
@@ -673,6 +677,7 @@ begin
   select * into s from public.startups where id = p_startup for update;
   if not found then raise exception 'Startup not found'; end if;
   if qty is null or qty <= 0 then raise exception 'Enter a quantity greater than 0'; end if;
+  if not s.is_public then raise exception 'This startup is private and not trading publicly'; end if;
   if s.pledged_shares <= 0 then raise exception 'Not tradable yet — this startup has no funded equity'; end if;
 
   select coalesce(sum(shares),0) into member_total from public.share_holdings where startup_id = p_startup;

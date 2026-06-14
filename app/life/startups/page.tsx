@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { isMissingTableError } from "@/lib/supabase/errors";
-import { deleteStartup } from "./actions";
+import { deleteStartup, setStartupVisibility } from "./actions";
 
 type Startup = {
   id: string;
@@ -10,6 +10,7 @@ type Startup = {
   description: string | null;
   website: string | null;
   industry: string | null;
+  is_public: boolean;
   created_at: string;
 };
 
@@ -34,7 +35,7 @@ export default async function StartupsPage() {
   } = await supabase.auth.getUser();
   const { data, error } = await supabase
     .from("startups")
-    .select("id, name, tagline, description, website, industry, created_at")
+    .select("id, name, tagline, description, website, industry, is_public, created_at")
     .eq("user_id", user!.id)
     .order("created_at", { ascending: false });
 
@@ -109,9 +110,20 @@ export default async function StartupsPage() {
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <h3 className="text-base font-semibold text-white">
-                      {s.name}
-                    </h3>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-base font-semibold text-white">
+                        {s.name}
+                      </h3>
+                      <span
+                        className={`rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider ${
+                          s.is_public
+                            ? "bg-emerald-500/15 text-emerald-300"
+                            : "bg-white/10 text-white/50"
+                        }`}
+                      >
+                        {s.is_public ? "Public" : "Private"}
+                      </span>
+                    </div>
                     {s.tagline && (
                       <p className="mt-0.5 text-sm text-violet-200/80">
                         {s.tagline}
@@ -167,6 +179,20 @@ export default async function StartupsPage() {
                     </svg>
                     Funding
                   </Link>
+                  <form action={setStartupVisibility}>
+                    <input type="hidden" name="id" value={s.id} />
+                    <input
+                      type="hidden"
+                      name="is_public"
+                      value={(!s.is_public).toString()}
+                    />
+                    <button
+                      type="submit"
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-white/15 bg-white/5 px-3 py-1.5 text-sm font-medium text-white/80 transition hover:bg-white/10 hover:text-white"
+                    >
+                      {s.is_public ? "Make private" : "Make public"}
+                    </button>
+                  </form>
                 </div>
               </article>
             ))}

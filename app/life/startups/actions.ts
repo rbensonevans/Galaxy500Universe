@@ -38,6 +38,8 @@ export async function createStartup(
     description: clean(formData.get("description")),
     website: clean(formData.get("website")),
     industry: clean(formData.get("industry")),
+    // Defaults to public unless the founder unchecks "List on the exchange".
+    is_public: formData.get("is_public") != null,
   });
 
   if (error) {
@@ -46,6 +48,19 @@ export async function createStartup(
 
   revalidatePath("/life/startups");
   redirect("/life/startups");
+}
+
+// Toggle a startup between public (listed/tradable) and private. RLS ensures a
+// member can only update their own startup.
+export async function setStartupVisibility(formData: FormData) {
+  const id = String(formData.get("id") ?? "");
+  if (!id) return;
+  const isPublic = String(formData.get("is_public")) === "true";
+
+  const supabase = await createClient();
+  await supabase.from("startups").update({ is_public: isPublic }).eq("id", id);
+  revalidatePath("/life/startups");
+  revalidatePath("/life/stockexchange");
 }
 
 export async function deleteStartup(formData: FormData) {

@@ -67,6 +67,22 @@ export default function StartupForm() {
         </label>
       </div>
 
+      <label className="mt-4 flex items-start gap-3 text-sm">
+        <input
+          type="checkbox"
+          name="is_public"
+          defaultChecked
+          className="mt-0.5 h-4 w-4 rounded border-white/20 bg-black/40 accent-violet-500"
+        />
+        <span>
+          <span className="text-white/80">List on the Stock Exchange</span>
+          <span className="mt-0.5 block text-xs text-white/40">
+            Public startups can be funded and traded by members. Uncheck to keep
+            it private — hidden from the exchange and not tradable.
+          </span>
+        </span>
+      </label>
+
       {state.error && (
         <p className="mt-4 rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-sm text-rose-200">
           {state.error}

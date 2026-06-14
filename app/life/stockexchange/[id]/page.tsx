@@ -32,11 +32,11 @@ export default async function TradePage({
 
   const { data: startup } = await supabase
     .from("startups")
-    .select("id, name, tagline")
+    .select("id, name, tagline, is_public")
     .eq("id", id)
     .maybeSingle();
 
-  if (!startup) {
+  if (!startup || !startup.is_public) {
     return (
       <div>
         <Link
@@ -46,7 +46,9 @@ export default async function TradePage({
           ← Back to the exchange
         </Link>
         <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-10 text-center text-white/50">
-          This listing couldn&apos;t be found.
+          {startup && !startup.is_public
+            ? "This startup is private and not trading publicly."
+            : "This listing couldn't be found."}
         </div>
       </div>
     );
