@@ -11,6 +11,19 @@ export type PostState = {
 
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024; // 5 MB
 
+// Feeds backed by the shared posts/comments/reactions tables, and the pages
+// that render them.
+const FEED_PATHS: Record<string, string> = {
+  life: "/life",
+  family: "/life/friends-family",
+};
+const ALLOWED_FEEDS = Object.keys(FEED_PATHS);
+
+// A mutation can affect a post in any feed, so refresh every feed page.
+function revalidateFeeds() {
+  for (const path of Object.values(FEED_PATHS)) revalidatePath(path);
+}
+
 export async function createPost(
   _prevState: PostState,
   formData: FormData,
@@ -22,6 +35,8 @@ export async function createPost(
   if (!user) return { error: "You must be signed in." };
 
   const content = String(formData.get("content") ?? "").trim();
+  const feedRaw = String(formData.get("feed") ?? "life");
+  const feed = ALLOWED_FEEDS.includes(feedRaw) ? feedRaw : "life";
   const image = formData.get("image");
   const hasImage = image instanceof File && image.size > 0;
 
@@ -61,11 +76,12 @@ export async function createPost(
     user_id: user.id,
     content: content || null,
     image_url: imageUrl,
+    feed,
   });
 
   if (error) return { error: error.message };
 
-  revalidatePath("/life");
+  revalidatePath(FEED_PATHS[feed]);
   return { success: true };
 }
 
@@ -74,7 +90,7 @@ export async function deletePost(formData: FormData) {
   if (!id) return;
   const supabase = await createClient();
   await supabase.from("posts").delete().eq("id", id); // RLS: own only
-  revalidatePath("/life");
+  revalidateFeeds();
 }
 
 export type CommentState = {
@@ -105,7 +121,7 @@ export async function createComment(
 
   if (error) return { error: error.message };
 
-  revalidatePath("/life");
+  revalidateFeeds();
   return { success: true };
 }
 
@@ -114,7 +130,7 @@ export async function deleteComment(formData: FormData) {
   if (!id) return;
   const supabase = await createClient();
   await supabase.from("comments").delete().eq("id", id); // RLS: own only
-  revalidatePath("/life");
+  revalidateFeeds();
 }
 
 // Toggle the current user's emoji reaction on a post or comment: if it already
@@ -158,5 +174,5 @@ export async function toggleReaction(formData: FormData) {
     });
   }
 
-  revalidatePath("/life");
+  revalidateFeeds();
 }

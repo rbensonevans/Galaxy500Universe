@@ -5,7 +5,13 @@ import { createPost, type PostState } from "./actions";
 
 const initialState: PostState = {};
 
-export default function Composer() {
+export default function Composer({
+  feed = "life",
+  placeholder = "How is it going?",
+}: {
+  feed?: string;
+  placeholder?: string;
+}) {
   const [state, formAction, isPending] = useActionState(
     createPost,
     initialState,
@@ -28,10 +34,11 @@ export default function Composer() {
       action={formAction}
       className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-md"
     >
+      <input type="hidden" name="feed" value={feed} />
       <textarea
         name="content"
         rows={3}
-        placeholder="How is it going?"
+        placeholder={placeholder}
         className="w-full resize-y rounded-lg border border-white/10 bg-black/40 px-3 py-2.5 text-white placeholder:text-white/30 outline-none transition focus:border-violet-400/60 focus:ring-2 focus:ring-violet-500/30"
       />
 

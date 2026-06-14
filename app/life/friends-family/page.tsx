@@ -1,32 +1,23 @@
-import SectionShell from "@/app/components/SectionShell";
+import Feed from "../Feed";
 
 export default function FriendsFamilyPage() {
   return (
-    <SectionShell
-      eyebrow="Friends & Family"
-      title="Your closest orbits"
-      blurb="The people who matter most — keep them near, share moments, and stay connected across the universe."
-      features={[
-        {
-          title: "Inner circle",
-          description:
-            "Group the people closest to you and see their updates first.",
-        },
-        {
-          title: "Shared moments",
-          description:
-            "Photos, milestones, and memories shared privately with loved ones.",
-        },
-        {
-          title: "Stay in touch",
-          description:
-            "Gentle reminders to reach out to the people you care about.",
-        },
-        {
-          title: "Family tree",
-          description: "Map the constellations of your family across generations.",
-        },
-      ]}
-    />
+    <div className="mx-auto max-w-2xl">
+      <p className="text-sm font-medium uppercase tracking-[0.35em] text-violet-300/80">
+        Friends &amp; Family
+      </p>
+      <h1 className="mt-3 text-3xl font-bold text-white sm:text-4xl">
+        Your closest orbits
+      </h1>
+      <p className="mt-2 text-white/60">
+        Share moments with the people who matter most.
+      </p>
+
+      <Feed
+        feed="family"
+        placeholder="Share something with friends & family…"
+        emptyText="No posts here yet. Share a moment with your friends and family."
+      />
+    </div>
   );
 }

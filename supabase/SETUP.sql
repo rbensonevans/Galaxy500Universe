@@ -49,8 +49,11 @@ create table if not exists public.posts (
   user_id    uuid not null default auth.uid() references auth.users (id) on delete cascade,
   content    text,
   image_url  text,
+  feed       text not null default 'life',
   created_at timestamptz not null default now()
 );
+alter table public.posts add column if not exists feed text not null default 'life';
+create index if not exists posts_feed_created_idx on public.posts (feed, created_at desc);
 alter table public.posts enable row level security;
 drop policy if exists "posts_select_all" on public.posts;
 create policy "posts_select_all" on public.posts for select using (auth.uid() is not null);
