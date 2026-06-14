@@ -65,8 +65,10 @@ alter table public.posts add column if not exists startup_id uuid references pub
 create index if not exists posts_feed_created_idx on public.posts (feed, created_at desc);
 create index if not exists posts_startup_created_idx on public.posts (startup_id, created_at desc);
 alter table public.posts enable row level security;
+-- Postings are visible only to the member who posted them (all feeds).
 drop policy if exists "posts_select_all" on public.posts;
-create policy "posts_select_all" on public.posts for select using (auth.uid() is not null);
+drop policy if exists "posts_select_own" on public.posts;
+create policy "posts_select_own" on public.posts for select using (auth.uid() = user_id);
 drop policy if exists "posts_insert_own" on public.posts;
 create policy "posts_insert_own" on public.posts for insert with check (
   auth.uid() = user_id
