@@ -133,11 +133,11 @@ export default async function BlockchainPage() {
       <h1 className="mt-3 text-3xl font-bold text-white sm:text-4xl">
         Base network stats
       </h1>
-      <p className="mt-3 max-w-xl text-white/60">
+      <p className="mt-3 whitespace-nowrap text-sm text-white/60 sm:text-base">
         Live data from Base{stats ? ` · Chain ID ${stats.chainId}` : ""} — the
         chain Galaxy500Universe runs on.
-        <span className="ml-1 text-white/35">Updated {updated}.</span>
       </p>
+      <p className="mt-1 text-sm text-white/35">Updated {updated}.</p>
 
       {errorMessage ? (
         <div className="mt-8 rounded-2xl border border-rose-500/30 bg-rose-500/10 p-6 text-sm text-rose-100">
