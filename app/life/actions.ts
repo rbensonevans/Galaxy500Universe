@@ -17,6 +17,7 @@ const FEED_PATHS: Record<string, string> = {
   life: "/life",
   family: "/life/friends-family",
   travel: "/life/travel",
+  communities: "/life/communities",
 };
 const ALLOWED_FEEDS = Object.keys(FEED_PATHS);
 
