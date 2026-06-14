@@ -3,12 +3,12 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 
-// Grants the one-time 1000 GLXY welcome bonus (creates the member's wallet).
-// The actual balance change happens in a SECURITY DEFINER SQL function so it
-// can't be forged from the client.
-export async function claimWelcomeBonus() {
+// Mints the member's 1,000,000 GLXY birth grant (creates their wallet). The
+// balance change happens in a SECURITY DEFINER SQL function so it can't be
+// forged, and it skips system/reserve accounts.
+export async function claimBirthGrant() {
   const supabase = await createClient();
-  const { error } = await supabase.rpc("claim_welcome_bonus");
+  const { error } = await supabase.rpc("ensure_birth_grant");
   if (!error) {
     revalidatePath("/life/wallet");
   }

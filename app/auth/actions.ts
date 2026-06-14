@@ -32,6 +32,11 @@ export async function login(
     return { error: error.message };
   }
 
+  // "Born" on entering the universe: ensure the 1,000,000 GLXY birth grant
+  // (idempotent; skips system/reserve accounts). Ignore errors so login is
+  // never blocked.
+  await supabase.rpc("ensure_birth_grant");
+
   revalidatePath("/", "layout");
   redirect("/life");
 }

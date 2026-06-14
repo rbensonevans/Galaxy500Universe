@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { isMissingTableError } from "@/lib/supabase/errors";
-import { claimWelcomeBonus } from "./actions";
+import { claimBirthGrant } from "./actions";
 import OnchainWallet from "./OnchainWallet";
 
 type Txn = {
@@ -49,6 +49,12 @@ export default async function WalletPage() {
 
   const tableMissing = isMissingTableError(error);
 
+  // Computed economy stats (population-driven money supply).
+  const [{ data: supply }, { data: pop }] = await Promise.all([
+    supabase.rpc("money_supply"),
+    supabase.rpc("population"),
+  ]);
+
   const { data: txnRows } = !tableMissing
     ? await supabase
         .from("wallet_transactions")
@@ -74,6 +80,19 @@ export default async function WalletPage() {
         off-chain today, with on-chain settlement on Base coming soon.
       </p>
 
+      {!tableMissing && supply != null && (
+        <p className="mt-3 text-xs text-white/40">
+          Galaxy money supply:{" "}
+          <span className="tabular-nums text-white/70">
+            {fmtGlxy(Number(supply))} GLXY
+          </span>{" "}
+          · Population:{" "}
+          <span className="tabular-nums text-white/70">
+            {Number(pop ?? 0).toLocaleString()}
+          </span>
+        </p>
+      )}
+
       {tableMissing && (
         <div className="mt-8 rounded-2xl border border-amber-500/30 bg-amber-500/10 p-6 text-sm text-amber-100">
           <p className="font-semibold">Database setup needed</p>
@@ -96,14 +115,15 @@ export default async function WalletPage() {
             {balance == null ? (
               <div className="mt-4">
                 <p className="text-sm text-white/50">
-                  Claim your welcome credits to get started.
+                  Receive your birth grant — your lifetime allowance in the
+                  universe.
                 </p>
-                <form action={claimWelcomeBonus} className="mt-4">
+                <form action={claimBirthGrant} className="mt-4">
                   <button
                     type="submit"
                     className="rounded-lg bg-gradient-to-r from-violet-500 via-fuchsia-500 to-cyan-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-fuchsia-500/20 transition hover:brightness-110"
                   >
-                    Claim 1,000 GLXY
+                    Receive 1,000,000 GLXY
                   </button>
                 </form>
               </div>
