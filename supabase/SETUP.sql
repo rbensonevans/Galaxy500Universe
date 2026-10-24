@@ -64,16 +64,18 @@ alter table public.posts add column if not exists feed text not null default 'li
 alter table public.posts add column if not exists startup_id uuid references public.startups (id) on delete cascade;
 create index if not exists posts_feed_created_idx on public.posts (feed, created_at desc);
 create index if not exists posts_startup_created_idx on public.posts (startup_id, created_at desc);
+-- Personal-feed posts the author shares publicly appear on the Universal Feed.
+alter table public.posts add column if not exists is_public boolean not null default false;
 alter table public.posts enable row level security;
--- Visibility: personal-feed posts (no startup_id) are owner-only; Startup Feed
--- posts (startup_id set) are visible to any signed-in member so the community
--- can engage (which drives share pricing).
+-- Visibility: personal-feed posts (no startup_id) are owner-only unless the
+-- author marks them public; Startup Feed posts (startup_id set) are visible to
+-- any signed-in member so the community can engage (which drives share pricing).
 drop policy if exists "posts_select_all" on public.posts;
 drop policy if exists "posts_select_own" on public.posts;
 drop policy if exists "posts_select_visible" on public.posts;
 create policy "posts_select_visible" on public.posts for select using (
   auth.uid() = user_id
-  or (auth.uid() is not null and startup_id is not null)
+  or (auth.uid() is not null and (startup_id is not null or is_public))
 );
 drop policy if exists "posts_insert_own" on public.posts;
 create policy "posts_insert_own" on public.posts for insert with check (

@@ -19,6 +19,10 @@ export type FeedPost = {
   created_at: string;
   user_id: string;
   authorName: string;
+  /** Where the post came from (shown on the Universal Feed). */
+  source?: string;
+  /** Personal-feed visibility; undefined for Startup Feed posts. */
+  visibility?: "public" | "private";
   reactions: ReactionSummary;
   comments: FeedComment[];
 };
@@ -53,8 +57,22 @@ export default function PostCard({
         <Avatar name={post.authorName} />
         <div className="flex-1">
           <p className="text-sm font-semibold text-white">{post.authorName}</p>
-          <p className="text-xs text-white/40">{formatWhen(post.created_at)}</p>
+          <p className="text-xs text-white/40">
+            {formatWhen(post.created_at)}
+            {post.source && <> · in {post.source}</>}
+          </p>
         </div>
+        {post.user_id === currentUserId && post.visibility && (
+          <span
+            className={`rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider ${
+              post.visibility === "public"
+                ? "bg-cyan-500/15 text-cyan-200"
+                : "bg-white/10 text-white/50"
+            }`}
+          >
+            {post.visibility === "public" ? "Universal" : "Only you"}
+          </span>
+        )}
         {post.user_id === currentUserId && (
           <form action={deletePost}>
             <input type="hidden" name="id" value={post.id} />

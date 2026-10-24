@@ -3,6 +3,14 @@ import { isMissingTableError } from "@/lib/supabase/errors";
 import { type ReactionSummary } from "./reactions";
 import Composer from "./Composer";
 import PostCard, { type FeedPost, type FeedComment } from "./PostCard";
+import { SECTIONS, MORE_SECTIONS } from "./sections";
+
+// Display names for the feed streams, used to label where a post came from on
+// the Universal Feed.
+const FEED_NAMES = new Map<string, string>([
+  ["life", "Life"],
+  ...[...SECTIONS, ...MORE_SECTIONS].map((s) => [s.slug, s.name] as [string, string]),
+]);
 
 type ReactionRow = {
   emoji: string;
@@ -33,9 +41,12 @@ function group<T>(map: Map<string, T[]>, key: string, value: T) {
 
 // A complete social feed (composer + posts with comments and emoji reactions),
 // scoped to a single `feed` stream. Shared by the Life, Friends, Family, and
-// other feed pages. The page provides its own heading.
+// other feed pages. With `universal`, it instead shows every public post and
+// every Startup Feed post across the universe (read-only). The page provides
+// its own heading.
 export default async function Feed({
   feed,
+  universal = false,
   startupId,
   canPost = true,
   postAuthorName,
@@ -43,6 +54,8 @@ export default async function Feed({
   emptyText = "No posts yet. Be the first to share something.",
 }: {
   feed: string;
+  /** Aggregate public + Startup Feed posts from every feed (no composer). */
+  universal?: boolean;
   /** When set, scope to a single startup's company feed instead of a stream. */
   startupId?: string;
   /** Whether to show the composer (e.g. only the company admin can post). */
@@ -60,10 +73,14 @@ export default async function Feed({
 
   const base = supabase
     .from("posts")
-    .select("id, user_id, content, image_url, created_at");
-  const { data: postRows, error } = await (startupId
-    ? base.eq("startup_id", startupId)
-    : base.eq("feed", feed)
+    .select("id, user_id, content, image_url, created_at, feed, startup_id, is_public");
+  // Universal Feed ordering is newest-first for now; this is where a ranking
+  // algorithm tailored to the member's perceived interests will plug in.
+  const { data: postRows, error } = await (universal
+    ? base.or("is_public.eq.true,startup_id.not.is.null")
+    : startupId
+      ? base.eq("startup_id", startupId)
+      : base.eq("feed", feed)
   )
     .order("created_at", { ascending: false })
     .limit(50);
@@ -136,6 +153,21 @@ export default async function Feed({
   const authorName = (id: string) =>
     nameById.get(id) ?? (id === me ? myFallback : "Galaxy member");
 
+  // On the Universal Feed, Startup Feed posts are labeled with the company.
+  const startupIds = universal
+    ? Array.from(new Set(posts.flatMap((p) => (p.startup_id ? [p.startup_id] : []))))
+    : [];
+  const { data: startupRows } = startupIds.length
+    ? await supabase.from("startups").select("id, name").in("id", startupIds)
+    : { data: [] };
+  const startupName = new Map<string, string>(
+    (startupRows ?? []).map((s) => [s.id, s.name]),
+  );
+  const sourceLabel = (p: (typeof posts)[number]) =>
+    p.startup_id
+      ? `${startupName.get(p.startup_id) ?? "Startup"} · Startup Feed`
+      : (FEED_NAMES.get(p.feed) ?? p.feed);
+
   const reactsByPost = new Map<string, ReactionRow[]>();
   for (const r of (postReacts ?? []) as ReactionRow[]) {
     if (r.post_id) group(reactsByPost, r.post_id, r);
@@ -164,13 +196,15 @@ export default async function Feed({
     created_at: p.created_at,
     user_id: p.user_id,
     authorName: postAuthorName ?? authorName(p.user_id),
+    source: universal ? sourceLabel(p) : undefined,
+    visibility: p.startup_id ? undefined : p.is_public ? "public" : "private",
     reactions: summarize(reactsByPost.get(p.id) ?? [], me),
     comments: commentsByPost.get(p.id) ?? [],
   }));
 
   return (
     <>
-      {canPost && (
+      {canPost && !universal && (
         <div className="mt-6">
           <Composer feed={feed} startupId={startupId} placeholder={placeholder} />
         </div>

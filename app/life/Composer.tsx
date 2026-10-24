@@ -69,6 +69,17 @@ export default function Composer({
           />
         </label>
 
+        {!startupId && (
+          <label className="ml-auto inline-flex cursor-pointer items-center gap-2 text-sm text-white/60">
+            <input
+              type="checkbox"
+              name="is_public"
+              className="h-4 w-4 accent-fuchsia-500"
+            />
+            Share to Universal Feed
+          </label>
+        )}
+
         <button
           type="submit"
           disabled={isPending}

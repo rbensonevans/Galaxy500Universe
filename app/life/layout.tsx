@@ -29,7 +29,8 @@ export default async function LifeLayout({
         <header className="flex flex-col gap-4 border-b border-white/10 px-6 py-5 backdrop-blur-sm sm:flex-row sm:items-center sm:justify-between sm:px-10">
           <div className="flex items-center gap-6">
             <Link
-              href="/life"
+              href="/life/universe"
+              title="Universal Feed"
               className="bg-gradient-to-r from-white via-violet-200 to-cyan-200 bg-clip-text text-lg font-bold tracking-tight text-transparent"
             >
               Galaxy500Universe

@@ -26,10 +26,14 @@ const FEED_PATHS: Record<string, string> = {
 };
 const ALLOWED_FEEDS = Object.keys(FEED_PATHS);
 
-// A mutation can affect a post in any feed, so refresh every feed page plus
-// all company "Startup Feed" pages (a dynamic route).
+// The Universal Feed aggregates public and Startup Feed posts from every feed.
+const UNIVERSAL_PATH = "/life/universe";
+
+// A mutation can affect a post in any feed, so refresh every feed page, the
+// Universal Feed, and all company "Startup Feed" pages (a dynamic route).
 function revalidateFeeds() {
   for (const path of Object.values(FEED_PATHS)) revalidatePath(path);
+  revalidatePath(UNIVERSAL_PATH);
   revalidatePath("/life/startups/[id]", "page");
 }
 
@@ -52,6 +56,9 @@ export async function createPost(
     : ALLOWED_FEEDS.includes(feedRaw)
       ? feedRaw
       : "life";
+  // Startup Feed posts are always visible to members; personal posts are
+  // private unless the author shares them to the Universal Feed.
+  const isPublic = !startupId && formData.get("is_public") === "on";
   const image = formData.get("image");
   const hasImage = image instanceof File && image.size > 0;
 
@@ -93,6 +100,7 @@ export async function createPost(
     image_url: imageUrl,
     feed,
     startup_id: startupId,
+    is_public: isPublic,
   });
 
   if (error) return { error: error.message };
@@ -102,6 +110,7 @@ export async function createPost(
   } else {
     revalidatePath(FEED_PATHS[feed]);
   }
+  if (startupId || isPublic) revalidatePath(UNIVERSAL_PATH);
   return { success: true };
 }
 
