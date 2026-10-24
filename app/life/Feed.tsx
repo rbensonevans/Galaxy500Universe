@@ -32,8 +32,8 @@ function group<T>(map: Map<string, T[]>, key: string, value: T) {
 }
 
 // A complete social feed (composer + posts with comments and emoji reactions),
-// scoped to a single `feed` stream. Shared by the Life and Friends & Family
-// pages. The page provides its own heading.
+// scoped to a single `feed` stream. Shared by the Life, Friends, Family, and
+// other feed pages. The page provides its own heading.
 export default async function Feed({
   feed,
   startupId,

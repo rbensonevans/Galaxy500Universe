@@ -87,7 +87,8 @@ The top nav also links to the member sections:
 - **Profile** (`/life/profile`) — edit how you appear across the universe
   (display name, bio, location, website). Backed by the `profiles` table; the
   save action upserts in `app/life/profile/actions.ts`.
-- **Friends & Family** (`/life/friends-family`)
+- **Friends** (`/life/friends`)
+- **Family** (`/life/family`)
 - **Travel** (`/life/travel`)
 - **Communities** (`/life/communities`)
 

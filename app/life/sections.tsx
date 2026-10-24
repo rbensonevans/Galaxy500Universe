@@ -35,6 +35,17 @@ function HeartIcon(props: IconProps) {
   );
 }
 
+function FriendsIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <circle cx="12" cy="12" r="10" />
+      <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+      <line x1="9" y1="9" x2="9.01" y2="9" />
+      <line x1="15" y1="9" x2="15.01" y2="9" />
+    </svg>
+  );
+}
+
 function GlobeIcon(props: IconProps) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" {...props}>
@@ -108,10 +119,18 @@ function CommunitiesIcon(props: IconProps) {
 
 export const SECTIONS: Section[] = [
   {
-    slug: "friends-family",
-    name: "Friends & Family",
-    href: "/life/friends-family",
-    blurb: "Your closest orbits — the people who matter most.",
+    slug: "friends",
+    name: "Friends",
+    href: "/life/friends",
+    blurb: "Your closest orbits — the friends who light up your universe.",
+    icon: FriendsIcon,
+    accent: "from-sky-500/30 to-violet-500/10",
+  },
+  {
+    slug: "family",
+    name: "Family",
+    href: "/life/family",
+    blurb: "Your home constellation — the people you call family.",
     icon: HeartIcon,
     accent: "from-rose-500/30 to-orange-500/10",
   },

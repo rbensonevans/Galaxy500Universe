@@ -15,7 +15,8 @@ const MAX_IMAGE_BYTES = 5 * 1024 * 1024; // 5 MB
 // that render them.
 const FEED_PATHS: Record<string, string> = {
   life: "/life",
-  family: "/life/friends-family",
+  friends: "/life/friends",
+  family: "/life/family",
   movies: "/life/movies",
   music: "/life/music",
   sports: "/life/sports",
