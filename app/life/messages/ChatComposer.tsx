@@ -1,9 +1,47 @@
 "use client";
 
 import { useActionState, useEffect, useRef, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
 import { sendMessage, sendGlxy, type ChatState } from "./actions";
 
 const initialState: ChatState = {};
+
+// Message images go straight from the browser to the private bucket (server
+// actions cap request bodies at 1 MB); only the storage path is sent along.
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024; // matches the bucket limit
+const IMAGE_EXTENSIONS: Record<string, string> = {
+  "image/png": "png",
+  "image/jpeg": "jpg",
+  "image/gif": "gif",
+  "image/webp": "webp",
+};
+
+async function sendWithImage(
+  prevState: ChatState,
+  formData: FormData,
+): Promise<ChatState> {
+  const image = formData.get("image");
+  formData.delete("image");
+  if (image instanceof File && image.size > 0) {
+    const ext = IMAGE_EXTENSIONS[image.type];
+    if (!ext) return { error: "Images must be PNG, JPEG, GIF, or WebP." };
+    if (image.size > MAX_IMAGE_BYTES) {
+      return { error: "Images must be 5 MB or smaller." };
+    }
+    const supabase = createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return { error: "You must be signed in." };
+    const path = `${user.id}/${crypto.randomUUID()}.${ext}`;
+    const { error } = await supabase.storage
+      .from("message-images")
+      .upload(path, image, { contentType: image.type, upsert: false });
+    if (error) return { error: `Image upload failed: ${error.message}` };
+    formData.set("image_path", path);
+  }
+  return sendMessage(prevState, formData);
+}
 
 const inputClass =
   "rounded-lg border border-white/10 bg-black/40 px-3 py-2.5 text-white placeholder:text-white/30 outline-none transition focus:border-violet-400/60 focus:ring-2 focus:ring-violet-500/30";
@@ -25,18 +63,23 @@ export default function ChatComposer({
 }: {
   to: string;
   recipientName: string;
-  /** False while a message request is pending (GLXY unlocks on accept). */
+  /** False while a message request is pending (GLXY and images unlock on accept). */
   glxyEnabled: boolean;
   balance: number | null;
 }) {
-  const [msgState, msgAction, msgPending] = useActionState(sendMessage, initialState);
+  const [msgState, msgAction, msgPending] = useActionState(sendWithImage, initialState);
   const [glxyState, glxyAction, glxyPending] = useActionState(sendGlxy, initialState);
   const [showGlxy, setShowGlxy] = useState(false);
   const msgForm = useRef<HTMLFormElement>(null);
   const glxyForm = useRef<HTMLFormElement>(null);
+  const fileNameRef = useRef<HTMLParagraphElement>(null);
 
+  // Reset the form and attachment label after a send (DOM only, no state).
   useEffect(() => {
-    if (msgState.success) msgForm.current?.reset();
+    if (msgState.success) {
+      msgForm.current?.reset();
+      if (fileNameRef.current) fileNameRef.current.textContent = "";
+    }
   }, [msgState]);
   useEffect(() => {
     if (glxyState.success) glxyForm.current?.reset();
@@ -109,6 +152,36 @@ export default function ChatComposer({
         >
           GLXY
         </button>
+        <label
+          title={
+            glxyEnabled
+              ? "Attach an image"
+              : "Images unlock once they accept your message request"
+          }
+          className={`inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-sm font-semibold text-white/70 transition ${
+            glxyEnabled ? "cursor-pointer hover:bg-white/10" : "cursor-not-allowed opacity-40"
+          }`}
+        >
+          <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <rect x="3" y="3" width="18" height="18" rx="2" />
+            <circle cx="9" cy="9" r="2" />
+            <path d="m21 15-3.6-3.6a2 2 0 0 0-2.8 0L6 21" />
+          </svg>
+          Photo
+          <input
+            type="file"
+            name="image"
+            accept="image/png,image/jpeg,image/gif,image/webp"
+            disabled={!glxyEnabled}
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (fileNameRef.current) {
+                fileNameRef.current.textContent = file ? `Attached: ${file.name}` : "";
+              }
+            }}
+          />
+        </label>
         <textarea
           name="body"
           rows={1}
@@ -131,6 +204,7 @@ export default function ChatComposer({
           {msgPending ? "Sending…" : "Send"}
         </button>
       </form>
+      <p ref={fileNameRef} className="mt-2 truncate text-xs text-white/40 empty:hidden" />
       {msgState.error && (
         <p className="mt-2 text-sm text-rose-300">{msgState.error}</p>
       )}

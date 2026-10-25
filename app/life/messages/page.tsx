@@ -19,6 +19,7 @@ type LastMessage = {
   sender_id: string;
   body: string | null;
   glxy_amount: string | null;
+  image_path: string | null;
   created_at: string;
 };
 
@@ -68,7 +69,7 @@ export default async function MessagesPage({
     ids.length
       ? supabase
           .from("messages")
-          .select("conversation_id, sender_id, body, glxy_amount, created_at")
+          .select("conversation_id, sender_id, body, glxy_amount, image_path, created_at")
           .in("conversation_id", ids)
           .order("created_at", { ascending: false })
           .limit(500)
@@ -158,7 +159,9 @@ export default async function MessagesPage({
               ? ""
               : last.glxy_amount != null
                 ? `${last.sender_id === me ? "You sent" : "Sent you"} ${Number(last.glxy_amount).toLocaleString()} GLXY`
-                : `${last.sender_id === me ? "You: " : ""}${last.body ?? ""}`;
+                : `${last.sender_id === me ? "You: " : ""}${
+                    last.body ?? (last.image_path ? "📷 Photo" : "")
+                  }`;
             return (
               <li key={c.id}>
                 <Link

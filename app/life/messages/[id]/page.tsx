@@ -12,6 +12,7 @@ type Message = {
   sender_id: string;
   body: string | null;
   glxy_amount: string | null;
+  image_path: string | null;
   created_at: string;
 };
 
@@ -83,12 +84,23 @@ export default async function ChatPage({
   const { data: rows } = conv
     ? await supabase
         .from("messages")
-        .select("id, sender_id, body, glxy_amount, created_at")
+        .select("id, sender_id, body, glxy_amount, image_path, created_at")
         .eq("conversation_id", conv.id)
         .order("created_at", { ascending: false })
         .limit(200)
     : { data: [] };
   const messages = ((rows ?? []) as Message[]).reverse();
+
+  // Images live in a private bucket; the storage read policy lets only the
+  // two members create these short-lived links.
+  const imagePaths = messages.flatMap((m) => (m.image_path ? [m.image_path] : []));
+  const { data: signed } = imagePaths.length
+    ? await supabase.storage.from("message-images").createSignedUrls(imagePaths, 60 * 60)
+    : { data: [] };
+  const imageUrl = new Map<string, string>();
+  for (const s of signed ?? []) {
+    if (s.path && s.signedUrl) imageUrl.set(s.path, s.signedUrl);
+  }
 
   // Opening the chat reads it.
   if (conv) {
@@ -173,7 +185,7 @@ export default async function ChatPage({
       {outgoingRequest && (
         <p className="mt-5 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/60">
           Message request sent. You can send up to 5 messages until {name}{" "}
-          accepts; Send GLXY unlocks once they do.
+          accepts; images and Send GLXY unlock once they do.
         </p>
       )}
 
@@ -213,15 +225,42 @@ export default async function ChatPage({
                     )}
                   </div>
                 ) : (
-                  <p
-                    className={`whitespace-pre-wrap rounded-2xl px-3.5 py-2 text-sm ${
-                      mine
-                        ? "bg-gradient-to-br from-violet-500/70 to-fuchsia-500/60 text-white"
-                        : "bg-white/10 text-white/90"
-                    }`}
-                  >
-                    {m.body}
-                  </p>
+                  <>
+                    {m.image_path &&
+                      (imageUrl.get(m.image_path) ? (
+                        <a
+                          href={imageUrl.get(m.image_path)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block overflow-hidden rounded-2xl border border-white/10"
+                        >
+                          {/* Signed URL of arbitrary dimensions — plain img. */}
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={imageUrl.get(m.image_path)}
+                            alt=""
+                            className="max-h-80 w-full object-cover"
+                          />
+                        </a>
+                      ) : (
+                        <p className="rounded-2xl bg-white/5 px-3.5 py-2 text-xs text-white/40">
+                          Image unavailable
+                        </p>
+                      ))}
+                    {m.body && (
+                      <p
+                        className={`whitespace-pre-wrap rounded-2xl px-3.5 py-2 text-sm ${
+                          m.image_path ? "mt-1" : ""
+                        } ${
+                          mine
+                            ? "bg-gradient-to-br from-violet-500/70 to-fuchsia-500/60 text-white"
+                            : "bg-white/10 text-white/90"
+                        }`}
+                      >
+                        {m.body}
+                      </p>
+                    )}
+                  </>
                 )}
                 <div className="mt-0.5 flex items-center gap-2 text-[10px] text-white/30">
                   {fmtWhen(m.created_at)}

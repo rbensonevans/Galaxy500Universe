@@ -7,6 +7,10 @@ import { createClient } from "@/lib/supabase/server";
 // Direct-message actions. Permissions (message requests, blocks, the GLXY
 // balance move) are enforced in SECURITY DEFINER SQL; see 0021_messages.sql.
 
+// Private bucket for message images; files live at '<sender id>/<uuid>.<ext>'
+// and are uploaded from the browser (see ChatComposer).
+const IMAGE_BUCKET = "message-images";
+
 export type ChatState = {
   error?: string;
   success?: boolean;
@@ -22,14 +26,20 @@ export async function sendMessage(
 ): Promise<ChatState> {
   const to = String(formData.get("to") ?? "");
   const body = String(formData.get("body") ?? "").trim();
-  if (!body) return { error: "Write a message first." };
+  const imagePath = String(formData.get("image_path") ?? "") || null;
+  if (!body && !imagePath) return { error: "Write a message first." };
 
   const supabase = await createClient();
   const { error } = await supabase.rpc("send_message", {
     p_to: to,
     p_body: body,
+    p_image_path: imagePath,
   });
-  if (error) return { error: error.message };
+  if (error) {
+    // Don't leave an orphaned upload behind when the message is refused.
+    if (imagePath) await supabase.storage.from(IMAGE_BUCKET).remove([imagePath]);
+    return { error: error.message };
+  }
 
   refresh();
   return { success: true };
@@ -76,7 +86,10 @@ export async function deleteMessage(formData: FormData) {
   const id = String(formData.get("id") ?? "");
   if (!id) return;
   const supabase = await createClient();
-  await supabase.rpc("delete_message", { p_id: id });
+  const { data: imagePath } = await supabase.rpc("delete_message", { p_id: id });
+  if (typeof imagePath === "string" && imagePath) {
+    await supabase.storage.from(IMAGE_BUCKET).remove([imagePath]);
+  }
   refresh();
 }
 
