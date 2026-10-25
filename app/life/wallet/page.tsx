@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { isMissingTableError } from "@/lib/supabase/errors";
-import { claimBirthGrant } from "./actions";
+import { receiveGrants } from "./actions";
 import OnchainWallet from "./OnchainWallet";
 
 type Txn = {
@@ -12,6 +12,10 @@ type Txn = {
 };
 
 const KIND_LABELS: Record<string, string> = {
+  monthly_grant: "Monthly grant",
+  grant_reset: "Grant reset",
+  birth_grant: "Birth grant (lump sum, retired)",
+  birth_grant_topup: "Birth grant top-up (retired)",
   welcome_bonus: "Welcome bonus",
   transfer_in: "Received",
   transfer_out: "Sent",
@@ -43,7 +47,7 @@ export default async function WalletPage() {
 
   const { data: wallet, error } = await supabase
     .from("wallets")
-    .select("balance")
+    .select("balance, issued_grants, grant_months")
     .eq("user_id", me)
     .maybeSingle();
 
@@ -67,6 +71,20 @@ export default async function WalletPage() {
   const txns = (txnRows ?? []) as Txn[];
 
   const balance = wallet ? Number(wallet.balance) : null;
+
+  // Monthly grants: 2,000 GLXY at birth, then on the 1st (UTC) of each month;
+  // 600 months (50 years) are guaranteed.
+  const issuedGrants = wallet ? Number(wallet.issued_grants) : 0;
+  const grantMonths = wallet ? Number(wallet.grant_months) : 0;
+  const now = new Date();
+  const nextGrant = new Date(
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1),
+  ).toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC",
+  });
 
   return (
     <div className="max-w-3xl">
@@ -129,23 +147,35 @@ export default async function WalletPage() {
             {balance == null ? (
               <div className="mt-4">
                 <p className="text-sm text-white/50">
-                  Receive your birth grant — your lifetime allowance in the
-                  universe.
+                  Receive your birth grant — 2,000 GLXY now, then 2,000 GLXY
+                  on the 1st of every month for 50 years.
                 </p>
-                <form action={claimBirthGrant} className="mt-4">
+                <form action={receiveGrants} className="mt-4">
                   <button
                     type="submit"
                     className="rounded-lg bg-gradient-to-r from-violet-500 via-fuchsia-500 to-cyan-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-fuchsia-500/20 transition hover:brightness-110"
                   >
-                    Receive 1,000,000 GLXY
+                    Receive 2,000 GLXY
                   </button>
                 </form>
               </div>
             ) : (
-              <p className="mt-3 text-4xl font-bold tabular-nums text-white">
-                {fmtGlxy(balance)}{" "}
-                <span className="text-lg font-semibold text-white/50">GLXY</span>
-              </p>
+              <>
+                <p className="mt-3 text-4xl font-bold tabular-nums text-white">
+                  {fmtGlxy(balance)}{" "}
+                  <span className="text-lg font-semibold text-white/50">GLXY</span>
+                </p>
+                <p className="mt-3 text-xs text-white/50">
+                  Issued grants:{" "}
+                  <span className="tabular-nums text-white/80">
+                    {fmtGlxy(issuedGrants)} GLXY
+                  </span>{" "}
+                  · Month {grantMonths.toLocaleString()} of 600
+                </p>
+                <p className="mt-1 text-xs text-white/40">
+                  Next grant: 2,000 GLXY on {nextGrant}
+                </p>
+              </>
             )}
           </div>
 

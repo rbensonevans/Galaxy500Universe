@@ -22,6 +22,10 @@ export default async function LifeLayout({
     redirect("/");
   }
 
+  // Catch up any monthly grants owed (e.g. a new month began while the member
+  // stayed signed in). Cheap no-op when nothing is due; never blocks render.
+  await supabase.rpc("ensure_grants");
+
   return (
     <>
       <Cosmos />

@@ -27,19 +27,30 @@ The value of G5U is underpinned by:
 This reserve is effectively unbounded versus what the population needs, so GLXY
 can be issued generously without diluting real value.
 
-## 3. The birth grant — a 1,000,000 GLXY life allowance
+## 3. Monthly grants — 1,200,000 GLXY over the first 50 years
 
-On Earth a human is born with **$0**. In G5U a human is **born with 1,000,000
-GLXY** — a lifetime allowance that gives a *sense of freedom* within the
-ecosystem, to spend as they wish.
+On Earth a human is born with **$0**. In G5U a citizen receives **Galaxy
+Credits every month from birth**: **2,000 GLXY on the 1st of every month for
+the first 50 years** (600 months) — a guaranteed lifetime allowance of
+**1,200,000 GLXY** that gives a *sense of freedom* within the ecosystem.
 
-- **In our app, creating an account == being born.** On account creation, G5U
-  funds the new member's wallet with **1,000,000 GLXY**.
-- Over a lifetime of spending, that balance **tends toward 0**. There is no
-  survival pressure, but to grow or replenish GLXY a member must **create things
-  of value** — found startups, build, and do things that are human in every
-  aspect.
+- **In our app, creating an account == being born.** The first 2,000 GLXY is
+  granted at birth (month 1); each later grant arrives on the 1st of the month
+  (00:00 UTC), minted from the currency reserve.
+- **`issued_grants`** tracks the total GLXY granted to each citizen
+  (`grant_months` counts the months paid).
+- **After 50 years** the token policy will be determined then. Grants can
+  continue for as long as the citizen is alive (`grants_active`); how that is
+  determined is future work — possibly an AI running the site inferring it from
+  a lack of interaction with social media, email, banking, and other processes.
+- Grants are paid by a scheduled job on the 1st and caught up whenever a member
+  visits, so a missed month is never lost and never paid twice.
+- To grow beyond the allowance a member must **create things of value** — found
+  startups, build, and do things that are human in every aspect.
 - Bots are born the same way (see §6).
+- **Replaces** the earlier 1,000,000 GLXY lump-sum birth grant. Existing
+  citizens were reset: the lump sum was returned to the reserve (capped at
+  their wallet balance) and the monthly grants owed since birth were paid.
 
 ## 4. Money supply: computed, population-elastic
 
@@ -47,14 +58,14 @@ The money supply is **not a fixed quantity**. It is a **computation driven by
 the population** of humans and bots:
 
 ```
-circulating_supply ≈ (Σ birth grants)            // population × 1,000,000
+circulating_supply ≈ (Σ issued grants)          // Σ citizens × 2,000 × months since birth
                    + (Σ outstanding startup funding)
                    + (Σ minted interest)
                    − (Σ repayments to the system)
 ```
 
-Each new human or bot **mints** their 1,000,000 GLXY at birth, so supply scales
-with population. Minted bank interest is consistent with this abundance model
+Each human or bot **mints** 2,000 GLXY a month from birth, so supply scales
+with population and with time. Minted bank interest is consistent with this abundance model
 (it is not "printing" in the Earth sense). Repayments **return** GLXY to the
 system, contracting supply.
 
@@ -86,10 +97,10 @@ productive ventures and reputation*, not from hoarding GLXY.
 **global values** for the economy:
 
 - **Currency aggregates** — total minted, outstanding funding, repayments, and
-  net issuance (the source/sink for all birth grants, funding, and repayments).
+  net issuance (the source/sink for all monthly grants, funding, and repayments).
 - **Pledged startup shares** — the equity pledged by every startup in G5U.
 
-All issuance (births, startup funding) flows *from* iglobecreator; all
+All issuance (monthly grants, startup funding) flows *from* iglobecreator; all
 repayments flow *back to* it. It is the single source of truth for the money
 supply and the universe's equity holdings.
 
@@ -97,7 +108,7 @@ supply and the universe's equity holdings.
 
 | Concept | Status today | Change needed |
 |---|---|---|
-| Birth grant | 1,000 GLXY via a "Claim" button | → **1,000,000**, auto-funded at account creation |
+| Monthly grants | 2,000 GLXY at birth + on the 1st monthly (pg_cron + catch-up) | post-50-year policy; alive detection |
 | Money supply | implicit | track via `iglobecreator`; expose a population/supply stat |
 | Reserve account | none | create **`iglobecreator`** system account + holdings |
 | Startup funding | none | initial + annual funding requests, repayment |
@@ -135,4 +146,5 @@ score = 1·posts + 3·comments + 1·reactions + 5·unique_engagers
   `iglobecreator` per unit of funding?
 - **Trading model**: AMM bonding curve vs. fixed-price vs. order book for the
   GLXY ↔ shares market (still to decide).
-- **Existing accounts**: top up early members to the 1,000,000 birth grant?
+- **Post-50-year grants**: what policy applies after month 600, and how is a
+  citizen determined to be no longer alive (e.g. AI inferring from inactivity)?

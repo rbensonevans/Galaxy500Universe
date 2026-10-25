@@ -32,10 +32,10 @@ export async function login(
     return { error: error.message };
   }
 
-  // "Born" on entering the universe: ensure the 1,000,000 GLXY birth grant
-  // (idempotent; skips system/reserve accounts). Ignore errors so login is
-  // never blocked.
-  await supabase.rpc("ensure_birth_grant");
+  // "Born" on entering the universe: create the wallet and pay any monthly
+  // grants owed (idempotent; skips system/reserve accounts). Ignore errors so
+  // login is never blocked.
+  await supabase.rpc("ensure_grants");
 
   revalidatePath("/", "layout");
   redirect("/life");
@@ -67,6 +67,9 @@ export async function signup(
       message: "Check your email to confirm your account, then sign in.",
     };
   }
+
+  // Birth: the first 2,000 GLXY monthly grant (errors never block signup).
+  await supabase.rpc("ensure_grants");
 
   revalidatePath("/", "layout");
   redirect("/life");
