@@ -1,5 +1,6 @@
 "use client";
 
+// Made during the XRP LEDGER HACKATHON
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";

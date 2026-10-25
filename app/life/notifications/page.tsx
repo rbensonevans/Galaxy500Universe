@@ -1,3 +1,5 @@
+// Made during the XRP LEDGER HACKATHON
+
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { isMissingTableError } from "@/lib/supabase/errors";

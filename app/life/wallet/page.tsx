@@ -12,6 +12,7 @@ type Txn = {
 };
 
 const KIND_LABELS: Record<string, string> = {
+  // Made during the XRP LEDGER HACKATHON
   monthly_grant: "Monthly grant",
   grant_reset: "Grant reset",
   birth_grant: "Birth grant (lump sum, retired)",
@@ -72,6 +73,7 @@ export default async function WalletPage() {
 
   const balance = wallet ? Number(wallet.balance) : null;
 
+  // Made during the XRP LEDGER HACKATHON
   // Monthly grants: 2,000 GLXY at birth, then on the 1st (UTC) of each month;
   // 600 months (50 years) are guaranteed.
   const issuedGrants = wallet ? Number(wallet.issued_grants) : 0;
@@ -165,6 +167,7 @@ export default async function WalletPage() {
                   {fmtGlxy(balance)}{" "}
                   <span className="text-lg font-semibold text-white/50">GLXY</span>
                 </p>
+                {/* Made during the XRP LEDGER HACKATHON */}
                 <p className="mt-3 text-xs text-white/50">
                   Issued grants:{" "}
                   <span className="tabular-nums text-white/80">

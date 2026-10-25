@@ -1,3 +1,5 @@
+// Made during the XRP LEDGER HACKATHON
+
 import Feed from "../Feed";
 
 export default function UniversalFeedPage() {

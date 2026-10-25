@@ -26,6 +26,7 @@ export default async function ProfilePage() {
 
   const tableMissing = isMissingTableError(error);
 
+  // Made during the XRP LEDGER HACKATHON
   const me = user!.id;
   const count = { count: "exact" as const, head: true };
   const [
@@ -105,6 +106,7 @@ export default async function ProfilePage() {
         </div>
       </div>
 
+      {/* Made during the XRP LEDGER HACKATHON */}
       <Link
         href="/life/people"
         className="mt-6 grid max-w-2xl grid-cols-2 gap-3 sm:grid-cols-4"

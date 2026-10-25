@@ -1,3 +1,4 @@
+-- Made during the XRP LEDGER HACKATHON
 -- Messages: direct messages, message requests, Send GLXY in chat, and
 -- blocking. Run in Supabase SQL Editor. Idempotent.
 -- NOTE: prefer running supabase/SETUP.sql (single source of truth).

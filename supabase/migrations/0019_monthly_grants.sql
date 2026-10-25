@@ -1,3 +1,4 @@
+-- Made during the XRP LEDGER HACKATHON
 -- Monthly Galaxy Credit grants replace the 1,000,000 GLXY lump-sum birth
 -- grant, and existing citizens are reset onto the new scheme. See
 -- FINANCIAL_MODEL.md §3. Run in Supabase SQL Editor. Idempotent.

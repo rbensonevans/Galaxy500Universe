@@ -1,3 +1,5 @@
+// Made during the XRP LEDGER HACKATHON
+
 import type { createClient } from "@/lib/supabase/server";
 
 type Supabase = Awaited<ReturnType<typeof createClient>>;

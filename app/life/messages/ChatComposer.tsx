@@ -1,5 +1,6 @@
 "use client";
 
+// Made during the XRP LEDGER HACKATHON
 import { useActionState, useEffect, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { randomUUID } from "@/lib/uuid";

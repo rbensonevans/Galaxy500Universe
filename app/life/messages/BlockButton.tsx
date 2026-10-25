@@ -1,3 +1,5 @@
+// Made during the XRP LEDGER HACKATHON
+
 import { blockUser, unblockUser } from "./actions";
 
 // Block / Unblock control (server-action form, no client JS).

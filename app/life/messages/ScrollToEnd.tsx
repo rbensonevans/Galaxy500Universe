@@ -1,5 +1,6 @@
 "use client";
 
+// Made during the XRP LEDGER HACKATHON
 import { useEffect, useRef } from "react";
 
 // Keeps the chat scrolled to the newest message whenever the count changes.

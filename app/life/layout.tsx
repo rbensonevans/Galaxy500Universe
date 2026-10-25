@@ -24,10 +24,12 @@ export default async function LifeLayout({
     redirect("/");
   }
 
+  // Made during the XRP LEDGER HACKATHON
   // Catch up any monthly grants owed (e.g. a new month began while the member
   // stayed signed in). Cheap no-op when nothing is due; never blocks render.
   await supabase.rpc("ensure_grants");
 
+  // Made during the XRP LEDGER HACKATHON
   const { count: unread } = await supabase
     .from("notifications")
     .select("id", { count: "exact", head: true })
@@ -39,6 +41,7 @@ export default async function LifeLayout({
       <div className="flex min-h-svh flex-col">
         <header className="flex flex-col gap-4 border-b border-white/10 px-6 py-5 backdrop-blur-sm sm:flex-row sm:items-center sm:justify-between sm:px-10">
           <div className="flex items-center gap-6">
+            {/* Made during the XRP LEDGER HACKATHON */}
             <Link
               href="/life/universe"
               title="Universal Feed"
@@ -52,6 +55,7 @@ export default async function LifeLayout({
             <span className="hidden text-sm text-white/40 lg:inline">
               {user.email}
             </span>
+            {/* Made during the XRP LEDGER HACKATHON */}
             <MessagesLink />
             <NotificationBell unread={unread ?? 0} />
             <ConnectWallet />

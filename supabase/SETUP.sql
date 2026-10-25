@@ -64,9 +64,11 @@ alter table public.posts add column if not exists feed text not null default 'li
 alter table public.posts add column if not exists startup_id uuid references public.startups (id) on delete cascade;
 create index if not exists posts_feed_created_idx on public.posts (feed, created_at desc);
 create index if not exists posts_startup_created_idx on public.posts (startup_id, created_at desc);
+-- Made during the XRP LEDGER HACKATHON
 -- Personal-feed posts the author shares publicly appear on the Universal Feed.
 alter table public.posts add column if not exists is_public boolean not null default false;
 alter table public.posts enable row level security;
+-- Made during the XRP LEDGER HACKATHON
 -- Visibility (posts_select_visible) is defined in the PEOPLE section below,
 -- since Friends / Family visibility depends on accepted connections. Startup
 -- Feed posts are visible to any signed-in member so the community can engage
@@ -122,6 +124,7 @@ drop policy if exists "reactions_delete_own" on public.reactions;
 create policy "reactions_delete_own" on public.reactions for delete using (auth.uid() = user_id);
 
 -- ============================ STORAGE ======================================
+-- Made during the XRP LEDGER HACKATHON
 -- Public bucket for post images (uploaded from the browser): 5 MB, common
 -- image types.
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
@@ -380,6 +383,7 @@ begin
     values (reserve, 100000000000000, 'reserve_seed', 'Galaxy reserve funding pool');
 end $seed$;
 
+-- Made during the XRP LEDGER HACKATHON
 -- Monthly grants: from birth (account creation) each citizen receives 2,000
 -- GLXY — the first at birth, then on the 1st of every month — minted from the
 -- currency reserve. The guaranteed term is 600 months (50 years) = 1,200,000
@@ -824,6 +828,7 @@ grant execute on function public.buy_shares(uuid, numeric) to authenticated;
 grant execute on function public.sell_shares(uuid, numeric) to authenticated;
 
 -- ============================ PEOPLE: FOLLOWS, CONNECTIONS, NOTIFICATIONS ==
+-- Made during the XRP LEDGER HACKATHON
 -- Discover and connect with other citizens. Follows are one-way and need no
 -- approval; connections (friend / family) are mutual and need the other
 -- member to accept. Accepted connections can see each other's Friends /
@@ -1020,6 +1025,7 @@ create policy "posts_select_visible" on public.posts for select using (
 );
 
 -- ============================ MESSAGES ======================================
+-- Made during the XRP LEDGER HACKATHON
 -- Direct messages between citizens, with Send GLXY in chat and blocking.
 -- Friends, family, and mutual follows message each other directly; anyone else
 -- starts a message request the recipient can accept or decline (replying also
@@ -1289,6 +1295,7 @@ begin
 end $rt$;
 
 -- ============================ MESSAGE IMAGES ================================
+-- Made during the XRP LEDGER HACKATHON
 -- Images in direct messages: a message can carry an image stored in the
 -- private 'message-images' bucket at '<sender id>/<uuid>.<ext>'. Images can be
 -- sent once a conversation is active (not in a pending message request).

@@ -43,6 +43,7 @@ function Avatar({ name }: { name: string }) {
   );
 }
 
+// Made during the XRP LEDGER HACKATHON
 const VISIBILITY_LABELS = {
   public: "Universal",
   friends: "Friends",
@@ -96,6 +97,7 @@ export default function PostCard({
               href={post.authorHref}
               className="text-sm font-semibold text-white"
             />
+            {/* Made during the XRP LEDGER HACKATHON */}
             {post.canFollow && (
               <form action={followUser}>
                 <input type="hidden" name="target" value={post.user_id} />

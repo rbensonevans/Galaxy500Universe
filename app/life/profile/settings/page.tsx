@@ -13,7 +13,7 @@ export default async function ProfileSettingsPage() {
 
   const { data: profile, error } = await supabase
     .from("profiles")
-    .select("username, display_name, bio, location, website, discoverable")
+    .select("username, display_name, bio, location, website, discoverable") // Made during the XRP LEDGER HACKATHON
     .eq("id", user!.id)
     .maybeSingle();
 

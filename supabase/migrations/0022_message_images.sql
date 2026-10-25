@@ -1,3 +1,4 @@
+-- Made during the XRP LEDGER HACKATHON
 -- Images in direct messages (private 'message-images' bucket, members-only
 -- signed URLs). Run in Supabase SQL Editor. Idempotent.
 -- NOTE: prefer running supabase/SETUP.sql (single source of truth).

@@ -1,3 +1,5 @@
+// Made during the XRP LEDGER HACKATHON
+
 // Random v4 UUID that also works outside secure contexts. Browsers expose
 // crypto.randomUUID() only on https:// or localhost, so a phone opening the
 // dev server at a LAN address (http://192.168…) doesn't have it;

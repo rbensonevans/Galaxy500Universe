@@ -41,7 +41,7 @@ export async function updateProfile(
       bio: clean(formData.get("bio")),
       location: clean(formData.get("location")),
       website: clean(formData.get("website")),
-      discoverable: formData.get("discoverable") === "on",
+      discoverable: formData.get("discoverable") === "on", // Made during the XRP LEDGER HACKATHON
       updated_at: new Date().toISOString(),
     },
     { onConflict: "id" },

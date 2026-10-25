@@ -14,6 +14,7 @@ export type PostState = {
 // that render them.
 const FEED_PATHS: Record<string, string> = {
   life: "/life",
+  // Made during the XRP LEDGER HACKATHON
   friends: "/life/friends",
   family: "/life/family",
   movies: "/life/movies",
@@ -25,6 +26,7 @@ const FEED_PATHS: Record<string, string> = {
 };
 const ALLOWED_FEEDS = Object.keys(FEED_PATHS);
 
+// Made during the XRP LEDGER HACKATHON
 // The Universal Feed aggregates public and Startup Feed posts from every feed.
 const UNIVERSAL_PATH = "/life/universe";
 
@@ -55,9 +57,11 @@ export async function createPost(
     : ALLOWED_FEEDS.includes(feedRaw)
       ? feedRaw
       : "life";
+  // Made during the XRP LEDGER HACKATHON
   // Startup Feed posts are always visible to members; personal posts are
   // private unless the author shares them to the Universal Feed.
   const isPublic = !startupId && formData.get("is_public") === "on";
+  // Made during the XRP LEDGER HACKATHON
   // The image (if any) was uploaded from the browser straight to the
   // post-images bucket (server actions cap request bodies at 1 MB); only its
   // path arrives here, and it must be in the poster's own folder.

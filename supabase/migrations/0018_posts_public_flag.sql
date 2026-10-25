@@ -1,3 +1,4 @@
+-- Made during the XRP LEDGER HACKATHON
 -- Per-post visibility: a personal-feed post can be shared publicly, which puts
 -- it on the Universal Feed for every signed-in member. Posts default to
 -- private (author-only), so existing posts keep their current visibility.

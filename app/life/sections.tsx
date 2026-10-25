@@ -35,6 +35,7 @@ function HeartIcon(props: IconProps) {
   );
 }
 
+// Made during the XRP LEDGER HACKATHON
 function FriendsIcon(props: IconProps) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" {...props}>
@@ -46,6 +47,7 @@ function FriendsIcon(props: IconProps) {
   );
 }
 
+// Made during the XRP LEDGER HACKATHON
 function PeopleIcon(props: IconProps) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" {...props}>
@@ -129,6 +131,7 @@ function CommunitiesIcon(props: IconProps) {
 }
 
 export const SECTIONS: Section[] = [
+  // Made during the XRP LEDGER HACKATHON
   {
     slug: "friends",
     name: "Friends",
@@ -145,6 +148,7 @@ export const SECTIONS: Section[] = [
     icon: HeartIcon,
     accent: "from-rose-500/30 to-orange-500/10",
   },
+  // Made during the XRP LEDGER HACKATHON
   {
     slug: "people",
     name: "People",

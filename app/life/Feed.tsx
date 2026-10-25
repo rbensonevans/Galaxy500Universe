@@ -6,6 +6,7 @@ import PostCard, { type FeedPost, type FeedComment } from "./PostCard";
 import { SECTIONS, MORE_SECTIONS } from "./sections";
 import { profileHref } from "./people/relations";
 
+// Made during the XRP LEDGER HACKATHON
 // Display names for the feed streams, used to label where a post came from on
 // the Universal Feed.
 const FEED_NAMES = new Map<string, string>([
@@ -79,6 +80,7 @@ export default async function Feed({
   const base = supabase
     .from("posts")
     .select("id, user_id, content, image_url, created_at, feed, startup_id, is_public");
+  // Made during the XRP LEDGER HACKATHON
   // Visibility is enforced by RLS (own, public, Startup Feed, and Friends /
   // Family posts from accepted connections); these filters pick the stream.
   const { data: postRows, error } = await (universal
@@ -156,6 +158,7 @@ export default async function Feed({
     const displayName = p.display_name?.trim();
     if (displayName) nameById.set(p.id, displayName);
   }
+  // Made during the XRP LEDGER HACKATHON
   // Authors the viewer follows: no Follow button, and a Universal Feed boost.
   const otherAuthors = authorIds.filter((id) => id !== me);
   const { data: followRows } = otherAuthors.length
@@ -171,6 +174,7 @@ export default async function Feed({
   const authorName = (id: string) =>
     nameById.get(id) ?? (id === me ? myFallback : "Galaxy member");
 
+  // Made during the XRP LEDGER HACKATHON
   // Posts gathered from several feeds are labeled with where they came from,
   // and Startup Feed posts with the company.
   const aggregate = universal || Boolean(authorId);
@@ -232,6 +236,7 @@ export default async function Feed({
     comments: commentsByPost.get(p.id) ?? [],
   }));
 
+  // Made during the XRP LEDGER HACKATHON
   // Universal Feed ranking, a first interest signal: posts by members you
   // follow get a 24-hour boost over strictly newest-first ordering.
   if (universal) {

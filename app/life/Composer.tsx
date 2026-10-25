@@ -7,6 +7,7 @@ import { createPost, type PostState } from "./actions";
 
 const initialState: PostState = {};
 
+// Made during the XRP LEDGER HACKATHON
 // Post images go straight from the browser to the post-images bucket (server
 // actions cap request bodies at 1 MB); only the storage path is sent along.
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024; // matches the bucket limit
@@ -122,6 +123,7 @@ export default function Composer({
           />
         </label>
 
+        {/* Made during the XRP LEDGER HACKATHON */}
         {!startupId && (
           <label className="ml-auto inline-flex cursor-pointer items-center gap-2 text-sm text-white/60">
             <input

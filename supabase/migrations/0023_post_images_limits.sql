@@ -1,3 +1,4 @@
+-- Made during the XRP LEDGER HACKATHON
 -- Enforce the 5 MB / common-image-type limit on the public post-images bucket
 -- at the storage layer (post images now upload straight from the browser).
 -- Run in Supabase SQL Editor. Idempotent.

@@ -1,3 +1,4 @@
+-- Made during the XRP LEDGER HACKATHON
 -- People: discover and connect with other citizens (follows, friend/family
 -- connections, notifications) and let accepted connections see each other's
 -- Friends / Family feed posts. Run in Supabase SQL Editor. Idempotent.

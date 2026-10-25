@@ -9,7 +9,7 @@ type Profile = {
   bio: string | null;
   location: string | null;
   website: string | null;
-  discoverable: boolean | null;
+  discoverable: boolean | null; // Made during the XRP LEDGER HACKATHON
 };
 
 const initialState: ProfileState = {};
@@ -109,6 +109,7 @@ export default function ProfileForm({
           />
         </label>
 
+        {/* Made during the XRP LEDGER HACKATHON */}
         <label className="flex items-start gap-3 text-sm">
           <input
             type="checkbox"

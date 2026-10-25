@@ -32,6 +32,7 @@ export async function login(
     return { error: error.message };
   }
 
+  // Made during the XRP LEDGER HACKATHON
   // "Born" on entering the universe: create the wallet and pay any monthly
   // grants owed (idempotent; skips system/reserve accounts). Ignore errors so
   // login is never blocked.
@@ -68,6 +69,7 @@ export async function signup(
     };
   }
 
+  // Made during the XRP LEDGER HACKATHON
   // Birth: the first 2,000 GLXY monthly grant (errors never block signup).
   await supabase.rpc("ensure_grants");
 

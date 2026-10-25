@@ -1,3 +1,5 @@
+// Made during the XRP LEDGER HACKATHON
+
 import Link from "next/link";
 import { personName, type Person } from "./relations";
 
