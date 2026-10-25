@@ -95,6 +95,12 @@ The top nav also links to the member sections:
   (`supabase/migrations/0020_people.sql`).
 - **Notifications** (`/life/notifications`, the header bell) — follows,
   requests, and acceptances, with Follow back / Accept / Decline.
+- **Messages** (`/life/messages`, the header chat icon) — one-on-one direct
+  messages with live delivery (Supabase Realtime) and **Send GLXY** in chat.
+  Friends, family, and mutual follows message directly; anyone else starts a
+  message request (accept, decline, or reply to accept). Members can block
+  each other. Messages are private to the two members (RLS) but not
+  end-to-end encrypted. See `supabase/migrations/0021_messages.sql`.
 - **Travel** (`/life/travel`)
 - **Communities** (`/life/communities`)
 

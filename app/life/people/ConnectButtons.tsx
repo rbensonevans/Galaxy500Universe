@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   followUser,
   unfollowUser,
@@ -132,6 +133,9 @@ export default function ConnectButtons({
   return (
     <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
       <FollowButton personId={personId} rel={rel} />
+      <Link href={`/life/messages/${personId}`} className={neutral}>
+        Message
+      </Link>
       <ConnectionButton personId={personId} kind="friend" state={rel.friend} />
       <ConnectionButton personId={personId} kind="family" state={rel.family} />
     </div>

@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import Feed from "../../Feed";
 import ConnectButtons from "../ConnectButtons";
+import BlockButton from "../../messages/BlockButton";
 import { loadRelationships, NO_RELATIONSHIP, personName, UUID_RE } from "../relations";
 
 export default async function PersonPage({
@@ -28,6 +29,7 @@ export default async function PersonPage({
     { count: friends },
     { count: family },
     rels,
+    { data: block },
   ] = await Promise.all([
     supabase
       .from("profiles")
@@ -49,7 +51,14 @@ export default async function PersonPage({
       .eq("status", "accepted")
       .or(`requester_id.eq.${id},addressee_id.eq.${id}`),
     loadRelationships(supabase, me, [id]),
+    supabase
+      .from("blocks")
+      .select("blocked_id")
+      .eq("blocker_id", me)
+      .eq("blocked_id", id)
+      .maybeSingle(),
   ]);
+  const blockedByMe = Boolean(block);
   const rel = rels.get(id) ?? NO_RELATIONSHIP;
   const name = personName(profile);
 
@@ -91,8 +100,16 @@ export default async function PersonPage({
         </div>
       </div>
 
-      <div className="mt-5">
-        <ConnectButtons personId={id} rel={rel} />
+      <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
+        {blockedByMe ? (
+          <p className="text-sm text-white/50">
+            You blocked {name}. They can&apos;t message, follow, or connect with
+            you.
+          </p>
+        ) : (
+          <ConnectButtons personId={id} rel={rel} />
+        )}
+        <BlockButton personId={id} blocked={blockedByMe} />
       </div>
 
       <dl className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">

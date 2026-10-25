@@ -6,6 +6,7 @@ import Cosmos from "@/app/components/Cosmos";
 import LifeNav from "@/app/components/LifeNav";
 import ConnectWallet from "@/app/components/ConnectWallet";
 import NotificationBell from "@/app/components/NotificationBell";
+import MessagesLink from "@/app/components/MessagesLink";
 
 // Shared shell for the entire authenticated Life area: cosmic background,
 // header with section navigation, and sign-out. The proxy middleware already
@@ -51,6 +52,7 @@ export default async function LifeLayout({
             <span className="hidden text-sm text-white/40 lg:inline">
               {user.email}
             </span>
+            <MessagesLink />
             <NotificationBell unread={unread ?? 0} />
             <ConnectWallet />
             <form action={signOut}>
