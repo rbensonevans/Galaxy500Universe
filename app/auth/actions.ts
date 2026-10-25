@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
@@ -94,4 +95,32 @@ export async function signOut() {
   await supabase.auth.signOut();
   revalidatePath("/", "layout");
   redirect("/");
+}
+
+// Made during the XRP LEDGER HACKATHON
+// Sign in (or sign up) with Google, LinkedIn, or Facebook via Supabase Auth.
+// Supabase sends the member to the provider and back to /auth/callback, which
+// finishes the session. Providers must be enabled in the Supabase dashboard.
+const OAUTH_PROVIDERS = ["google", "linkedin_oidc", "facebook"] as const;
+type OAuthProvider = (typeof OAUTH_PROVIDERS)[number];
+
+export async function signInWithProvider(formData: FormData) {
+  const provider = String(formData.get("provider") ?? "") as OAuthProvider;
+  if (!OAUTH_PROVIDERS.includes(provider)) redirect("/?auth_error=Unknown%20sign-in%20provider");
+
+  // Return to whichever host the member is on (localhost, LAN IP, or Vercel).
+  const h = await headers();
+  const host = h.get("x-forwarded-host") ?? h.get("host");
+  const proto = h.get("x-forwarded-proto") ?? "http";
+  const origin = `${proto}://${host}`;
+
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider,
+    options: { redirectTo: `${origin}/auth/callback` },
+  });
+  if (error || !data.url) {
+    redirect(`/?auth_error=${encodeURIComponent(error?.message ?? "Sign-in failed")}`);
+  }
+  redirect(data.url);
 }

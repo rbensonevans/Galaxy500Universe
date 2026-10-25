@@ -3,7 +3,12 @@ import { createClient } from "@/lib/supabase/server";
 import Cosmos from "@/app/components/Cosmos";
 import AuthForm from "@/app/components/AuthForm";
 
-export default async function LandingPage() {
+export default async function LandingPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ auth_error?: string }>;
+}) {
+  const { auth_error: authError } = await searchParams;
   // Already signed in? Skip the landing page and go straight to Life.
   const supabase = await createClient();
   const {
@@ -37,7 +42,7 @@ export default async function LandingPage() {
         </div>
 
         {/* Auth */}
-        <AuthForm />
+        <AuthForm authError={authError} />
       </main>
     </>
   );

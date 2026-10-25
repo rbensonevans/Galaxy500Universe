@@ -1,11 +1,22 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { authenticate, type AuthState } from "@/app/auth/actions";
+import {
+  authenticate,
+  signInWithProvider,
+  type AuthState,
+} from "@/app/auth/actions";
 
 const initialState: AuthState = {};
 
-export default function AuthForm() {
+// Made during the XRP LEDGER HACKATHON
+const PROVIDERS = [
+  { id: "google", label: "Google" },
+  { id: "linkedin_oidc", label: "LinkedIn" },
+  { id: "facebook", label: "Facebook" },
+];
+
+export default function AuthForm({ authError }: { authError?: string }) {
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [state, formAction, isPending] = useActionState(
     authenticate,
@@ -38,6 +49,31 @@ export default function AuthForm() {
         >
           Create account
         </button>
+      </div>
+
+      {/* Made during the XRP LEDGER HACKATHON */}
+      <form action={signInWithProvider} className="flex flex-col gap-2">
+        {PROVIDERS.map((p) => (
+          <button
+            key={p.id}
+            type="submit"
+            name="provider"
+            value={p.id}
+            className="rounded-lg border border-white/15 bg-white/10 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/15"
+          >
+            Continue with {p.label}
+          </button>
+        ))}
+      </form>
+      {authError && (
+        <p className="mt-3 rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-sm text-rose-200">
+          {authError}
+        </p>
+      )}
+      <div className="my-5 flex items-center gap-3 text-xs uppercase tracking-widest text-white/30">
+        <span className="h-px flex-1 bg-white/10" />
+        or use email
+        <span className="h-px flex-1 bg-white/10" />
       </div>
 
       <form action={formAction} className="flex flex-col gap-4">

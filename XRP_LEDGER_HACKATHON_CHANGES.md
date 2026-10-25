@@ -22,6 +22,7 @@ database). Migrations are run by hand in the Supabase SQL Editor.
 | 5 | Direct messages, message requests, Send GLXY, blocking | `d4e3e38` | `0021_messages.sql` |
 | 6 | Images in direct messages | `e0333d5` | `0022_message_images.sql` |
 | 7 | Post images over 1 MB, phone fixes, key incident | `1298d7e` | `0023_post_images_limits.sql` |
+| 8 | Sign in with Google / LinkedIn / Facebook | (this commit) | — (Supabase dashboard setup) |
 
 ---
 
@@ -144,6 +145,26 @@ Replaced the 1,000,000 GLXY lump-sum birth grant (see `FINANCIAL_MODEL.md` §3).
   The variable was set to the **publishable** key, the site was redeployed,
   and the leaked secret key was revoked in Supabase. `NEXT_PUBLIC_` variables
   must only ever hold the publishable key.
+
+## 8. Sign in with Google, LinkedIn, or Facebook
+
+A simple identity step for the hackathon (a fuller Sybil-resistance design —
+verified identity links, duplicate checks, grant locking, an AgentCore web
+check, admin review by `iglobecreator`, and XRPL Credentials — is deferred to
+post-hackathon).
+
+- The sign-in card offers **Continue with Google / LinkedIn / Facebook** above
+  the email form (`app/components/AuthForm.tsx`, `signInWithProvider` in
+  `app/auth/actions.ts`).
+- `app/auth/callback/route.ts` finishes the sign-in, pays any monthly grants
+  owed (a first sign-in is "birth"), and opens Life; errors return to the
+  landing page.
+- Supabase links a provider sign-in to an existing account with the same
+  email, so one email stays one citizen.
+- **Setup (Supabase dashboard):** Authentication → URL Configuration (Site
+  URL + `/auth/callback` redirect URLs for Vercel, localhost, and the LAN IP),
+  and each provider enabled under Sign In / Providers with its client ID and
+  secret. Google is enabled; LinkedIn and Facebook follow the same pattern.
 
 ---
 
