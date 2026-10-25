@@ -39,6 +39,12 @@ export default async function LandingPage({
           <p className="mt-3 text-sm text-white/40">
             Sign in to enter <span className="text-white/70">Life</span>.
           </p>
+          {/* Made during the XRP LEDGER HACKATHON */}
+          <p className="mt-6 text-xs text-white/30">
+            <a href="/privacy" className="hover:text-white/60">Privacy</a>
+            {" · "}
+            <a href="/terms" className="hover:text-white/60">Terms</a>
+          </p>
         </div>
 
         {/* Auth */}
