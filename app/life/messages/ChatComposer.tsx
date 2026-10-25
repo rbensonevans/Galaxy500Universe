@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { randomUUID } from "@/lib/uuid";
 import { sendMessage, sendGlxy, type ChatState } from "./actions";
 
 const initialState: ChatState = {};
@@ -16,7 +17,20 @@ const IMAGE_EXTENSIONS: Record<string, string> = {
   "image/webp": "webp",
 };
 
+// Any unexpected failure (network, a rejected server call) is shown in the
+// composer instead of crashing the page.
 async function sendWithImage(
+  prevState: ChatState,
+  formData: FormData,
+): Promise<ChatState> {
+  try {
+    return await uploadThenSend(prevState, formData);
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : "Couldn't send. Try again." };
+  }
+}
+
+async function uploadThenSend(
   prevState: ChatState,
   formData: FormData,
 ): Promise<ChatState> {
@@ -33,7 +47,7 @@ async function sendWithImage(
       data: { user },
     } = await supabase.auth.getUser();
     if (!user) return { error: "You must be signed in." };
-    const path = `${user.id}/${crypto.randomUUID()}.${ext}`;
+    const path = `${user.id}/${randomUUID()}.${ext}`;
     const { error } = await supabase.storage
       .from("message-images")
       .upload(path, image, { contentType: image.type, upsert: false });

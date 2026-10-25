@@ -122,9 +122,14 @@ drop policy if exists "reactions_delete_own" on public.reactions;
 create policy "reactions_delete_own" on public.reactions for delete using (auth.uid() = user_id);
 
 -- ============================ STORAGE ======================================
-insert into storage.buckets (id, name, public)
-  values ('post-images', 'post-images', true)
-  on conflict (id) do nothing;
+-- Public bucket for post images (uploaded from the browser): 5 MB, common
+-- image types.
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+  values ('post-images', 'post-images', true, 5242880,
+          array['image/png', 'image/jpeg', 'image/gif', 'image/webp'])
+  on conflict (id) do update set
+    file_size_limit = excluded.file_size_limit,
+    allowed_mime_types = excluded.allowed_mime_types;
 
 -- Storage policies need ownership of storage.objects (the SQL Editor role may
 -- lack it). Best-effort: a failure here will NOT roll back the tables above.

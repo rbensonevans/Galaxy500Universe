@@ -1,9 +1,61 @@
 "use client";
 
 import { useActionState, useEffect, useRef } from "react";
+import { createClient } from "@/lib/supabase/client";
+import { randomUUID } from "@/lib/uuid";
 import { createPost, type PostState } from "./actions";
 
 const initialState: PostState = {};
+
+// Post images go straight from the browser to the post-images bucket (server
+// actions cap request bodies at 1 MB); only the storage path is sent along.
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024; // matches the bucket limit
+const IMAGE_EXTENSIONS: Record<string, string> = {
+  "image/png": "png",
+  "image/jpeg": "jpg",
+  "image/gif": "gif",
+  "image/webp": "webp",
+};
+
+// Any unexpected failure (network, a rejected server call) is shown in the
+// composer instead of crashing the page.
+async function uploadAndPost(
+  prevState: PostState,
+  formData: FormData,
+): Promise<PostState> {
+  try {
+    return await uploadThenCreate(prevState, formData);
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : "Couldn't post. Try again." };
+  }
+}
+
+async function uploadThenCreate(
+  prevState: PostState,
+  formData: FormData,
+): Promise<PostState> {
+  const image = formData.get("image");
+  formData.delete("image");
+  if (image instanceof File && image.size > 0) {
+    const ext = IMAGE_EXTENSIONS[image.type];
+    if (!ext) return { error: "Images must be PNG, JPEG, GIF, or WebP." };
+    if (image.size > MAX_IMAGE_BYTES) {
+      return { error: "Images must be 5 MB or smaller." };
+    }
+    const supabase = createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return { error: "You must be signed in." };
+    const path = `${user.id}/${randomUUID()}.${ext}`;
+    const { error } = await supabase.storage
+      .from("post-images")
+      .upload(path, image, { contentType: image.type, upsert: false });
+    if (error) return { error: `Image upload failed: ${error.message}` };
+    formData.set("image_path", path);
+  }
+  return createPost(prevState, formData);
+}
 
 export default function Composer({
   feed = "life",
@@ -15,7 +67,7 @@ export default function Composer({
   placeholder?: string;
 }) {
   const [state, formAction, isPending] = useActionState(
-    createPost,
+    uploadAndPost,
     initialState,
   );
   const formRef = useRef<HTMLFormElement>(null);
@@ -23,12 +75,13 @@ export default function Composer({
 
   // Reset the form and clear the attachment label after a successful post.
   // Only DOM is touched here (no React state), so no cascading renders.
+  // Keyed on the state object (fresh per post) so back-to-back posts reset too.
   useEffect(() => {
     if (state.success) {
       formRef.current?.reset();
       if (fileNameRef.current) fileNameRef.current.textContent = "";
     }
-  }, [state.success]);
+  }, [state]);
 
   return (
     <form
@@ -56,7 +109,7 @@ export default function Composer({
           <input
             type="file"
             name="image"
-            accept="image/*"
+            accept="image/png,image/jpeg,image/gif,image/webp"
             className="hidden"
             onChange={(e) => {
               const file = e.target.files?.[0];

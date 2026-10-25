@@ -9,7 +9,6 @@ export type PostState = {
   success?: boolean;
 };
 
-const MAX_IMAGE_BYTES = 5 * 1024 * 1024; // 5 MB
 
 // Feeds backed by the shared posts/comments/reactions tables, and the pages
 // that render them.
@@ -59,40 +58,24 @@ export async function createPost(
   // Startup Feed posts are always visible to members; personal posts are
   // private unless the author shares them to the Universal Feed.
   const isPublic = !startupId && formData.get("is_public") === "on";
-  const image = formData.get("image");
-  const hasImage = image instanceof File && image.size > 0;
+  // The image (if any) was uploaded from the browser straight to the
+  // post-images bucket (server actions cap request bodies at 1 MB); only its
+  // path arrives here, and it must be in the poster's own folder.
+  const imagePath = String(formData.get("image_path") ?? "") || null;
+  if (
+    imagePath &&
+    !new RegExp(`^${user.id}/[0-9a-f-]{36}\\.(png|jpg|gif|webp)$`).test(imagePath)
+  ) {
+    return { error: "Invalid image." };
+  }
 
-  if (!content && !hasImage) {
+  if (!content && !imagePath) {
     return { error: "Write something or add an image." };
   }
 
-  let imageUrl: string | null = null;
-
-  if (hasImage) {
-    const file = image as File;
-    if (!file.type.startsWith("image/")) {
-      return { error: "Only image files can be attached." };
-    }
-    if (file.size > MAX_IMAGE_BYTES) {
-      return { error: "Images must be 5 MB or smaller." };
-    }
-
-    const ext = file.name.includes(".")
-      ? file.name.split(".").pop()
-      : "png";
-    const path = `${user.id}/${crypto.randomUUID()}.${ext}`;
-
-    const { error: uploadError } = await supabase.storage
-      .from("post-images")
-      .upload(path, file, { contentType: file.type, upsert: false });
-
-    if (uploadError) {
-      return { error: `Image upload failed: ${uploadError.message}` };
-    }
-
-    imageUrl = supabase.storage.from("post-images").getPublicUrl(path)
-      .data.publicUrl;
-  }
+  const imageUrl = imagePath
+    ? supabase.storage.from("post-images").getPublicUrl(imagePath).data.publicUrl
+    : null;
 
   const { error } = await supabase.from("posts").insert({
     user_id: user.id,
@@ -103,7 +86,11 @@ export async function createPost(
     is_public: isPublic,
   });
 
-  if (error) return { error: error.message };
+  if (error) {
+    // Don't leave an orphaned upload behind when the post is refused.
+    if (imagePath) await supabase.storage.from("post-images").remove([imagePath]);
+    return { error: error.message };
+  }
 
   if (startupId) {
     revalidatePath(`/life/startups/${startupId}`);
