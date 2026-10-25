@@ -9,6 +9,7 @@ type Profile = {
   bio: string | null;
   location: string | null;
   website: string | null;
+  discoverable: boolean | null;
 };
 
 const initialState: ProfileState = {};
@@ -106,6 +107,21 @@ export default function ProfileForm({
             placeholder="Tell the universe about yourself…"
             className={`${inputClass} resize-y`}
           />
+        </label>
+
+        <label className="flex items-start gap-3 text-sm">
+          <input
+            type="checkbox"
+            name="discoverable"
+            defaultChecked={profile?.discoverable ?? true}
+            className="mt-0.5 h-4 w-4 accent-fuchsia-500"
+          />
+          <span>
+            <span className="text-white/70">Show me in People search</span>
+            <span className="block text-xs text-white/30">
+              When off, members can still reach your profile from your posts.
+            </span>
+          </span>
         </label>
       </div>
 

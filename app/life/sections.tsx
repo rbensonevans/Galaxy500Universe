@@ -46,6 +46,17 @@ function FriendsIcon(props: IconProps) {
   );
 }
 
+function PeopleIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <circle cx="10" cy="8" r="4" />
+      <path d="M2 21v-1a6 6 0 0 1 9-5.2" />
+      <circle cx="17.5" cy="17.5" r="3" />
+      <path d="m21.5 21.5-1.9-1.9" />
+    </svg>
+  );
+}
+
 function GlobeIcon(props: IconProps) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" {...props}>
@@ -133,6 +144,14 @@ export const SECTIONS: Section[] = [
     blurb: "Your home constellation — the people you call family.",
     icon: HeartIcon,
     accent: "from-rose-500/30 to-orange-500/10",
+  },
+  {
+    slug: "people",
+    name: "People",
+    href: "/life/people",
+    blurb: "Find citizens, follow them, and connect as friends or family.",
+    icon: PeopleIcon,
+    accent: "from-violet-500/30 to-cyan-500/10",
   },
   {
     slug: "music",

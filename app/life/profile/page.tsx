@@ -26,6 +26,36 @@ export default async function ProfilePage() {
 
   const tableMissing = isMissingTableError(error);
 
+  const me = user!.id;
+  const count = { count: "exact" as const, head: true };
+  const [
+    { count: followers },
+    { count: following },
+    { count: friends },
+    { count: family },
+  ] = await Promise.all([
+    supabase.from("follows").select("follower_id", count).eq("followee_id", me),
+    supabase.from("follows").select("followee_id", count).eq("follower_id", me),
+    supabase
+      .from("connections")
+      .select("id", count)
+      .eq("kind", "friend")
+      .eq("status", "accepted")
+      .or(`requester_id.eq.${me},addressee_id.eq.${me}`),
+    supabase
+      .from("connections")
+      .select("id", count)
+      .eq("kind", "family")
+      .eq("status", "accepted")
+      .or(`requester_id.eq.${me},addressee_id.eq.${me}`),
+  ]);
+  const stats = [
+    { label: "Followers", value: followers ?? 0 },
+    { label: "Following", value: following ?? 0 },
+    { label: "Friends", value: friends ?? 0 },
+    { label: "Family", value: family ?? 0 },
+  ];
+
   const initial = (profile?.display_name || email || "?")
     .charAt(0)
     .toUpperCase();
@@ -74,6 +104,23 @@ export default async function ProfilePage() {
           <p className="text-white/50">{email}</p>
         </div>
       </div>
+
+      <Link
+        href="/life/people"
+        className="mt-6 grid max-w-2xl grid-cols-2 gap-3 sm:grid-cols-4"
+      >
+        {stats.map((s) => (
+          <div
+            key={s.label}
+            className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 backdrop-blur-md transition hover:border-white/25 hover:bg-white/10"
+          >
+            <p className="text-xs text-white/50">{s.label}</p>
+            <p className="mt-1 text-xl font-semibold tabular-nums text-white">
+              {s.value.toLocaleString()}
+            </p>
+          </div>
+        ))}
+      </Link>
 
       {tableMissing && (
         <div className="mt-8 rounded-2xl border border-amber-500/30 bg-amber-500/10 p-6 text-sm text-amber-100">

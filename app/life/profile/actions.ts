@@ -41,6 +41,7 @@ export async function updateProfile(
       bio: clean(formData.get("bio")),
       location: clean(formData.get("location")),
       website: clean(formData.get("website")),
+      discoverable: formData.get("discoverable") === "on",
       updated_at: new Date().toISOString(),
     },
     { onConflict: "id" },

@@ -5,6 +5,7 @@ import { signOut } from "@/app/auth/actions";
 import Cosmos from "@/app/components/Cosmos";
 import LifeNav from "@/app/components/LifeNav";
 import ConnectWallet from "@/app/components/ConnectWallet";
+import NotificationBell from "@/app/components/NotificationBell";
 
 // Shared shell for the entire authenticated Life area: cosmic background,
 // header with section navigation, and sign-out. The proxy middleware already
@@ -26,6 +27,11 @@ export default async function LifeLayout({
   // stayed signed in). Cheap no-op when nothing is due; never blocks render.
   await supabase.rpc("ensure_grants");
 
+  const { count: unread } = await supabase
+    .from("notifications")
+    .select("id", { count: "exact", head: true })
+    .is("read_at", null);
+
   return (
     <>
       <Cosmos />
@@ -45,6 +51,7 @@ export default async function LifeLayout({
             <span className="hidden text-sm text-white/40 lg:inline">
               {user.email}
             </span>
+            <NotificationBell unread={unread ?? 0} />
             <ConnectWallet />
             <form action={signOut}>
               <button

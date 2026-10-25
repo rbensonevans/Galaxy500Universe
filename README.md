@@ -87,8 +87,14 @@ The top nav also links to the member sections:
 - **Profile** (`/life/profile`) — edit how you appear across the universe
   (display name, bio, location, website). Backed by the `profiles` table; the
   save action upserts in `app/life/profile/actions.ts`.
-- **Friends** (`/life/friends`)
-- **Family** (`/life/family`)
+- **Friends** (`/life/friends`) and **Family** (`/life/family`) — posts are
+  seen by the author and their accepted friends / family.
+- **People** (`/life/people`) — search citizens by name or @handle, follow
+  them, and send friend / family requests. Member profiles live at
+  `/life/people/[id]`. Backed by `follows` and `connections`
+  (`supabase/migrations/0020_people.sql`).
+- **Notifications** (`/life/notifications`, the header bell) — follows,
+  requests, and acceptances, with Follow back / Accept / Decline.
 - **Travel** (`/life/travel`)
 - **Communities** (`/life/communities`)
 

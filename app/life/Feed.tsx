@@ -4,6 +4,7 @@ import { type ReactionSummary } from "./reactions";
 import Composer from "./Composer";
 import PostCard, { type FeedPost, type FeedComment } from "./PostCard";
 import { SECTIONS, MORE_SECTIONS } from "./sections";
+import { profileHref } from "./people/relations";
 
 // Display names for the feed streams, used to label where a post came from on
 // the Universal Feed.
@@ -42,11 +43,13 @@ function group<T>(map: Map<string, T[]>, key: string, value: T) {
 // A complete social feed (composer + posts with comments and emoji reactions),
 // scoped to a single `feed` stream. Shared by the Life, Friends, Family, and
 // other feed pages. With `universal`, it instead shows every public post and
-// every Startup Feed post across the universe (read-only). The page provides
-// its own heading.
+// every Startup Feed post across the universe (read-only); with `authorId`,
+// every post by one member that the viewer may see (their profile). The page
+// provides its own heading.
 export default async function Feed({
   feed,
   universal = false,
+  authorId,
   startupId,
   canPost = true,
   postAuthorName,
@@ -56,6 +59,8 @@ export default async function Feed({
   feed: string;
   /** Aggregate public + Startup Feed posts from every feed (no composer). */
   universal?: boolean;
+  /** Show one member's posts across all feeds (no composer). */
+  authorId?: string;
   /** When set, scope to a single startup's company feed instead of a stream. */
   startupId?: string;
   /** Whether to show the composer (e.g. only the company admin can post). */
@@ -74,13 +79,15 @@ export default async function Feed({
   const base = supabase
     .from("posts")
     .select("id, user_id, content, image_url, created_at, feed, startup_id, is_public");
-  // Universal Feed ordering is newest-first for now; this is where a ranking
-  // algorithm tailored to the member's perceived interests will plug in.
+  // Visibility is enforced by RLS (own, public, Startup Feed, and Friends /
+  // Family posts from accepted connections); these filters pick the stream.
   const { data: postRows, error } = await (universal
     ? base.or("is_public.eq.true,startup_id.not.is.null")
-    : startupId
-      ? base.eq("startup_id", startupId)
-      : base.eq("feed", feed)
+    : authorId
+      ? base.eq("user_id", authorId)
+      : startupId
+        ? base.eq("startup_id", startupId)
+        : base.eq("feed", feed)
   )
     .order("created_at", { ascending: false })
     .limit(50);
@@ -149,12 +156,25 @@ export default async function Feed({
     const displayName = p.display_name?.trim();
     if (displayName) nameById.set(p.id, displayName);
   }
+  // Authors the viewer follows: no Follow button, and a Universal Feed boost.
+  const otherAuthors = authorIds.filter((id) => id !== me);
+  const { data: followRows } = otherAuthors.length
+    ? await supabase
+        .from("follows")
+        .select("followee_id")
+        .eq("follower_id", me)
+        .in("followee_id", otherAuthors)
+    : { data: [] };
+  const followed = new Set((followRows ?? []).map((f) => f.followee_id));
+
   const myFallback = user?.email?.split("@")[0] ?? "Galaxy member";
   const authorName = (id: string) =>
     nameById.get(id) ?? (id === me ? myFallback : "Galaxy member");
 
-  // On the Universal Feed, Startup Feed posts are labeled with the company.
-  const startupIds = universal
+  // Posts gathered from several feeds are labeled with where they came from,
+  // and Startup Feed posts with the company.
+  const aggregate = universal || Boolean(authorId);
+  const startupIds = aggregate
     ? Array.from(new Set(posts.flatMap((p) => (p.startup_id ? [p.startup_id] : []))))
     : [];
   const { data: startupRows } = startupIds.length
@@ -186,6 +206,7 @@ export default async function Feed({
       user_id: c.user_id,
       authorName: authorName(c.user_id),
       reactions: summarize(reactsByComment.get(c.id) ?? [], me),
+      authorHref: profileHref(c.user_id, me),
     });
   }
 
@@ -196,15 +217,33 @@ export default async function Feed({
     created_at: p.created_at,
     user_id: p.user_id,
     authorName: postAuthorName ?? authorName(p.user_id),
-    source: universal ? sourceLabel(p) : undefined,
-    visibility: p.startup_id ? undefined : p.is_public ? "public" : "private",
+    // A company-labeled post (Startup Feed page) links to no personal profile.
+    authorHref: postAuthorName ? undefined : profileHref(p.user_id, me),
+    canFollow: !postAuthorName && p.user_id !== me && !followed.has(p.user_id),
+    source: aggregate ? sourceLabel(p) : undefined,
+    visibility: p.startup_id
+      ? undefined
+      : p.is_public
+        ? "public"
+        : p.feed === "friends" || p.feed === "family"
+          ? p.feed
+          : "private",
     reactions: summarize(reactsByPost.get(p.id) ?? [], me),
     comments: commentsByPost.get(p.id) ?? [],
   }));
 
+  // Universal Feed ranking, a first interest signal: posts by members you
+  // follow get a 24-hour boost over strictly newest-first ordering.
+  if (universal) {
+    const BOOST_MS = 24 * 60 * 60 * 1000;
+    const score = (p: FeedPost) =>
+      new Date(p.created_at).getTime() + (followed.has(p.user_id) ? BOOST_MS : 0);
+    items.sort((a, b) => score(b) - score(a));
+  }
+
   return (
     <>
-      {canPost && !universal && (
+      {canPost && !aggregate && (
         <div className="mt-6">
           <Composer feed={feed} startupId={startupId} placeholder={placeholder} />
         </div>
