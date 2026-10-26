@@ -22,7 +22,8 @@ database). Migrations are run by hand in the Supabase SQL Editor.
 | 5 | Direct messages, message requests, Send GLXY, blocking | `d4e3e38` | `0021_messages.sql` |
 | 6 | Images in direct messages | `e0333d5` | `0022_message_images.sql` |
 | 7 | Post images over 1 MB, phone fixes, key incident | `1298d7e` | `0023_post_images_limits.sql` |
-| 8 | Sign in with Google / LinkedIn / Facebook | (this commit) | — (Supabase dashboard setup) |
+| 8 | Sign in with Google / LinkedIn / Facebook | `59100e3` | — (Supabase dashboard setup) |
+| 9 | Public Privacy Policy and Terms of Service pages | `b2db240` | — |
 
 ---
 
@@ -164,7 +165,34 @@ post-hackathon).
 - **Setup (Supabase dashboard):** Authentication → URL Configuration (Site
   URL + `/auth/callback` redirect URLs for Vercel, localhost, and the LAN IP),
   and each provider enabled under Sign In / Providers with its client ID and
-  secret. Google is enabled; LinkedIn and Facebook follow the same pattern.
+  secret. All three providers use the Supabase callback
+  `https://qnytfkhvetgckbgueggx.supabase.co/auth/v1/callback`.
+- **Provider status:**
+  - **LinkedIn** — the sign-in used for the hackathon; open to everyone. The
+    LinkedIn app needs the **Sign In with LinkedIn using OpenID Connect**
+    product (scopes `openid`, `profile`, `email`).
+  - **Google** — works, but the Google app stays in **Testing**: only listed
+    test users can sign in. Publishing requires brand verification on an
+    owned domain (`vercel.app` is not accepted).
+  - **Facebook** — works, but the Meta app stays in **Development** mode
+    (admin only) and isn't used. The button stays on the screen.
+- No database changes: a first-time provider sign-in reuses
+  `ensure_grants()` (migration 0019) for the birth grant.
+
+## 9. Privacy Policy and Terms of Service
+
+Google requires public privacy and terms pages for its consent screen.
+
+- **Privacy Policy** (`/privacy`) and **Terms of Service** (`/terms`), public
+  pages with no sign-in needed, built on a shared `app/components/LegalPage.tsx`
+  layout. Linked from the landing page.
+- The contact is a message to `@iglobecreator` inside the app; no email
+  address is published.
+- Google Auth Platform → Branding lists the home, privacy, and terms URLs and
+  the authorized domain `galaxy500-universe.vercel.app`.
+- The domain **galaxy500universe.com** was purchased. Connecting it to Vercel,
+  Supabase (Site URL and callback), and Google verification, then publishing
+  Google sign-in, is post-hackathon work.
 
 ---
 
