@@ -196,6 +196,12 @@ Google requires public privacy and terms pages for its consent screen.
 
 ---
 
+## Hackathon close
+
+The XRP Ledger Hackathon ended October 25, 2026. Mastercard developers were
+not available, so **Mastercard merchant payments were not integrated**; that
+work, and all further development, continues in `PRODUCTION_ROAD_MAP.md`.
+
 ## Deployment notes
 
 - Pushing to `master` on GitHub auto-deploys two Vercel projects:
