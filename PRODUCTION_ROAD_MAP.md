@@ -12,8 +12,7 @@ Items are grouped into phases in rough priority order. Check items off
 Already working on the live site (`https://www.galaxy500universe.com`, also
 `galaxy500-universe.vercel.app`):
 
-- Sign-in with email, LinkedIn, Google (Testing only), and Facebook
-  (Development only).
+- Sign-in with email, LinkedIn, Google, and Facebook (Development only).
 - Life home feed, topic feeds (Friends, Family, Music, Sports, Travel,
   Communities, Movies, Gaming), Startup Feeds, and the Universal Feed.
 - Posts with images (up to 5 MB), comments, reactions, and per-post
@@ -44,9 +43,20 @@ Make the site ready for real users.
     localhost, and LAN redirect URLs stay).
   - LinkedIn, Google, and Facebook apps need no change for sign-in: they
     redirect to the Supabase callback, which is unchanged.
-- [ ] **Publish Google sign-in.** Verify the domain in Google Search Console,
-  complete Branding (logo, home, privacy, terms on the new domain), and move
-  the app from Testing to In production.
+- [x] **Publish Google sign-in.** Done 2026-10-29; Google sign-in is open to
+  everyone.
+  - Google Search Console: Domain property `galaxy500universe.com`, verified
+    through GoDaddy (adds a `google-site-verification` TXT record; don't
+    remove it).
+  - Google Auth Platform → Branding: home `https://www.galaxy500universe.com`,
+    privacy `/privacy`, terms `/terms`, authorized domain
+    `galaxy500universe.com` (vercel.app removed). No logo yet — adding one
+    starts Google's brand review.
+  - Google Auth Platform → Audience: Published, status **In production**.
+- [ ] **App logo** on the Google consent screen (needs a 120×120 logo and
+  Google's brand review).
+- [ ] **Custom auth domain** (Supabase paid add-on) so sign-in screens show
+  `galaxy500universe.com` instead of `qnytfkhvetgckbgueggx.supabase.co`.
 - [ ] **Decide on Facebook sign-in.** Either take the Meta app Live (business
   verification, data-deletion URL) or remove the button.
 - [ ] **One Vercel project.** Keep `galaxy500-universe`, delete the duplicate
@@ -156,3 +166,4 @@ migration (if any).
 | # | Change | Commit | Migration |
 |---|---|---|---|
 | 1 | Custom domain `www.galaxy500universe.com` | — (Vercel, GoDaddy, Supabase setup) | — |
+| 2 | Google sign-in published (In production) | — (Search Console, Google Auth Platform) | — |
