@@ -9,7 +9,8 @@ Items are grouped into phases in rough priority order. Check items off
 
 ## Where we start
 
-Already working on the live site (`galaxy500-universe.vercel.app`):
+Already working on the live site (`https://www.galaxy500universe.com`, also
+`galaxy500-universe.vercel.app`):
 
 - Sign-in with email, LinkedIn, Google (Testing only), and Facebook
   (Development only).
@@ -31,9 +32,18 @@ Already working on the live site (`galaxy500-universe.vercel.app`):
 
 Make the site ready for real users.
 
-- [ ] **Custom domain.** Connect `galaxy500universe.com` to Vercel; update the
-  Supabase Site URL and redirect URLs; update the Google, LinkedIn, and
-  Facebook app URLs.
+- [x] **Custom domain.** `https://www.galaxy500universe.com` is the main
+  address; `galaxy500universe.com` redirects to it (308). Set up 2026-10-29:
+  - Vercel (`galaxy500-universe` → Domains → Add Existing, Production,
+    "Redirect apex domains to www").
+  - GoDaddy DNS: `A @ 216.198.79.1` (replaced Parked) and
+    `CNAME www 376457b25d6dc7f0.vercel-dns-017.com` (was `galaxy500universe.com.`).
+  - Supabase Auth → URL Configuration: Site URL
+    `https://www.galaxy500universe.com`, redirect URL
+    `https://www.galaxy500universe.com/auth/callback` added (the vercel.app,
+    localhost, and LAN redirect URLs stay).
+  - LinkedIn, Google, and Facebook apps need no change for sign-in: they
+    redirect to the Supabase callback, which is unchanged.
 - [ ] **Publish Google sign-in.** Verify the domain in Google Search Console,
   complete Branding (logo, home, privacy, terms on the new domain), and move
   the app from Testing to In production.
@@ -145,3 +155,4 @@ migration (if any).
 
 | # | Change | Commit | Migration |
 |---|---|---|---|
+| 1 | Custom domain `www.galaxy500universe.com` | — (Vercel, GoDaddy, Supabase setup) | — |
