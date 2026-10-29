@@ -60,7 +60,14 @@ export default function PrivacyPage() {
       <ul>
         <li>Edit your profile and hide yourself from People search in Settings.</li>
         <li>Delete your own posts, comments, and messages at any time.</li>
-        <li>To delete your account and its data, message @iglobecreator in Galaxy500Universe.</li>
+        <li>
+          To delete your account and its data, message @iglobecreator in
+          Galaxy500Universe. See{" "}
+          <a href="/data-deletion" className="underline hover:text-white">
+            Data Deletion
+          </a>{" "}
+          for details.
+        </li>
       </ul>
 
       <h2>Changes</h2>

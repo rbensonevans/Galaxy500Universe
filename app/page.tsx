@@ -44,6 +44,8 @@ export default async function LandingPage({
             <a href="/privacy" className="hover:text-white/60">Privacy</a>
             {" · "}
             <a href="/terms" className="hover:text-white/60">Terms</a>
+            {" · "}
+            <a href="/data-deletion" className="hover:text-white/60">Data deletion</a>
           </p>
         </div>
 
