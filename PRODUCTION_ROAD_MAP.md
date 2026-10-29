@@ -10,7 +10,7 @@ Items are grouped into phases in rough priority order. Check items off
 ## Where we start
 
 Already working on the live site (`https://www.galaxy500universe.com`, also
-`galaxy500-universe.vercel.app`):
+`galaxy500-universe.vercel.app`, Vercel project `galaxy500-universe`):
 
 - Sign-in with email, LinkedIn, and Google (Facebook set up but hidden until
   the Meta app is Live).
@@ -68,10 +68,10 @@ Make the site ready for real users.
   - [ ] Show the button again: uncomment the Facebook entry in
     `app/components/AuthForm.tsx` (hidden meanwhile, because only app admins
     can sign in while the app is in Development mode).
-- [ ] **One Vercel project.** Keep `galaxy500-universe`, delete the duplicate
-  `galaxy500universe-project`, and make sure the remaining project has the
-  new `SUPABASE_SECRET_KEY` (server-only) and the publishable key in
-  `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
+- [x] **One Vercel project.** Deleted the duplicate `galaxy500universe-project`
+  on 2026-10-29; `galaxy500-universe` is the only project. The app uses only
+  `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` (the
+  publishable key); no `SUPABASE_SECRET_KEY` is needed.
 - [ ] **Supabase production plan.** Upgrade to a paid plan for daily backups,
   point-in-time recovery, and no project pausing.
 - [ ] **Email.** Custom SMTP sender (e.g. `no-reply@galaxy500universe.com`)
@@ -177,4 +177,5 @@ migration (if any).
 | 1 | Custom domain `www.galaxy500universe.com` | — (Vercel, GoDaddy, Supabase setup) | — |
 | 2 | Google sign-in published (In production) | — (Search Console, Google Auth Platform) | — |
 | 3 | Data Deletion page | `7d6aae3` | — |
-| 4 | Facebook button hidden until the Meta app is Live | (this commit) | — |
+| 4 | Facebook button hidden until the Meta app is Live | `f1dd6ff` | — |
+| 5 | Duplicate Vercel project deleted | — (Vercel) | — |
