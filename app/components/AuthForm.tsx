@@ -13,7 +13,9 @@ const initialState: AuthState = {};
 const PROVIDERS = [
   { id: "google", label: "Google" },
   { id: "linkedin_oidc", label: "LinkedIn" },
-  { id: "facebook", label: "Facebook" },
+  // Hidden until the Meta app is Live (waiting on Meta business verification);
+  // in Development mode only app admins can sign in with Facebook.
+  // { id: "facebook", label: "Facebook" },
 ];
 
 export default function AuthForm({ authError }: { authError?: string }) {

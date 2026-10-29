@@ -12,7 +12,8 @@ Items are grouped into phases in rough priority order. Check items off
 Already working on the live site (`https://www.galaxy500universe.com`, also
 `galaxy500-universe.vercel.app`):
 
-- Sign-in with email, LinkedIn, Google, and Facebook (Development only).
+- Sign-in with email, LinkedIn, and Google (Facebook set up but hidden until
+  the Meta app is Live).
 - Life home feed, topic feeds (Friends, Family, Music, Sports, Travel,
   Communities, Movies, Gaming), Startup Feeds, and the Universal Feed.
 - Posts with images (up to 5 MB), comments, reactions, and per-post
@@ -23,7 +24,7 @@ Already working on the live site (`https://www.galaxy500universe.com`, also
 - Galaxy Credits (GLXY): monthly grants, wallet, transfers, Crypto Bank,
   Startups and the stock exchange (all off-chain), plus a Base on-chain wallet
   connection.
-- Privacy Policy and Terms of Service pages.
+- Privacy Policy, Terms of Service, and Data Deletion pages.
 
 ---
 
@@ -57,8 +58,16 @@ Make the site ready for real users.
   Google's brand review).
 - [ ] **Custom auth domain** (Supabase paid add-on) so sign-in screens show
   `galaxy500universe.com` instead of `qnytfkhvetgckbgueggx.supabase.co`.
-- [ ] **Decide on Facebook sign-in.** Either take the Meta app Live (business
-  verification, data-deletion URL) or remove the button.
+- [ ] **Facebook sign-in Live.** Decided 2026-10-29 to take the Meta app Live.
+  - [x] Public Data Deletion page `/data-deletion` (`7d6aae3`).
+  - [x] Meta App settings → Basic: app domain, privacy, terms, and data
+    deletion URLs; category. Use case permissions `public_profile` and
+    `email` added.
+  - [ ] **Meta business verification** (required by Meta's Publish page),
+    then Publish.
+  - [ ] Show the button again: uncomment the Facebook entry in
+    `app/components/AuthForm.tsx` (hidden meanwhile, because only app admins
+    can sign in while the app is in Development mode).
 - [ ] **One Vercel project.** Keep `galaxy500-universe`, delete the duplicate
   `galaxy500universe-project`, and make sure the remaining project has the
   new `SUPABASE_SECRET_KEY` (server-only) and the publishable key in
@@ -167,3 +176,5 @@ migration (if any).
 |---|---|---|---|
 | 1 | Custom domain `www.galaxy500universe.com` | — (Vercel, GoDaddy, Supabase setup) | — |
 | 2 | Google sign-in published (In production) | — (Search Console, Google Auth Platform) | — |
+| 3 | Data Deletion page | `7d6aae3` | — |
+| 4 | Facebook button hidden until the Meta app is Live | (this commit) | — |
