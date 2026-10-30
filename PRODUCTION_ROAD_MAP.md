@@ -86,7 +86,12 @@ Make the site ready for real users.
     `MX @ mx1.improvmx.com (10)`, `MX @ mx2.improvmx.com (20)`,
     `TXT @ v=spf1 include:spf.improvmx.com ~all`.
   - Privacy, Terms, and Data Deletion pages list `support@galaxy500universe.com`.
-- [ ] **Reply as support@** from Gmail ("Send mail as" through Resend SMTP).
+- [x] **Reply as support@** from Gmail. Set up 2026-10-30: iglobecreator@gmail.com
+  → Settings → Accounts and Import → Send mail as
+  `Galaxy500Universe Support <support@galaxy500universe.com>` through
+  `smtp.resend.com:465` (user `resend`, separate Resend API key `Gmail`);
+  "Reply from the same address the message was sent to". Shares Resend's
+  100/day free limit with the site's emails.
 - [ ] **Branded email templates** in Supabase (confirm sign-up, reset
   password, magic link).
 - [ ] **Monitoring.** Error tracking, uptime checks, and Vercel / Supabase
@@ -192,4 +197,5 @@ migration (if any).
 | 3 | Data Deletion page | `7d6aae3` | — |
 | 4 | Facebook button hidden until the Meta app is Live | `f1dd6ff` | — |
 | 5 | Duplicate Vercel project deleted | — (Vercel) | — |
-| 6 | Email: Resend sending, ImprovMX `support@` forwarding, contact on legal pages | (this commit) | — |
+| 6 | Email: Resend sending, ImprovMX `support@` forwarding, contact on legal pages | `3b7a1a2` | — |
+| 7 | Reply as `support@` from Gmail | — (Gmail, Resend) | — |
