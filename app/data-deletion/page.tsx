@@ -18,11 +18,15 @@ export default function DataDeletionPage() {
         <li>Sign in to Galaxy500Universe.</li>
         <li>
           Open <strong>Messages</strong> and send a message to{" "}
-          <strong>@iglobecreator</strong> asking to delete your account.
+          <strong>@iglobecreator</strong> asking to delete your account, or
+          email{" "}
+          <a href="mailto:support@galaxy500universe.com" className="underline hover:text-white">
+            support@galaxy500universe.com
+          </a>{" "}
+          from the email address on your account.
         </li>
         <li>
-          We confirm the request in that conversation and delete your account
-          within 30 days.
+          We confirm the request and delete your account within 30 days.
         </li>
       </ul>
 
@@ -44,8 +48,11 @@ export default function DataDeletionPage() {
 
       <h2>Can&apos;t sign in?</h2>
       <p>
-        If you can no longer sign in, create a new account and message
-        @iglobecreator with the email address of the account you want deleted.
+        If you can no longer sign in, email{" "}
+        <a href="mailto:support@galaxy500universe.com" className="underline hover:text-white">
+          support@galaxy500universe.com
+        </a>{" "}
+        from the email address on the account you want deleted.
       </p>
     </LegalPage>
   );

@@ -7,7 +7,7 @@ export const metadata: Metadata = { title: "Terms of Service · Galaxy500Univers
 
 export default function TermsPage() {
   return (
-    <LegalPage title="Terms of Service" updated="October 25, 2026">
+    <LegalPage title="Terms of Service" updated="October 29, 2026">
       <p>
         By using Galaxy500Universe you agree to these terms. The platform is an
         early project built during the XRP Ledger Hackathon and is provided
@@ -35,7 +35,13 @@ export default function TermsPage() {
       </ul>
 
       <h2>Contact</h2>
-      <p>Questions? Message @iglobecreator in Galaxy500Universe.</p>
+      <p>
+        Questions? Email{" "}
+        <a href="mailto:support@galaxy500universe.com" className="underline hover:text-white">
+          support@galaxy500universe.com
+        </a>{" "}
+        or message @iglobecreator in Galaxy500Universe.
+      </p>
     </LegalPage>
   );
 }

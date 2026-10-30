@@ -74,12 +74,25 @@ Make the site ready for real users.
   publishable key); no `SUPABASE_SECRET_KEY` is needed.
 - [ ] **Supabase production plan.** Upgrade to a paid plan for daily backups,
   point-in-time recovery, and no project pausing.
-- [ ] **Email.** Custom SMTP sender (e.g. `no-reply@galaxy500universe.com`)
-  for sign-up confirmation and password reset; branded email templates.
+- [x] **Email.** Set up 2026-10-29.
+  - **Sending:** Supabase Auth emails go out from
+    `Galaxy500Universe <no-reply@galaxy500universe.com>` through **Resend**
+    (free plan: 3,000/month, 100/day). Resend domain verified via GoDaddy
+    (DKIM `resend._domainkey`, `send.` subdomain records). Supabase →
+    Authentication → Emails → SMTP Settings: host `smtp.resend.com`, port
+    465, user `resend`, password = Resend API key (sending access only).
+  - **Receiving:** `support@galaxy500universe.com` forwards to
+    `iglobecreator@gmail.com` through **ImprovMX** (free). GoDaddy DNS:
+    `MX @ mx1.improvmx.com (10)`, `MX @ mx2.improvmx.com (20)`,
+    `TXT @ v=spf1 include:spf.improvmx.com ~all`.
+  - Privacy, Terms, and Data Deletion pages list `support@galaxy500universe.com`.
+- [ ] **Reply as support@** from Gmail ("Send mail as" through Resend SMTP).
+- [ ] **Branded email templates** in Supabase (confirm sign-up, reset
+  password, magic link).
 - [ ] **Monitoring.** Error tracking, uptime checks, and Vercel / Supabase
   usage alerts.
 - [ ] **Legal review.** Have the Privacy Policy and Terms reviewed; add a
-  contact address on the new domain; add a cookie notice if needed.
+  cookie notice if needed. (Contact address on the new domain: done.)
 
 ## Phase 2 — Identity and trust (Sybil resistance)
 
@@ -179,3 +192,4 @@ migration (if any).
 | 3 | Data Deletion page | `7d6aae3` | — |
 | 4 | Facebook button hidden until the Meta app is Live | `f1dd6ff` | — |
 | 5 | Duplicate Vercel project deleted | — (Vercel) | — |
+| 6 | Email: Resend sending, ImprovMX `support@` forwarding, contact on legal pages | (this commit) | — |

@@ -7,7 +7,7 @@ export const metadata: Metadata = { title: "Privacy Policy · Galaxy500Universe"
 
 export default function PrivacyPage() {
   return (
-    <LegalPage title="Privacy Policy" updated="October 25, 2026">
+    <LegalPage title="Privacy Policy" updated="October 29, 2026">
       <p>
         Galaxy500Universe is a social universe built during the XRP Ledger
         Hackathon. This page explains what we collect and how we use it.
@@ -61,8 +61,12 @@ export default function PrivacyPage() {
         <li>Edit your profile and hide yourself from People search in Settings.</li>
         <li>Delete your own posts, comments, and messages at any time.</li>
         <li>
-          To delete your account and its data, message @iglobecreator in
-          Galaxy500Universe. See{" "}
+          To delete your account and its data, email{" "}
+          <a href="mailto:support@galaxy500universe.com" className="underline hover:text-white">
+            support@galaxy500universe.com
+          </a>{" "}
+          or message
+          @iglobecreator in Galaxy500Universe. See{" "}
           <a href="/data-deletion" className="underline hover:text-white">
             Data Deletion
           </a>{" "}
