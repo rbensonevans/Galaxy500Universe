@@ -17,8 +17,14 @@ below and save.
 | Reset password | `reset-password.html` | Reset your Galaxy500Universe password |
 | Reauthentication | `reauthentication.html` | Your Galaxy500Universe verification code |
 
-The `{{ .ConfirmationURL }}`, `{{ .Email }}`, `{{ .NewEmail }}`, and
-`{{ .Token }}` placeholders are filled in by Supabase. The layout uses tables
+The `{{ .ConfirmationURL }}`, `{{ .SiteURL }}`, `{{ .TokenHash }}`,
+`{{ .Email }}`, `{{ .NewEmail }}`, and `{{ .Token }}` placeholders are filled
+in by Supabase.
+
+The Reset password email links to `{{ .SiteURL }}/auth/confirm?token_hash=…&type=recovery&next=/reset-password`
+instead of `{{ .ConfirmationURL }}`: `app/auth/confirm/route.ts` verifies the
+token and signs the member in, so the link works on any device. Because it
+uses the Site URL, reset links always open the live site. The layout uses tables
 and inline styles so it renders in Gmail, Outlook, and Apple Mail.
 
 To copy a template on a Mac:

@@ -124,3 +124,60 @@ export async function signInWithProvider(formData: FormData) {
   }
   redirect(data.url);
 }
+
+// Forgot password: email a reset link. The Reset password email template
+// links to /auth/confirm (type=recovery), which signs the member in and opens
+// /reset-password. The reply is the same whether or not the email has an
+// account, so the form can't be used to discover who is a member.
+export async function requestPasswordReset(
+  _prevState: AuthState,
+  formData: FormData,
+): Promise<AuthState> {
+  const email = String(formData.get("email") ?? "").trim();
+  if (!email) {
+    return { error: "Enter your email address." };
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.resetPasswordForEmail(email);
+  if (error && error.status === 429) {
+    return { error: "Too many requests. Please wait a minute and try again." };
+  }
+
+  return {
+    message:
+      "If an account uses that email, a reset link is on its way. Check your inbox (and spam).",
+  };
+}
+
+// Set a new password for the member signed in by the reset link.
+export async function updatePassword(
+  _prevState: AuthState,
+  formData: FormData,
+): Promise<AuthState> {
+  const password = String(formData.get("password") ?? "");
+  const confirm = String(formData.get("confirm") ?? "");
+
+  if (password.length < 6) {
+    return { error: "Password must be at least 6 characters." };
+  }
+  if (password !== confirm) {
+    return { error: "The passwords don't match." };
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    return { error: "Your reset link has expired. Request a new one." };
+  }
+
+  const { error } = await supabase.auth.updateUser({ password });
+  if (error) {
+    return { error: error.message };
+  }
+
+  revalidatePath("/", "layout");
+  redirect("/life");
+}

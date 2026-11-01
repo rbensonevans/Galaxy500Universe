@@ -97,9 +97,11 @@ Make the site ready for real users.
   Change email address, Reset password, Reauthentication), pasted into
   Supabase → Authentication → Emails → Templates with their subjects (see
   that folder's README).
-- [ ] **Forgot password.** A "Forgot password?" link and a page to set a new
-  password; today the Reset password email's link lands on the home page with
-  no form.
+- [x] **Forgot password.** Done 2026-11-01. "Forgot password?" on the sign-in
+  form → `/forgot-password` (emails a reset link) → the Reset password email
+  links to `/auth/confirm` (verifies the token, signs in) → `/reset-password`
+  (set a new password) → Life. Expired links return to `/forgot-password`.
+  The Reset password template was updated to link to `/auth/confirm`.
 - [ ] **Monitoring.** Error tracking, uptime checks, and Vercel / Supabase
   usage alerts.
 - [ ] **Legal review.** Have the Privacy Policy and Terms reviewed; add a
@@ -205,4 +207,5 @@ migration (if any).
 | 5 | Duplicate Vercel project deleted | — (Vercel) | — |
 | 6 | Email: Resend sending, ImprovMX `support@` forwarding, contact on legal pages | `3b7a1a2` | — |
 | 7 | Reply as `support@` from Gmail | — (Gmail, Resend) | — |
-| 8 | Branded email templates | (this commit) | — |
+| 8 | Branded email templates | `0696e9c` | — |
+| 9 | Forgot password flow | (this commit) | — |

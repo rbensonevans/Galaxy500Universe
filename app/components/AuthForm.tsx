@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState, useState } from "react";
 import {
   authenticate,
@@ -105,6 +106,14 @@ export default function AuthForm({ authError }: { authError?: string }) {
             className="rounded-lg border border-white/10 bg-black/40 px-3 py-2.5 text-white placeholder:text-white/30 outline-none transition focus:border-violet-400/60 focus:ring-2 focus:ring-violet-500/30"
           />
         </label>
+        {!isSignup && (
+          <Link
+            href="/forgot-password"
+            className="-mt-2 self-end text-xs text-white/50 transition hover:text-white"
+          >
+            Forgot password?
+          </Link>
+        )}
 
         {state.error && (
           <p className="rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-sm text-rose-200">
