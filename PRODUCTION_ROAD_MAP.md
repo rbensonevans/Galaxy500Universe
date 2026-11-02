@@ -102,8 +102,8 @@ Make the site ready for real users.
   links to `/auth/confirm` (verifies the token, signs in) → `/reset-password`
   (set a new password) → Life. Expired links return to `/forgot-password`.
   The Reset password template was updated to link to `/auth/confirm`.
-- [ ] **Monitoring.** Is the site up, is anything breaking, are we near a
-  limit? Alerts go to `support@galaxy500universe.com`.
+- [x] **Monitoring.** Is the site up, is anything breaking, are we near a
+  limit? Alerts go to iglobecreator@gmail.com.
   - [x] **Vercel Web Analytics and Speed Insights** (traffic and page speed):
     enabled in the Vercel project, `<Analytics />` and `<SpeedInsights />` in
     `app/layout.tsx`.
@@ -119,9 +119,24 @@ Make the site ready for real users.
     and the monthly grants job (`galaxy-monthly-grants`) is active and ran
     successfully this month; otherwise 503 with the reason. Database function
     `health_check()` (migration `0024_health_check.sql`).
-  - [ ] **UptimeRobot** on the site and `/api/health`, with email alerts.
-  - [ ] **Supabase usage emails**; weekly check of Sentry, Supabase usage,
-    and Resend delivery.
+  - [x] **UptimeRobot** (free, every 5 minutes): monitors
+    `Galaxy500Universe site` (`https://www.galaxy500universe.com`) and
+    `Galaxy500Universe health` (`/api/health`); alerts email
+    iglobecreator@gmail.com directly, so they arrive even if the domain's
+    email is down.
+  - [x] **Supabase usage emails**: sent automatically to organization
+    owners on the Free plan. Usage on 2026-11-02: database 27.6 MB / 500 MB,
+    storage 0.02 / 1 GB, egress 0.25 / 5 GB, 4 MAU. **Log Query 129 / 100 GB**
+    (reading logs in the dashboard, mostly ~111 GB on 2026-10-29; not
+    enforced until 2027): close Supabase Logs / Reports tabs when done and
+    use short time ranges.
+  - **Weekly check (about 5 minutes):**
+    - Sentry → Issues: new errors?
+    - Supabase → Organization → Usage: database, storage, egress, Log Query.
+    - Resend → Emails: delivered vs. bounced.
+    - UptimeRobot: any downtime?
+    - Vercel → Analytics and Speed Insights: visitors, page speed.
+    - On the 2nd of each month, `/api/health` confirms the grants job ran.
 - [ ] **Vercel Pro** (about $20/month) before commercial use or payments —
   Hobby is for non-commercial use.
 - [ ] **Legal review.** Have the Privacy Policy and Terms reviewed; add a
@@ -231,4 +246,6 @@ migration (if any).
 | 9 | Forgot password flow | `11b9769` | — |
 | 10 | Vercel Web Analytics and Speed Insights | `daf538b` | — |
 | 11 | Sentry error tracking (test route removed after the first event) | `0619c59` | — |
-| 12 | Health check `/api/health` | (this commit) | `0024_health_check.sql` |
+| 12 | Health check `/api/health` | `fcf889b` | `0024_health_check.sql` |
+| 13 | UptimeRobot monitors | — (UptimeRobot) | — |
+| 14 | Monitoring complete: Supabase usage review, weekly check | — | — |
