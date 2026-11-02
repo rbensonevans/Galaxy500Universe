@@ -228,4 +228,4 @@ migration (if any).
 | 8 | Branded email templates | `0696e9c` | — |
 | 9 | Forgot password flow | `11b9769` | — |
 | 10 | Vercel Web Analytics and Speed Insights | `daf538b` | — |
-| 11 | Sentry error tracking | (this commit) | — |
+| 11 | Sentry error tracking (test route removed after the first event) | `0619c59` | — |
