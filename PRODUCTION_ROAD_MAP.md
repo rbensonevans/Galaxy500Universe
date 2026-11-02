@@ -107,7 +107,14 @@ Make the site ready for real users.
   - [x] **Vercel Web Analytics and Speed Insights** (traffic and page speed):
     enabled in the Vercel project, `<Analytics />` and `<SpeedInsights />` in
     `app/layout.tsx`.
-  - [ ] **Sentry** error tracking (`@sentry/nextjs`).
+  - [x] **Sentry** error tracking (`@sentry/nextjs` 11.8.0; org and project
+    `galaxy500universe`). Browser, server, and edge errors, live site only;
+    no personal data or performance tracing. Browser reports go through
+    `/monitoring` (ad-blocker safe). Files: `instrumentation.ts`,
+    `instrumentation-client.ts`, `lib/sentry-options.ts`,
+    `app/global-error.tsx`, `next.config.ts`.
+  - [ ] Sentry **source maps** (readable stack traces): add a
+    `SENTRY_AUTH_TOKEN` to Vercel.
   - [ ] **`/api/health`**: database reachable and the monthly grants job's
     last run succeeded.
   - [ ] **UptimeRobot** on the site and `/api/health`, with email alerts.
@@ -220,4 +227,5 @@ migration (if any).
 | 7 | Reply as `support@` from Gmail | — (Gmail, Resend) | — |
 | 8 | Branded email templates | `0696e9c` | — |
 | 9 | Forgot password flow | `11b9769` | — |
-| 10 | Vercel Web Analytics and Speed Insights | (this commit) | — |
+| 10 | Vercel Web Analytics and Speed Insights | `daf538b` | — |
+| 11 | Sentry error tracking | (this commit) | — |

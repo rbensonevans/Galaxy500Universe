@@ -7,7 +7,7 @@ export const metadata: Metadata = { title: "Privacy Policy · Galaxy500Universe"
 
 export default function PrivacyPage() {
   return (
-    <LegalPage title="Privacy Policy" updated="October 29, 2026">
+    <LegalPage title="Privacy Policy" updated="November 2, 2026">
       <p>
         Galaxy500Universe is a social universe built during the XRP Ledger
         Hackathon. This page explains what we collect and how we use it.
@@ -53,7 +53,9 @@ export default function PrivacyPage() {
       <h2>Where it is stored</h2>
       <p>
         Data is stored with our infrastructure providers, Supabase (database,
-        sign-in, and file storage) and Vercel (hosting).
+        sign-in, and file storage) and Vercel (hosting). Resend delivers our
+        emails. Sentry receives error reports when something breaks; they
+        describe the error and your browser, not your name, email, or posts.
       </p>
 
       <h2>Your choices</h2>
