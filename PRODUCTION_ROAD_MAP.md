@@ -102,8 +102,19 @@ Make the site ready for real users.
   links to `/auth/confirm` (verifies the token, signs in) → `/reset-password`
   (set a new password) → Life. Expired links return to `/forgot-password`.
   The Reset password template was updated to link to `/auth/confirm`.
-- [ ] **Monitoring.** Error tracking, uptime checks, and Vercel / Supabase
-  usage alerts.
+- [ ] **Monitoring.** Is the site up, is anything breaking, are we near a
+  limit? Alerts go to `support@galaxy500universe.com`.
+  - [x] **Vercel Web Analytics and Speed Insights** (traffic and page speed):
+    enabled in the Vercel project, `<Analytics />` and `<SpeedInsights />` in
+    `app/layout.tsx`.
+  - [ ] **Sentry** error tracking (`@sentry/nextjs`).
+  - [ ] **`/api/health`**: database reachable and the monthly grants job's
+    last run succeeded.
+  - [ ] **UptimeRobot** on the site and `/api/health`, with email alerts.
+  - [ ] **Supabase usage emails**; weekly check of Sentry, Supabase usage,
+    and Resend delivery.
+- [ ] **Vercel Pro** (about $20/month) before commercial use or payments —
+  Hobby is for non-commercial use.
 - [ ] **Legal review.** Have the Privacy Policy and Terms reviewed; add a
   cookie notice if needed. (Contact address on the new domain: done.)
 
@@ -208,4 +219,5 @@ migration (if any).
 | 6 | Email: Resend sending, ImprovMX `support@` forwarding, contact on legal pages | `3b7a1a2` | — |
 | 7 | Reply as `support@` from Gmail | — (Gmail, Resend) | — |
 | 8 | Branded email templates | `0696e9c` | — |
-| 9 | Forgot password flow | (this commit) | — |
+| 9 | Forgot password flow | `11b9769` | — |
+| 10 | Vercel Web Analytics and Speed Insights | (this commit) | — |
