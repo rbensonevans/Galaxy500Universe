@@ -115,8 +115,10 @@ Make the site ready for real users.
     `app/global-error.tsx`, `next.config.ts`.
   - [ ] Sentry **source maps** (readable stack traces): add a
     `SENTRY_AUTH_TOKEN` to Vercel.
-  - [ ] **`/api/health`**: database reachable and the monthly grants job's
-    last run succeeded.
+  - [x] **`/api/health`**: 200 `{"status":"ok"}` when the database answers
+    and the monthly grants job (`galaxy-monthly-grants`) is active and ran
+    successfully this month; otherwise 503 with the reason. Database function
+    `health_check()` (migration `0024_health_check.sql`).
   - [ ] **UptimeRobot** on the site and `/api/health`, with email alerts.
   - [ ] **Supabase usage emails**; weekly check of Sentry, Supabase usage,
     and Resend delivery.
@@ -229,3 +231,4 @@ migration (if any).
 | 9 | Forgot password flow | `11b9769` | — |
 | 10 | Vercel Web Analytics and Speed Insights | `daf538b` | — |
 | 11 | Sentry error tracking (test route removed after the first event) | `0619c59` | — |
+| 12 | Health check `/api/health` | (this commit) | `0024_health_check.sql` |
