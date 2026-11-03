@@ -4,6 +4,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { isMissingTableError } from "@/lib/supabase/errors";
 import { personName, type Person } from "../citizens/relations";
+import Avatar from "@/app/components/Avatar";
 
 type Conversation = {
   id: string;
@@ -77,7 +78,7 @@ export default async function MessagesPage({
           .limit(500)
       : Promise.resolve({ data: [] as LastMessage[] }),
     others.length
-      ? supabase.from("profiles").select("id, username, display_name").in("id", others)
+      ? supabase.from("profiles").select("id, username, display_name, avatar_path").in("id", others)
       : Promise.resolve({ data: [] as Person[] }),
   ]);
   const lastByConv = new Map<string, LastMessage>();
@@ -172,9 +173,11 @@ export default async function MessagesPage({
                     unread ? "bg-violet-500/10" : ""
                   }`}
                 >
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 via-fuchsia-500 to-cyan-500 text-sm font-bold text-white">
-                    {name.replace(/^@/, "").charAt(0).toUpperCase() || "?"}
-                  </span>
+                  <Avatar
+                    path={personById.get(other)?.avatar_path}
+                    name={name}
+                    className="h-10 w-10 text-sm"
+                  />
                   <span className="min-w-0 flex-1">
                     <span className="flex items-center justify-between gap-3">
                       <span className={`truncate text-sm ${unread ? "font-bold text-white" : "font-semibold text-white/90"}`}>

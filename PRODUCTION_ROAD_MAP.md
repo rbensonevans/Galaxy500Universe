@@ -267,4 +267,5 @@ migration (if any).
 | 16 | Image backup in the nightly job | `73088a2` | — |
 | 17 | "People" renamed "Citizens" (`/life/citizens`) | `5217aaf` | — |
 | 18 | Profile photos; header photo opens the profile; Settings and Sign out on the profile; email removed from the header | `b41d81f` | `0025_avatars.sql` |
-| 19 | Profile photos on posts, comments, citizen lists, and citizen profiles | (this commit) | — |
+| 19 | Profile photos on posts, comments, citizen lists, and citizen profiles | `cc8e927` | — |
+| 20 | Profile photos in Messages (inbox and chat header) | (this commit) | — |

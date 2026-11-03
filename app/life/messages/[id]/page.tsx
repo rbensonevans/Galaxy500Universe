@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { personName, UUID_RE } from "../../citizens/relations";
+import Avatar from "@/app/components/Avatar";
 import { deleteMessage, respondMessageRequest } from "../actions";
 import BlockButton from "../BlockButton";
 import ChatComposer from "../ChatComposer";
@@ -60,7 +61,7 @@ export default async function ChatPage({
   ] = await Promise.all([
     supabase
       .from("profiles")
-      .select("username, display_name")
+      .select("username, display_name, avatar_path")
       .eq("id", other)
       .maybeSingle(),
     supabase
@@ -135,9 +136,7 @@ export default async function ChatPage({
 
       <div className="mt-4 flex items-center justify-between gap-4">
         <Link href={`/life/citizens/${other}`} className="flex min-w-0 items-center gap-3">
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 via-fuchsia-500 to-cyan-500 text-lg font-bold text-white">
-            {name.replace(/^@/, "").charAt(0).toUpperCase() || "?"}
-          </span>
+          <Avatar path={profile?.avatar_path} name={name} className="h-11 w-11 text-lg" />
           <span className="min-w-0">
             <span className="block truncate text-xl font-bold text-white hover:text-violet-200">
               {name}
