@@ -72,6 +72,14 @@ Make the site ready for real users.
   on 2026-10-29; `galaxy500-universe` is the only project. The app uses only
   `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` (the
   publishable key); no `SUPABASE_SECRET_KEY` is needed.
+- [ ] **Nightly encrypted backups (free).** `.github/workflows/backup.yml`:
+  `pg_dump` of public/auth/storage plus the image buckets, a restore test
+  against a scratch Postgres (row counts must match), AES-256 encryption with
+  `BACKUP_PASSPHRASE`, kept 90 days as GitHub artifacts. Setup and restore
+  steps in `supabase/BACKUPS.md`.
+  - [ ] Repository secrets `SUPABASE_DB_URL`, `BACKUP_PASSPHRASE`.
+  - [ ] First manual run passes the restore test.
+  - [ ] Image backup: Supabase S3 access key secrets.
 - [ ] **Supabase production plan.** Upgrade to a paid plan for daily backups,
   point-in-time recovery, and no project pausing.
 - [x] **Email.** Set up 2026-10-29.
@@ -249,3 +257,4 @@ migration (if any).
 | 12 | Health check `/api/health` | `fcf889b` | `0024_health_check.sql` |
 | 13 | UptimeRobot monitors | — (UptimeRobot) | — |
 | 14 | Monitoring complete: Supabase usage review, weekly check | — | — |
+| 15 | Nightly encrypted backups (GitHub Actions) | (this commit) | — |
