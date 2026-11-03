@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { AVATAR_BUCKET, avatarPathPattern } from "@/lib/avatar";
 
 export type ProfileState = {
   error?: string;
@@ -96,4 +97,41 @@ export async function transferCredits(
       maximumFractionDigits: 2,
     })} GLXY to @${handle}.`,
   };
+}
+
+// Set (or, with null, remove) the citizen's profile photo. The browser has
+// already uploaded the resized file to avatars/<user id>/…; this records it
+// and deletes the previous photo.
+export async function setAvatar(path: string | null): Promise<{ error?: string }> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "You must be signed in." };
+  if (path !== null && !avatarPathPattern(user.id).test(path)) {
+    return { error: "Invalid photo." };
+  }
+
+  const { data: current } = await supabase
+    .from("profiles")
+    .select("avatar_path")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  const { error } = await supabase.from("profiles").upsert(
+    { id: user.id, avatar_path: path, updated_at: new Date().toISOString() },
+    { onConflict: "id" },
+  );
+  if (error) {
+    if (path) await supabase.storage.from(AVATAR_BUCKET).remove([path]);
+    return { error: error.message };
+  }
+
+  const old = current?.avatar_path;
+  if (old && old !== path) {
+    await supabase.storage.from(AVATAR_BUCKET).remove([old]);
+  }
+
+  revalidatePath("/life", "layout");
+  return {};
 }

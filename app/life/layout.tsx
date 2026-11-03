@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { signOut } from "@/app/auth/actions";
 import Cosmos from "@/app/components/Cosmos";
 import LifeNav from "@/app/components/LifeNav";
 import ConnectWallet from "@/app/components/ConnectWallet";
 import NotificationBell from "@/app/components/NotificationBell";
 import MessagesLink from "@/app/components/MessagesLink";
+import Avatar from "@/app/components/Avatar";
 
 // Shared shell for the entire authenticated Life area: cosmic background,
 // header with section navigation, and sign-out. The proxy middleware already
@@ -30,10 +30,18 @@ export default async function LifeLayout({
   await supabase.rpc("ensure_grants");
 
   // Made during the XRP LEDGER HACKATHON
-  const { count: unread } = await supabase
-    .from("notifications")
-    .select("id", { count: "exact", head: true })
-    .is("read_at", null);
+  const [{ count: unread }, { data: me }] = await Promise.all([
+    supabase
+      .from("notifications")
+      .select("id", { count: "exact", head: true })
+      .is("read_at", null),
+    supabase
+      .from("profiles")
+      .select("display_name, username, avatar_path")
+      .eq("id", user.id)
+      .maybeSingle(),
+  ]);
+  const myName = me?.display_name || me?.username || user.email || "?";
 
   return (
     <>
@@ -52,21 +60,19 @@ export default async function LifeLayout({
             <LifeNav />
           </div>
           <div className="flex items-center gap-4">
-            <span className="hidden text-sm text-white/40 lg:inline">
-              {user.email}
-            </span>
             {/* Made during the XRP LEDGER HACKATHON */}
             <MessagesLink />
             <NotificationBell unread={unread ?? 0} />
             <ConnectWallet />
-            <form action={signOut}>
-              <button
-                type="submit"
-                className="rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-sm text-white/80 backdrop-blur transition hover:bg-white/10 hover:text-white"
-              >
-                Sign out
-              </button>
-            </form>
+            {/* Profile photo: opens the profile (Settings and Sign out live there). */}
+            <Link
+              href="/life/profile"
+              title="Your profile"
+              aria-label="Your profile"
+              className="rounded-full ring-2 ring-white/15 transition hover:ring-white/40"
+            >
+              <Avatar path={me?.avatar_path} name={myName} className="h-9 w-9 text-sm" />
+            </Link>
           </div>
         </header>
 
