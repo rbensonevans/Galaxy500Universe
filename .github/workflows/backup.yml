@@ -72,10 +72,10 @@ jobs:
           union all select 'public.wallet_transactions', count(*) from public.wallet_transactions
           union all select 'storage.objects', count(*) from storage.objects
           union all select 'sum(public.wallets.balance)', coalesce(sum(balance), 0) from public.wallets
-          order by 1;
           SQL
-          echo "Live database:"; cat backup/counts.txt
-          ls -lh backup/database.dump
+          LC_ALL=C sort -o backup/counts.txt backup/counts.txt
+          # Counts stay out of the log: the repository (and its logs) is public.
+          echo "Dumped $(wc -l < backup/counts.txt) checks, database.dump $(du -h backup/database.dump | cut -f1)."
 
       - name: Copy images
         run: |
@@ -97,7 +97,8 @@ jobs:
           # in plain Postgres; those errors are expected. The row counts below
           # decide whether the backup is good.
           pg_restore --dbname="$SCRATCH_URL" --no-owner --no-privileges backup/database.dump 2> restore-errors.txt || true
-          echo "pg_restore reported $(grep -c 'error:' restore-errors.txt || true) errors (Supabase-managed objects)."
+          echo "pg_restore reported $(grep -c 'error:' restore-errors.txt || true) errors (Supabase-managed objects):"
+          grep 'error:' restore-errors.txt | sed -E 's/^pg_restore: error: //' | cut -c1-160 || true
           psql "$SCRATCH_URL" -X -At -v ON_ERROR_STOP=1 -f - > restored-counts.txt <<'SQL'
           select 'auth.users', count(*) from auth.users
           union all select 'public.profiles', count(*) from public.profiles
@@ -107,10 +108,11 @@ jobs:
           union all select 'public.wallet_transactions', count(*) from public.wallet_transactions
           union all select 'storage.objects', count(*) from storage.objects
           union all select 'sum(public.wallets.balance)', coalesce(sum(balance), 0) from public.wallets
-          order by 1;
           SQL
-          echo "Restored copy:"; cat restored-counts.txt
-          if ! diff -u backup/counts.txt restored-counts.txt; then
+          LC_ALL=C sort -o restored-counts.txt restored-counts.txt
+          if ! cmp -s backup/counts.txt restored-counts.txt; then
+            # Name the checks that differ, without their values.
+            echo "Mismatched: $(diff backup/counts.txt restored-counts.txt | grep '^[<>]' | cut -d'|' -f1 | cut -c3- | sort -u | tr '\n' ' ')"
             echo "::error::The restored backup doesn't match the live database."
             exit 1
           fi
