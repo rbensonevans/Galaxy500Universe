@@ -28,9 +28,11 @@ repository secret**:
 |---|---|
 | `SUPABASE_DB_URL` | Supabase → **Connect** → **Session pooler** connection string, with the database password filled in |
 | `BACKUP_PASSPHRASE` | A long random passphrase (also saved in your password manager) |
-| `SUPABASE_S3_ACCESS_KEY_ID` | Optional, for images: Supabase → Storage → **S3 Configuration** → new access key |
-| `SUPABASE_S3_SECRET_ACCESS_KEY` | Optional, the secret for that key |
-| `SUPABASE_S3_REGION` | Optional, the region shown on the S3 Configuration page |
+| `SUPABASE_S3_ACCESS_KEY_ID` | For images: Supabase → Storage → **S3 Configuration** → new access key |
+| `SUPABASE_S3_SECRET_ACCESS_KEY` | For images: the secret for that key |
+
+The S3 endpoint (`https://qnytfkhvetgckbgueggx.storage.supabase.co/storage/v1/s3`)
+and region (`us-east-1`) are set in the workflow; they aren't secret.
 
 ## Run a backup now
 
@@ -65,7 +67,7 @@ at backup time), and `images/` (if image backup is on).
 
 3. Upload `images/post-images` and `images/message-images` to the matching
    buckets (Supabase S3 API: `aws s3 sync … --endpoint-url
-   https://<ref>.supabase.co/storage/v1/s3`).
+   https://<ref>.storage.supabase.co/storage/v1/s3`).
 4. Point Vercel's `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY`
    at the new project, redo Auth settings (URL configuration, providers,
    SMTP, email templates), and redeploy.
