@@ -1,6 +1,7 @@
 // Made during the XRP LEDGER HACKATHON
 
 import Link from "next/link";
+import Avatar from "@/app/components/Avatar";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import Feed from "../../Feed";
@@ -35,7 +36,7 @@ export default async function PersonPage({
   ] = await Promise.all([
     supabase
       .from("profiles")
-      .select("username, display_name, bio, location, website")
+      .select("username, display_name, bio, location, website, avatar_path")
       .eq("id", id)
       .maybeSingle(),
     supabase.from("follows").select("follower_id", count).eq("followee_id", id),
@@ -84,9 +85,11 @@ export default async function PersonPage({
       </Link>
 
       <div className="mt-4 flex items-center gap-4">
-        <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 via-fuchsia-500 to-cyan-500 text-2xl font-bold text-white shadow-lg shadow-fuchsia-500/20">
-          {name.replace(/^@/, "").charAt(0).toUpperCase() || "?"}
-        </span>
+        <Avatar
+          path={profile?.avatar_path}
+          name={name}
+          className="h-16 w-16 text-2xl shadow-lg shadow-fuchsia-500/20"
+        />
         <div className="min-w-0">
           <h1 className="truncate text-3xl font-bold text-white sm:text-4xl">
             {name}

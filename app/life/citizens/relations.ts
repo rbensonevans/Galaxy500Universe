@@ -8,6 +8,8 @@ export type Person = {
   id: string;
   username: string | null;
   display_name: string | null;
+  /** Profile photo in the avatars bucket (see lib/avatar.ts). */
+  avatar_path?: string | null;
 };
 
 export type ConnectionState = {

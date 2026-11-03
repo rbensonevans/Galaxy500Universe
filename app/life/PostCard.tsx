@@ -4,6 +4,7 @@ import { followUser } from "./citizens/actions";
 import { type ReactionSummary } from "./reactions";
 import ReactionBar from "./ReactionBar";
 import CommentForm from "./CommentForm";
+import Avatar from "@/app/components/Avatar";
 
 export type FeedComment = {
   id: string;
@@ -11,6 +12,8 @@ export type FeedComment = {
   created_at: string;
   user_id: string;
   authorName: string;
+  /** Author's profile photo path (null shows their initial). */
+  authorAvatar?: string | null;
   /** Link to the author's profile. */
   authorHref?: string;
   reactions: ReactionSummary;
@@ -23,6 +26,8 @@ export type FeedPost = {
   created_at: string;
   user_id: string;
   authorName: string;
+  /** Author's profile photo path (null shows their initial). */
+  authorAvatar?: string | null;
   /** Link to the author's profile (omitted for company-labeled posts). */
   authorHref?: string;
   /** Show a Follow button (another member the viewer doesn't follow yet). */
@@ -34,14 +39,6 @@ export type FeedPost = {
   reactions: ReactionSummary;
   comments: FeedComment[];
 };
-
-function Avatar({ name }: { name: string }) {
-  return (
-    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 via-fuchsia-500 to-cyan-500 text-sm font-bold text-white">
-      {(name || "?").charAt(0).toUpperCase()}
-    </span>
-  );
-}
 
 // Made during the XRP LEDGER HACKATHON
 const VISIBILITY_LABELS = {
@@ -89,7 +86,7 @@ export default function PostCard({
   return (
     <article className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-md">
       <header className="flex items-center gap-3">
-        <Avatar name={post.authorName} />
+        <Avatar path={post.authorAvatar} name={post.authorName} />
         <div className="flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <AuthorName
@@ -170,7 +167,7 @@ export default function PostCard({
         <div className="flex flex-col gap-3">
           {post.comments.map((c) => (
             <div key={c.id} className="flex gap-3">
-              <Avatar name={c.authorName} />
+              <Avatar path={c.authorAvatar} name={c.authorName} />
               <div className="flex-1">
                 <div className="rounded-2xl bg-black/30 px-3 py-2">
                   <div className="flex items-center justify-between gap-2">

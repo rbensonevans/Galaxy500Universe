@@ -150,13 +150,15 @@ export default async function Feed({
   const { data: profileRows } = authorIds.length
     ? await supabase
         .from("profiles")
-        .select("id, display_name")
+        .select("id, display_name, avatar_path")
         .in("id", authorIds)
     : { data: [] };
   const nameById = new Map<string, string>();
+  const avatarById = new Map<string, string>();
   for (const p of profileRows ?? []) {
     const displayName = p.display_name?.trim();
     if (displayName) nameById.set(p.id, displayName);
+    if (p.avatar_path) avatarById.set(p.id, p.avatar_path);
   }
   // Made during the XRP LEDGER HACKATHON
   // Authors the viewer follows: no Follow button, and a Universal Feed boost.
@@ -209,6 +211,7 @@ export default async function Feed({
       created_at: c.created_at,
       user_id: c.user_id,
       authorName: authorName(c.user_id),
+      authorAvatar: avatarById.get(c.user_id) ?? null,
       reactions: summarize(reactsByComment.get(c.id) ?? [], me),
       authorHref: profileHref(c.user_id, me),
     });
@@ -221,6 +224,8 @@ export default async function Feed({
     created_at: p.created_at,
     user_id: p.user_id,
     authorName: postAuthorName ?? authorName(p.user_id),
+    // A company-labeled post shows the company's initial, not a person's photo.
+    authorAvatar: postAuthorName ? null : (avatarById.get(p.user_id) ?? null),
     // A company-labeled post (Startup Feed page) links to no personal profile.
     authorHref: postAuthorName ? undefined : profileHref(p.user_id, me),
     canFollow: !postAuthorName && p.user_id !== me && !followed.has(p.user_id),
