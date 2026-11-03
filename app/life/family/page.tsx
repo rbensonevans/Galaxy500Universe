@@ -15,8 +15,8 @@ export default function FamilyPage() {
       <p className="mt-2 text-white/60">
         Share moments with the people you call family. Posts here are seen by
         you and the members you&apos;ve connected with as family in{" "}
-        <Link href="/life/people" className="text-violet-300 hover:text-violet-200">
-          People
+        <Link href="/life/citizens" className="text-violet-300 hover:text-violet-200">
+          Citizens
         </Link>
         .
       </p>

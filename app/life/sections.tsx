@@ -48,7 +48,7 @@ function FriendsIcon(props: IconProps) {
 }
 
 // Made during the XRP LEDGER HACKATHON
-function PeopleIcon(props: IconProps) {
+function CitizensIcon(props: IconProps) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" {...props}>
       <circle cx="10" cy="8" r="4" />
@@ -150,11 +150,11 @@ export const SECTIONS: Section[] = [
   },
   // Made during the XRP LEDGER HACKATHON
   {
-    slug: "people",
-    name: "People",
-    href: "/life/people",
-    blurb: "Find citizens, follow them, and connect as friends or family.",
-    icon: PeopleIcon,
+    slug: "citizens",
+    name: "Citizens",
+    href: "/life/citizens",
+    blurb: "Find fellow citizens, follow them, and connect as friends or family.",
+    icon: CitizensIcon,
     accent: "from-violet-500/30 to-cyan-500/10",
   },
   {

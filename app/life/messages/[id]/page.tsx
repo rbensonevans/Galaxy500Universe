@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { personName, UUID_RE } from "../../people/relations";
+import { personName, UUID_RE } from "../../citizens/relations";
 import { deleteMessage, respondMessageRequest } from "../actions";
 import BlockButton from "../BlockButton";
 import ChatComposer from "../ChatComposer";
@@ -134,7 +134,7 @@ export default async function ChatPage({
       </Link>
 
       <div className="mt-4 flex items-center justify-between gap-4">
-        <Link href={`/life/people/${other}`} className="flex min-w-0 items-center gap-3">
+        <Link href={`/life/citizens/${other}`} className="flex min-w-0 items-center gap-3">
           <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 via-fuchsia-500 to-cyan-500 text-lg font-bold text-white">
             {name.replace(/^@/, "").charAt(0).toUpperCase() || "?"}
           </span>

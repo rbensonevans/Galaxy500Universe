@@ -36,7 +36,7 @@ export function personName(p: Pick<Person, "username" | "display_name"> | null |
 }
 
 export function profileHref(id: string, me: string) {
-  return id === me ? "/life/profile" : `/life/people/${id}`;
+  return id === me ? "/life/profile" : `/life/citizens/${id}`;
 }
 
 // Strict UUID check so ids can be interpolated into PostgREST filters safely.

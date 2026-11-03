@@ -22,7 +22,7 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default async function PeoplePage({
+export default async function CitizensPage({
   searchParams,
 }: {
   searchParams: Promise<{ q?: string }>;
@@ -98,10 +98,10 @@ export default async function PeoplePage({
   return (
     <div className="mx-auto max-w-3xl">
       <p className="text-sm font-medium uppercase tracking-[0.35em] text-violet-300/80">
-        People
+        Citizens
       </p>
       <h1 className="mt-3 text-3xl font-bold text-white sm:text-4xl">
-        Find your people
+        Find fellow citizens
       </h1>
       <p className="mt-2 text-white/60">
         Search for citizens of Galaxy500Universe by name or @handle. Follow
@@ -109,7 +109,7 @@ export default async function PeoplePage({
         family to share your Friends and Family feeds.
       </p>
 
-      <form action="/life/people" className="mt-6 flex gap-2">
+      <form action="/life/citizens" className="mt-6 flex gap-2">
         <input
           name="q"
           defaultValue={q}
@@ -132,7 +132,7 @@ export default async function PeoplePage({
             <code className="rounded bg-black/30 px-1">
               supabase/migrations/0020_people.sql
             </code>{" "}
-            in your Supabase SQL Editor to enable People.
+            in your Supabase SQL Editor to enable Citizens.
           </p>
         </div>
       )}

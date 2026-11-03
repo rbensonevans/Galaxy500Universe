@@ -60,7 +60,7 @@ export default function PrivacyPage() {
 
       <h2>Your choices</h2>
       <ul>
-        <li>Edit your profile and hide yourself from People search in Settings.</li>
+        <li>Edit your profile and hide yourself from Citizens search in Settings.</li>
         <li>Delete your own posts, comments, and messages at any time.</li>
         <li>
           To delete your account and its data, email{" "}

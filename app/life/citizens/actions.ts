@@ -12,7 +12,7 @@ const KINDS = ["friend", "family"];
 async function call(fn: string, args: Record<string, unknown>) {
   const supabase = await createClient();
   await supabase.rpc(fn, args);
-  // Relationship state shows on profiles, People, notifications, the header
+  // Relationship state shows on profiles, Citizens, notifications, the header
   // badge, and Friends / Family feed visibility, so refresh the whole area.
   revalidatePath("/life", "layout");
 }

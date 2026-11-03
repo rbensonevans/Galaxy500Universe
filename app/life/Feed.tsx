@@ -4,7 +4,7 @@ import { type ReactionSummary } from "./reactions";
 import Composer from "./Composer";
 import PostCard, { type FeedPost, type FeedComment } from "./PostCard";
 import { SECTIONS, MORE_SECTIONS } from "./sections";
-import { profileHref } from "./people/relations";
+import { profileHref } from "./citizens/relations";
 
 // Made during the XRP LEDGER HACKATHON
 // Display names for the feed streams, used to label where a post came from on

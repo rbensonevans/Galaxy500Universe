@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { deletePost, deleteComment } from "./actions";
-import { followUser } from "./people/actions";
+import { followUser } from "./citizens/actions";
 import { type ReactionSummary } from "./reactions";
 import ReactionBar from "./ReactionBar";
 import CommentForm from "./CommentForm";

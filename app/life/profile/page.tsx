@@ -108,7 +108,7 @@ export default async function ProfilePage() {
 
       {/* Made during the XRP LEDGER HACKATHON */}
       <Link
-        href="/life/people"
+        href="/life/citizens"
         className="mt-6 grid max-w-2xl grid-cols-2 gap-3 sm:grid-cols-4"
       >
         {stats.map((s) => (

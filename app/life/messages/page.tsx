@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { isMissingTableError } from "@/lib/supabase/errors";
-import { personName, type Person } from "../people/relations";
+import { personName, type Person } from "../citizens/relations";
 
 type Conversation = {
   id: string;
@@ -105,7 +105,7 @@ export default async function MessagesPage({
           </h1>
         </div>
         <Link
-          href="/life/people"
+          href="/life/citizens"
           className="mt-1 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-sm text-white/80 backdrop-blur transition hover:bg-white/10 hover:text-white"
         >
           New message
@@ -113,7 +113,7 @@ export default async function MessagesPage({
       </div>
       <p className="mt-2 text-white/60">
         Chat one-on-one and send Galaxy Credits. Start a conversation from
-        anyone&apos;s profile in People.
+        anyone&apos;s profile in Citizens.
       </p>
 
       <nav className="mt-6 flex gap-1.5">
@@ -142,7 +142,7 @@ export default async function MessagesPage({
         <div className="mt-6 rounded-2xl border border-dashed border-white/15 bg-white/[0.03] p-10 text-center text-white/50">
           {showRequests
             ? "No message requests. Messages from members you aren't connected with land here."
-            : "No conversations yet. Find someone in People and say hello."}
+            : "No conversations yet. Find a fellow citizen in Citizens and say hello."}
         </div>
       )}
 

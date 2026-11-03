@@ -118,7 +118,7 @@ export default function ProfileForm({
             className="mt-0.5 h-4 w-4 accent-fuchsia-500"
           />
           <span>
-            <span className="text-white/70">Show me in People search</span>
+            <span className="text-white/70">Show me in Citizens search</span>
             <span className="block text-xs text-white/30">
               When off, members can still reach your profile from your posts.
             </span>

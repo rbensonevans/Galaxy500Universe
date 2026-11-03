@@ -3,14 +3,14 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { isMissingTableError } from "@/lib/supabase/errors";
-import { FollowButton, RespondButtons } from "../people/ConnectButtons";
+import { FollowButton, RespondButtons } from "../citizens/ConnectButtons";
 import {
   loadRelationships,
   NO_RELATIONSHIP,
   personName,
   profileHref,
   type Person,
-} from "../people/relations";
+} from "../citizens/relations";
 
 type Notification = {
   id: string;
@@ -99,8 +99,8 @@ export default async function NotificationsPage() {
         <div className="mt-6 rounded-2xl border border-dashed border-white/15 bg-white/[0.03] p-10 text-center text-white/50">
           Nothing yet. When someone follows you or sends a friend or family
           request, it shows up here.{" "}
-          <Link href="/life/people" className="text-violet-300 hover:text-violet-200">
-            Find people
+          <Link href="/life/citizens" className="text-violet-300 hover:text-violet-200">
+            Find fellow citizens
           </Link>
           .
         </div>

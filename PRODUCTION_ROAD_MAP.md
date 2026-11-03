@@ -18,7 +18,7 @@ Already working on the live site (`https://www.galaxy500universe.com`, also
   Communities, Movies, Gaming), Startup Feeds, and the Universal Feed.
 - Posts with images (up to 5 MB), comments, reactions, and per-post
   visibility.
-- People: search, profiles, follows, friend and family connections,
+- Citizens: search, profiles, follows, friend and family connections,
   notifications.
 - Direct messages with requests, images, Send GLXY, and blocking.
 - Galaxy Credits (GLXY): monthly grants, wallet, transfers, Crypto Bank,
@@ -265,3 +265,4 @@ migration (if any).
 | 14 | Monitoring complete: Supabase usage review, weekly check | — | — |
 | 15 | Nightly encrypted backups (GitHub Actions) | `85b896d`, `2873735` | — |
 | 16 | Image backup in the nightly job | `73088a2` | — |
+| 17 | "People" renamed "Citizens" (`/life/citizens`) | (this commit) | — |
