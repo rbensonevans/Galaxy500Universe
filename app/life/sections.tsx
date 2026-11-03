@@ -110,15 +110,6 @@ function SportsIcon(props: IconProps) {
   );
 }
 
-function ProfileIcon(props: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-      <circle cx="12" cy="7" r="4" />
-    </svg>
-  );
-}
-
 function CommunitiesIcon(props: IconProps) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" {...props}>
@@ -188,14 +179,6 @@ export const SECTIONS: Section[] = [
     blurb: "Register and grow the companies you create.",
     icon: RocketIcon,
     accent: "from-violet-500/30 to-fuchsia-500/10",
-  },
-  {
-    slug: "profile",
-    name: "Profile",
-    href: "/life/profile",
-    blurb: "How you appear across the universe.",
-    icon: ProfileIcon,
-    accent: "from-sky-500/30 to-fuchsia-500/10",
   },
 ];
 

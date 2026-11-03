@@ -268,4 +268,5 @@ migration (if any).
 | 17 | "People" renamed "Citizens" (`/life/citizens`) | `5217aaf` | — |
 | 18 | Profile photos; header photo opens the profile; Settings and Sign out on the profile; email removed from the header | `b41d81f` | `0025_avatars.sql` |
 | 19 | Profile photos on posts, comments, citizen lists, and citizen profiles | `cc8e927` | — |
-| 20 | Profile photos in Messages (inbox and chat header) | (this commit) | — |
+| 20 | Profile photos in Messages (inbox and chat header) | `34acb03` | — |
+| 21 | Profile removed from the top nav (the header photo opens it) | (this commit) | — |

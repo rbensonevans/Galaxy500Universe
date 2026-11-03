@@ -11,13 +11,11 @@ import { CRYPTO_LINKS } from "@/app/life/cryptowallstreet/links";
 export default function LifeNav() {
   const pathname = usePathname();
 
-  // Primary sections, then "More" (overflow feeds), then Profile last.
-  const primary = SECTIONS.filter((s) => s.slug !== "profile");
-  const profile = SECTIONS.find((s) => s.slug === "profile");
-
+  // Primary sections, then CryptoWallStreet and "More" (overflow feeds). The
+  // profile opens from the photo at the top right of the header.
   const links = [
     { name: "Life", href: "/life", exact: true, extra: [] as string[] },
-    ...primary.map((s) => ({
+    ...SECTIONS.map((s) => ({
       name: s.name,
       href: s.href,
       exact: false,
@@ -39,9 +37,6 @@ export default function LifeNav() {
       // Highlight "More" when on any overflow feed too.
       extra: MORE_SECTIONS.map((s) => s.href),
     },
-    ...(profile
-      ? [{ name: profile.name, href: profile.href, exact: false, extra: [] as string[] }]
-      : []),
   ];
 
   return (
