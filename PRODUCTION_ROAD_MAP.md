@@ -72,7 +72,7 @@ Make the site ready for real users.
   on 2026-10-29; `galaxy500-universe` is the only project. The app uses only
   `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` (the
   publishable key); no `SUPABASE_SECRET_KEY` is needed.
-- [ ] **Nightly encrypted backups (free).** `.github/workflows/backup.yml`:
+- [x] **Nightly encrypted backups (free).** `.github/workflows/backup.yml`:
   `pg_dump` of public/auth/storage plus the image buckets, a restore test
   against a scratch Postgres (row counts must match), AES-256 encryption with
   `BACKUP_PASSPHRASE`, kept 90 days as GitHub artifacts. Setup and restore
@@ -83,7 +83,9 @@ Make the site ready for real users.
   - [x] First run passed the restore test on 2026-11-03 (every count and
     the wallet balance total matched; artifact `galaxy500universe-2026-11-03`,
     71 KB encrypted).
-  - [ ] Image backup: Supabase S3 access key secrets.
+  - [x] Image backup: Supabase S3 access key (`GitHub backup`) in secrets
+    `SUPABASE_S3_ACCESS_KEY_ID` / `SUPABASE_S3_SECRET_ACCESS_KEY`. First run
+    2026-11-03: 26 files (38 MB), matching `storage.objects`.
 - [ ] **Supabase production plan.** Upgrade to a paid plan for daily backups,
   point-in-time recovery, and no project pausing.
 - [x] **Email.** Set up 2026-10-29.
@@ -262,3 +264,4 @@ migration (if any).
 | 13 | UptimeRobot monitors | — (UptimeRobot) | — |
 | 14 | Monitoring complete: Supabase usage review, weekly check | — | — |
 | 15 | Nightly encrypted backups (GitHub Actions) | `85b896d`, `2873735` | — |
+| 16 | Image backup in the nightly job | `73088a2` | — |
