@@ -128,7 +128,7 @@ jobs:
           ls -lh "galaxy500universe-$stamp.tar.gz.gpg"
 
       - name: Store the encrypted backup
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: galaxy500universe-${{ env.STAMP }}
           path: galaxy500universe-${{ env.STAMP }}.tar.gz.gpg

@@ -77,8 +77,12 @@ Make the site ready for real users.
   against a scratch Postgres (row counts must match), AES-256 encryption with
   `BACKUP_PASSPHRASE`, kept 90 days as GitHub artifacts. Setup and restore
   steps in `supabase/BACKUPS.md`.
-  - [ ] Repository secrets `SUPABASE_DB_URL`, `BACKUP_PASSPHRASE`.
-  - [ ] First manual run passes the restore test.
+  - [x] Repository secrets `SUPABASE_DB_URL` (session pooler, database
+    password reset 2026-11-03) and `BACKUP_PASSPHRASE` (also in the password
+    manager).
+  - [x] First run passed the restore test on 2026-11-03 (every count and
+    the wallet balance total matched; artifact `galaxy500universe-2026-11-03`,
+    71 KB encrypted).
   - [ ] Image backup: Supabase S3 access key secrets.
 - [ ] **Supabase production plan.** Upgrade to a paid plan for daily backups,
   point-in-time recovery, and no project pausing.
@@ -257,4 +261,4 @@ migration (if any).
 | 12 | Health check `/api/health` | `fcf889b` | `0024_health_check.sql` |
 | 13 | UptimeRobot monitors | — (UptimeRobot) | — |
 | 14 | Monitoring complete: Supabase usage review, weekly check | — | — |
-| 15 | Nightly encrypted backups (GitHub Actions) | (this commit) | — |
+| 15 | Nightly encrypted backups (GitHub Actions) | `85b896d`, `2873735` | — |
