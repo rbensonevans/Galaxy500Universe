@@ -6,7 +6,7 @@ import LifeNav from "@/app/components/LifeNav";
 import ConnectWallet from "@/app/components/ConnectWallet";
 import NotificationBell from "@/app/components/NotificationBell";
 import MessagesLink from "@/app/components/MessagesLink";
-import Avatar from "@/app/components/Avatar";
+import ProfileLink from "@/app/components/ProfileLink";
 
 // Shared shell for the entire authenticated Life area: cosmic background,
 // header with section navigation, and sign-out. The proxy middleware already
@@ -64,15 +64,7 @@ export default async function LifeLayout({
             <MessagesLink />
             <NotificationBell unread={unread ?? 0} />
             <ConnectWallet />
-            {/* Profile photo: opens the profile (Settings and Sign out live there). */}
-            <Link
-              href="/life/profile"
-              title="Your profile"
-              aria-label="Your profile"
-              className="rounded-full ring-2 ring-white/15 transition hover:ring-white/40"
-            >
-              <Avatar path={me?.avatar_path} name={myName} className="h-9 w-9 text-sm" />
-            </Link>
+            <ProfileLink path={me?.avatar_path} name={myName} />
           </div>
         </header>
 
