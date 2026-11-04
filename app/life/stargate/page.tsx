@@ -1,5 +1,11 @@
 import Link from "next/link";
-import { STARGATE_SECTIONS } from "../sections";
+import { SECTIONS, STARGATE_SECTIONS } from "../sections";
+
+// Space also has its own nav tab; its card leads the StarGate destinations.
+const CARDS = [
+  ...SECTIONS.filter((s) => s.slug === "space"),
+  ...STARGATE_SECTIONS,
+];
 
 export default function StarGatePage() {
   return (
@@ -15,7 +21,7 @@ export default function StarGatePage() {
       </p>
 
       <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2">
-        {STARGATE_SECTIONS.map(({ slug, name, href, blurb, icon: Icon, accent }) => (
+        {CARDS.map(({ slug, name, href, blurb, icon: Icon, accent }) => (
           <Link
             key={slug}
             href={href}

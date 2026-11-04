@@ -272,4 +272,5 @@ migration (if any).
 | 21 | Profile removed from the top nav (the header photo opens it) | `4013c36` | — |
 | 22 | Header photo highlighted on profile pages | `237ef1f` | — |
 | 23 | "More" renamed "StarGate" (`/life/stargate`, "Teleport across the galaxy"), placed after Travel | `cdc5b1c` | — |
-| 24 | New "Space" feed (`/life/space`, "The final frontier"), between StarGate and Startups | (this commit) | — |
+| 24 | New "Space" feed (`/life/space`, "The final frontier"), between StarGate and Startups | `db0c84f` | — |
+| 25 | Space card on the StarGate page | (this commit) | — |
