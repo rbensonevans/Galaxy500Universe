@@ -69,6 +69,15 @@ function GlobeIcon(props: IconProps) {
   );
 }
 
+function PlanetIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <circle cx="12" cy="12" r="6" />
+      <path d="M4.5 16.5C2 18.6 1.2 20.4 2 21.2c1.3 1.3 6.6-1.4 11.8-6.6S21.7 4.1 20.4 2.8c-.8-.8-2.6 0-4.7 2.5" />
+    </svg>
+  );
+}
+
 function GamingIcon(props: IconProps) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" {...props}>
@@ -171,6 +180,14 @@ export const SECTIONS: Section[] = [
     blurb: "Chart the places you've been and worlds to explore.",
     icon: GlobeIcon,
     accent: "from-cyan-500/30 to-emerald-500/10",
+  },
+  {
+    slug: "space",
+    name: "Space",
+    href: "/life/space",
+    blurb: "The final frontier — the source of humanity's endless wealth.",
+    icon: PlanetIcon,
+    accent: "from-indigo-500/30 to-sky-500/10",
   },
   {
     slug: "startups",

@@ -11,7 +11,7 @@ import { CRYPTO_LINKS } from "@/app/life/cryptowallstreet/links";
 export default function LifeNav() {
   const pathname = usePathname();
 
-  // StarGate (overflow feeds) sits right after Travel.
+  // StarGate (overflow feeds) sits right after Travel, before Space.
   const stargate = {
     name: "StarGate",
     href: "/life/stargate",

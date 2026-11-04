@@ -21,6 +21,7 @@ const FEED_PATHS: Record<string, string> = {
   music: "/life/music",
   sports: "/life/sports",
   travel: "/life/travel",
+  space: "/life/space",
   communities: "/life/communities",
   gaming: "/life/gaming",
 };
