@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { SECTIONS, MORE_SECTIONS } from "@/app/life/sections";
+import { SECTIONS, STARGATE_SECTIONS } from "@/app/life/sections";
 import { CRYPTO_LINKS } from "@/app/life/cryptowallstreet/links";
 
 // Top navigation for the Life area. Highlights the active section based on the
@@ -11,16 +11,23 @@ import { CRYPTO_LINKS } from "@/app/life/cryptowallstreet/links";
 export default function LifeNav() {
   const pathname = usePathname();
 
-  // Primary sections, then CryptoWallStreet and "More" (overflow feeds). The
+  // StarGate (overflow feeds) sits right after Travel.
+  const stargate = {
+    name: "StarGate",
+    href: "/life/stargate",
+    exact: false,
+    // Highlight StarGate when on any of its feeds too.
+    extra: STARGATE_SECTIONS.map((s) => s.href),
+  };
+
+  // Primary sections (with StarGate after Travel), then CryptoWallStreet. The
   // profile opens from the photo at the top right of the header.
   const links = [
     { name: "Life", href: "/life", exact: true, extra: [] as string[] },
-    ...SECTIONS.map((s) => ({
-      name: s.name,
-      href: s.href,
-      exact: false,
-      extra: [] as string[],
-    })),
+    ...SECTIONS.flatMap((s) => [
+      { name: s.name, href: s.href, exact: false, extra: [] as string[] },
+      ...(s.slug === "travel" ? [stargate] : []),
+    ]),
     {
       name: "CryptoWallStreet",
       href: "/life/cryptowallstreet",
@@ -29,13 +36,6 @@ export default function LifeNav() {
       extra: CRYPTO_LINKS.map((l) => l.href).filter(
         (h) => !h.startsWith("/life/profile"),
       ),
-    },
-    {
-      name: "More",
-      href: "/life/more",
-      exact: false,
-      // Highlight "More" when on any overflow feed too.
-      extra: MORE_SECTIONS.map((s) => s.href),
     },
   ];
 

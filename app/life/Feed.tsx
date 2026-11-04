@@ -3,7 +3,7 @@ import { isMissingTableError } from "@/lib/supabase/errors";
 import { type ReactionSummary } from "./reactions";
 import Composer from "./Composer";
 import PostCard, { type FeedPost, type FeedComment } from "./PostCard";
-import { SECTIONS, MORE_SECTIONS } from "./sections";
+import { SECTIONS, STARGATE_SECTIONS } from "./sections";
 import { profileHref } from "./citizens/relations";
 
 // Made during the XRP LEDGER HACKATHON
@@ -11,7 +11,7 @@ import { profileHref } from "./citizens/relations";
 // the Universal Feed.
 const FEED_NAMES = new Map<string, string>([
   ["life", "Life"],
-  ...[...SECTIONS, ...MORE_SECTIONS].map((s) => [s.slug, s.name] as [string, string]),
+  ...[...SECTIONS, ...STARGATE_SECTIONS].map((s) => [s.slug, s.name] as [string, string]),
 ]);
 
 type ReactionRow = {

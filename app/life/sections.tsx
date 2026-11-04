@@ -182,9 +182,10 @@ export const SECTIONS: Section[] = [
   },
 ];
 
-// Overflow feeds surfaced on the /life/more page (keeps the top nav tidy).
-// Add new social feeds here and they appear on the More page automatically.
-export const MORE_SECTIONS: Section[] = [
+// Overflow feeds surfaced on the StarGate page (/life/stargate), which keeps
+// the top nav tidy. Add new social feeds here and they appear there
+// automatically.
+export const STARGATE_SECTIONS: Section[] = [
   {
     slug: "communities",
     name: "Communities",

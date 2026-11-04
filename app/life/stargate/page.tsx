@@ -1,21 +1,21 @@
 import Link from "next/link";
-import { MORE_SECTIONS } from "../sections";
+import { STARGATE_SECTIONS } from "../sections";
 
-export default function MorePage() {
+export default function StarGatePage() {
   return (
     <div>
       <p className="text-sm font-medium uppercase tracking-[0.35em] text-violet-300/80">
-        More
+        StarGate
       </p>
       <h1 className="mt-3 text-3xl font-bold text-white sm:text-4xl">
-        More spaces
+        Teleport across the galaxy
       </h1>
       <p className="mt-3 max-w-xl text-white/60">
         Extra feeds and spaces across Galaxy500Universe.
       </p>
 
       <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2">
-        {MORE_SECTIONS.map(({ slug, name, href, blurb, icon: Icon, accent }) => (
+        {STARGATE_SECTIONS.map(({ slug, name, href, blurb, icon: Icon, accent }) => (
           <Link
             key={slug}
             href={href}
