@@ -12,6 +12,12 @@ export const PROVIDER_LABELS: Record<string, string> = {
   facebook: "Facebook",
 };
 
+// Providers a citizen can link from Settings (Facebook waits for Meta).
+export const LINKABLE_PROVIDERS = ["google", "linkedin_oidc"];
+
+// Set while linking so /auth/callback returns to Settings.
+export const LINK_COOKIE = "link_return";
+
 export function linkedProviders(v: Verification | null | undefined) {
   const linked = v?.linked_providers ?? [];
   return Object.keys(PROVIDER_LABELS).filter((p) => linked.includes(p));

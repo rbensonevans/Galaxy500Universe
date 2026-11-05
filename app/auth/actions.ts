@@ -1,9 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { LINKABLE_PROVIDERS, LINK_COOKIE } from "@/lib/verification";
 
 export type AuthState = {
   error?: string;
@@ -123,6 +124,58 @@ export async function signInWithProvider(formData: FormData) {
     redirect(`/?auth_error=${encodeURIComponent(error?.message ?? "Sign-in failed")}`);
   }
   redirect(data.url);
+}
+
+const SETTINGS = "/life/profile/settings";
+
+// Link Google or LinkedIn to the signed-in account (Supabase manual identity
+// linking). The provider returns to /auth/callback like a sign-in; the cookie
+// tells the callback to come back to Settings instead of entering Life.
+export async function linkProvider(formData: FormData) {
+  const provider = String(formData.get("provider") ?? "");
+  if (!LINKABLE_PROVIDERS.includes(provider)) {
+    redirect(`${SETTINGS}?link_error=${encodeURIComponent("Unknown provider")}`);
+  }
+
+  const h = await headers();
+  const host = h.get("x-forwarded-host") ?? h.get("host");
+  const proto = h.get("x-forwarded-proto") ?? "http";
+
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.linkIdentity({
+    provider: provider as OAuthProvider,
+    options: { redirectTo: `${proto}://${host}/auth/callback` },
+  });
+  if (error || !data.url) {
+    redirect(`${SETTINGS}?link_error=${encodeURIComponent(error?.message ?? "Linking failed")}`);
+  }
+  (await cookies()).set(LINK_COOKIE, "1", {
+    httpOnly: true,
+    secure: proto === "https",
+    sameSite: "lax",
+    path: "/auth/callback",
+    maxAge: 600,
+  });
+  redirect(data.url);
+}
+
+// Unlink a provider. Supabase refuses to remove an account's only sign-in
+// method, so the citizen can always still sign in.
+export async function unlinkProvider(formData: FormData) {
+  const provider = String(formData.get("provider") ?? "");
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getUserIdentities();
+  const identities = data?.identities ?? [];
+  const identity = identities.find((i) => i.provider === provider);
+  if (!identity || identities.length < 2) {
+    redirect(`${SETTINGS}?link_error=${encodeURIComponent("That account can't be unlinked.")}`);
+  }
+  const { error } = await supabase.auth.unlinkIdentity(identity);
+  if (error) {
+    redirect(`${SETTINGS}?link_error=${encodeURIComponent(error.message)}`);
+  }
+  revalidatePath("/life", "layout");
+  redirect(`${SETTINGS}?unlinked=${encodeURIComponent(provider)}`);
 }
 
 // Forgot password: email a reset link. The Reset password email template

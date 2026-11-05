@@ -2,8 +2,15 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { isMissingTableError } from "@/lib/supabase/errors";
 import ProfileForm from "../ProfileForm";
+import LinkedAccounts from "./LinkedAccounts";
+import { PROVIDER_LABELS } from "@/lib/verification";
 
-export default async function ProfileSettingsPage() {
+export default async function ProfileSettingsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ linked?: string; unlinked?: string; link_error?: string }>;
+}) {
+  const params = await searchParams;
   const supabase = await createClient();
   const {
     data: { user },
@@ -18,6 +25,15 @@ export default async function ProfileSettingsPage() {
     .maybeSingle();
 
   const tableMissing = isMissingTableError(error);
+
+  const { data: idData } = await supabase.auth.getUserIdentities();
+  const identities = idData?.identities ?? [];
+  const providers = identities.map((i) => i.provider).filter((p) => p !== "email");
+  const notice = params.linked
+    ? "Account linked."
+    : params.unlinked
+      ? `${PROVIDER_LABELS[params.unlinked] ?? "Account"} unlinked.`
+      : undefined;
 
   return (
     <div>
@@ -64,6 +80,15 @@ export default async function ProfileSettingsPage() {
 
       <div className="mt-8 max-w-2xl">
         <ProfileForm profile={profile ?? null} email={email} />
+      </div>
+
+      <div className="mt-8 max-w-2xl">
+        <LinkedAccounts
+          providers={providers}
+          hasEmail={identities.some((i) => i.provider === "email")}
+          notice={notice}
+          error={params.link_error}
+        />
       </div>
     </div>
   );

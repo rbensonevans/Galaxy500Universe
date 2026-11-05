@@ -167,8 +167,9 @@ monthly GLXY grants.
     `profiles.linked_providers`, copied from `auth.identities`; **Verified**
     (violet check) from `profiles.verified_at`, which only the database can set.
   - [ ] Decide what grants Verified, then set `verified_at` from that process.
-  - [ ] Let email accounts link Google/LinkedIn (Supabase manual identity
-    linking).
+  - [x] Let email accounts link Google/LinkedIn: Settings → Linked accounts
+    (Supabase manual identity linking; dashboard: Authentication → Sign In /
+    Providers → Allow manual linking).
 - [ ] **Duplicate checks.** Flag accounts that share providers, devices, or
   signup patterns.
 - [ ] **Grant locking.** New accounts hold grants in a pending state until
@@ -280,4 +281,5 @@ migration (if any).
 | 23 | "More" renamed "StarGate" (`/life/stargate`, "Teleport across the galaxy"), placed after Travel | `cdc5b1c` | — |
 | 24 | New "Space" feed (`/life/space`, "The final frontier"), between StarGate and Startups | `db0c84f` | — |
 | 25 | Space card on the StarGate page | `ba6f7af` | — |
-| 26 | Verification badges on photos: Linked (Google/LinkedIn/Facebook sign-in) and Verified (granted by the database only) | (this commit) | `0026_verification.sql` |
+| 26 | Verification badges on photos: Linked (Google/LinkedIn/Facebook sign-in) and Verified (granted by the database only) | `d853a33`, `328a9a5` | `0026_verification.sql` |
+| 27 | Settings → Linked accounts: link or unlink Google and LinkedIn | (this commit) | — (Supabase: Allow manual linking) |
