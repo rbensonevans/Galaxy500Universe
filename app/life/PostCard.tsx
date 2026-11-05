@@ -5,6 +5,7 @@ import { type ReactionSummary } from "./reactions";
 import ReactionBar from "./ReactionBar";
 import CommentForm from "./CommentForm";
 import Avatar from "@/app/components/Avatar";
+import type { Verification } from "@/lib/verification";
 
 export type FeedComment = {
   id: string;
@@ -14,6 +15,8 @@ export type FeedComment = {
   authorName: string;
   /** Author's profile photo path (null shows their initial). */
   authorAvatar?: string | null;
+  /** Author's verification badge. */
+  authorVerification?: Verification | null;
   /** Link to the author's profile. */
   authorHref?: string;
   reactions: ReactionSummary;
@@ -28,6 +31,8 @@ export type FeedPost = {
   authorName: string;
   /** Author's profile photo path (null shows their initial). */
   authorAvatar?: string | null;
+  /** Author's verification badge. */
+  authorVerification?: Verification | null;
   /** Link to the author's profile (omitted for company-labeled posts). */
   authorHref?: string;
   /** Show a Follow button (another member the viewer doesn't follow yet). */
@@ -86,7 +91,7 @@ export default function PostCard({
   return (
     <article className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-md">
       <header className="flex items-center gap-3">
-        <Avatar path={post.authorAvatar} name={post.authorName} />
+        <Avatar path={post.authorAvatar} name={post.authorName} verification={post.authorVerification} />
         <div className="flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <AuthorName
@@ -167,7 +172,7 @@ export default function PostCard({
         <div className="flex flex-col gap-3">
           {post.comments.map((c) => (
             <div key={c.id} className="flex gap-3">
-              <Avatar path={c.authorAvatar} name={c.authorName} />
+              <Avatar path={c.authorAvatar} name={c.authorName} verification={c.authorVerification} />
               <div className="flex-1">
                 <div className="rounded-2xl bg-black/30 px-3 py-2">
                   <div className="flex items-center justify-between gap-2">

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Avatar from "@/app/components/Avatar";
+import { BadgeChip } from "@/app/components/VerificationBadge";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import Feed from "../../Feed";
@@ -36,7 +37,7 @@ export default async function PersonPage({
   ] = await Promise.all([
     supabase
       .from("profiles")
-      .select("username, display_name, bio, location, website, avatar_path")
+      .select("username, display_name, bio, location, website, avatar_path, linked_providers, verified_at")
       .eq("id", id)
       .maybeSingle(),
     supabase.from("follows").select("follower_id", count).eq("followee_id", id),
@@ -88,6 +89,7 @@ export default async function PersonPage({
         <Avatar
           path={profile?.avatar_path}
           name={name}
+          verification={profile}
           className="h-16 w-16 text-2xl shadow-lg shadow-fuchsia-500/20"
         />
         <div className="min-w-0">
@@ -99,6 +101,9 @@ export default async function PersonPage({
               @{profile.username}
             </p>
           )}
+          <div className="mt-1.5 flex flex-wrap items-center gap-2 empty:hidden">
+            <BadgeChip v={profile} />
+          </div>
           {rel.followsMe && (
             <p className="mt-1 text-xs text-white/40">Follows you</p>
           )}

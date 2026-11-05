@@ -46,7 +46,7 @@ export default async function CitizensPage({
   // Search by name or @handle; with no query, show recently active members.
   let peopleQuery = supabase
     .from("profiles")
-    .select("id, username, display_name, avatar_path")
+    .select("id, username, display_name, avatar_path, linked_providers, verified_at")
     .eq("discoverable", true)
     .not("id", "in", `(${hidden.join(",")})`)
     .limit(30);
@@ -77,7 +77,7 @@ export default async function CitizensPage({
   const { data: connectedRows } = connectedIds.length
     ? await supabase
         .from("profiles")
-        .select("id, username, display_name, avatar_path")
+        .select("id, username, display_name, avatar_path, linked_providers, verified_at")
         .in("id", connectedIds)
     : { data: [] };
   const personById = new Map<string, Person>(

@@ -37,7 +37,7 @@ export default async function LifeLayout({
       .is("read_at", null),
     supabase
       .from("profiles")
-      .select("display_name, username, avatar_path")
+      .select("display_name, username, avatar_path, linked_providers, verified_at")
       .eq("id", user.id)
       .maybeSingle(),
   ]);
@@ -64,7 +64,7 @@ export default async function LifeLayout({
             <MessagesLink />
             <NotificationBell unread={unread ?? 0} />
             <ConnectWallet />
-            <ProfileLink path={me?.avatar_path} name={myName} />
+            <ProfileLink path={me?.avatar_path} name={myName} verification={me} />
           </div>
         </header>
 

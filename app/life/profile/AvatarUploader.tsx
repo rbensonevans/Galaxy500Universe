@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { randomUUID } from "@/lib/uuid";
 import { AVATAR_BUCKET } from "@/lib/avatar";
 import Avatar from "@/app/components/Avatar";
+import type { Verification } from "@/lib/verification";
 import { setAvatar } from "./actions";
 
 const SIZE = 512; // stored photos are SIZE x SIZE
@@ -46,10 +47,12 @@ export default function AvatarUploader({
   userId,
   path,
   name,
+  verification,
 }: {
   userId: string;
   path: string | null;
   name: string;
+  verification?: Verification | null;
 }) {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -103,7 +106,7 @@ export default function AvatarUploader({
         title="Change profile photo"
         className="group relative rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400"
       >
-        <Avatar path={path} name={name} className="h-20 w-20 text-3xl" />
+        <Avatar path={path} name={name} className="h-20 w-20 text-3xl" verification={verification} />
         <span className="absolute inset-0 flex items-center justify-center rounded-full bg-black/55 text-xs font-medium text-white opacity-0 transition group-hover:opacity-100">
           {isPending ? "Saving…" : "Change"}
         </span>

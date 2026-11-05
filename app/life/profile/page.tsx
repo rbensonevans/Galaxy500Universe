@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { isMissingTableError } from "@/lib/supabase/errors";
 import { signOut } from "@/app/auth/actions";
 import AvatarUploader from "./AvatarUploader";
+import { BadgeChip } from "@/app/components/VerificationBadge";
 
 // Quick links surfaced on the profile. The destination pages are placeholders
 // for now and will be built out later.
@@ -22,7 +23,7 @@ export default async function ProfilePage() {
 
   const { data: profile, error } = await supabase
     .from("profiles")
-    .select("username, display_name, bio, location, website, avatar_path")
+    .select("username, display_name, bio, location, website, avatar_path, linked_providers, verified_at")
     .eq("id", user!.id)
     .maybeSingle();
 
@@ -92,6 +93,7 @@ export default async function ProfilePage() {
           userId={me}
           path={profile?.avatar_path ?? null}
           name={profile?.display_name || profile?.username || email}
+          verification={profile}
         />
         <div>
           <h1 className="text-3xl font-bold text-white sm:text-4xl">
@@ -113,6 +115,9 @@ export default async function ProfilePage() {
             </p>
           )}
           <p className="text-white/50">{email}</p>
+          <div className="mt-1.5 flex flex-wrap items-center gap-2 empty:hidden">
+            <BadgeChip v={profile} />
+          </div>
         </div>
       </div>
 

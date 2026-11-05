@@ -61,7 +61,7 @@ export default async function ChatPage({
   ] = await Promise.all([
     supabase
       .from("profiles")
-      .select("username, display_name, avatar_path")
+      .select("username, display_name, avatar_path, linked_providers, verified_at")
       .eq("id", other)
       .maybeSingle(),
     supabase
@@ -136,7 +136,7 @@ export default async function ChatPage({
 
       <div className="mt-4 flex items-center justify-between gap-4">
         <Link href={`/life/citizens/${other}`} className="flex min-w-0 items-center gap-3">
-          <Avatar path={profile?.avatar_path} name={name} className="h-11 w-11 text-lg" />
+          <Avatar path={profile?.avatar_path} name={name} className="h-11 w-11 text-lg" verification={profile} />
           <span className="min-w-0">
             <span className="block truncate text-xl font-bold text-white hover:text-violet-200">
               {name}

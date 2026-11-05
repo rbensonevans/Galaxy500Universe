@@ -1,10 +1,11 @@
 // Made during the XRP LEDGER HACKATHON
 
 import type { createClient } from "@/lib/supabase/server";
+import type { Verification } from "@/lib/verification";
 
 type Supabase = Awaited<ReturnType<typeof createClient>>;
 
-export type Person = {
+export type Person = Verification & {
   id: string;
   username: string | null;
   display_name: string | null;

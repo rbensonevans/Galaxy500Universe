@@ -163,6 +163,12 @@ monthly GLXY grants.
 
 - [ ] **Verified identity links.** Require at least one social sign-in
   (LinkedIn / Google) before grants unlock; record which providers are linked.
+  - [x] Badges on photos: **Linked** (provider logo) from
+    `profiles.linked_providers`, copied from `auth.identities`; **Verified**
+    (violet check) from `profiles.verified_at`, which only the database can set.
+  - [ ] Decide what grants Verified, then set `verified_at` from that process.
+  - [ ] Let email accounts link Google/LinkedIn (Supabase manual identity
+    linking).
 - [ ] **Duplicate checks.** Flag accounts that share providers, devices, or
   signup patterns.
 - [ ] **Grant locking.** New accounts hold grants in a pending state until
@@ -273,4 +279,5 @@ migration (if any).
 | 22 | Header photo highlighted on profile pages | `237ef1f` | — |
 | 23 | "More" renamed "StarGate" (`/life/stargate`, "Teleport across the galaxy"), placed after Travel | `cdc5b1c` | — |
 | 24 | New "Space" feed (`/life/space`, "The final frontier"), between StarGate and Startups | `db0c84f` | — |
-| 25 | Space card on the StarGate page | (this commit) | — |
+| 25 | Space card on the StarGate page | `ba6f7af` | — |
+| 26 | Verification badges on photos: Linked (Google/LinkedIn/Facebook sign-in) and Verified (granted by the database only) | (this commit) | `0026_verification.sql` |

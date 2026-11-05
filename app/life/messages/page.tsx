@@ -78,7 +78,7 @@ export default async function MessagesPage({
           .limit(500)
       : Promise.resolve({ data: [] as LastMessage[] }),
     others.length
-      ? supabase.from("profiles").select("id, username, display_name, avatar_path").in("id", others)
+      ? supabase.from("profiles").select("id, username, display_name, avatar_path, linked_providers, verified_at").in("id", others)
       : Promise.resolve({ data: [] as Person[] }),
   ]);
   const lastByConv = new Map<string, LastMessage>();
@@ -175,6 +175,7 @@ export default async function MessagesPage({
                 >
                   <Avatar
                     path={personById.get(other)?.avatar_path}
+                    verification={personById.get(other)}
                     name={name}
                     className="h-10 w-10 text-sm"
                   />

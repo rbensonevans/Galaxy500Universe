@@ -19,7 +19,7 @@ export default function PersonRow({
   return (
     <li className="flex flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
       <Link href={href} className="flex min-w-0 items-center gap-3">
-        <Avatar path={person.avatar_path} name={name} className="h-10 w-10 text-sm" />
+        <Avatar path={person.avatar_path} name={name} className="h-10 w-10 text-sm" verification={person} />
         <span className="min-w-0">
           <span className="block truncate text-sm font-semibold text-white">
             {name}
