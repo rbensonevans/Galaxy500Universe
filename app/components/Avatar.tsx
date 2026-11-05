@@ -33,7 +33,7 @@ export default function Avatar({
   );
   if (!verification) return photo;
   return (
-    <span className="relative inline-flex shrink-0">
+    <span className="relative inline-flex h-fit shrink-0">
       {photo}
       <BadgeDot v={verification} />
     </span>
