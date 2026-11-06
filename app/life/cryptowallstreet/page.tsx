@@ -1,5 +1,12 @@
 import Link from "next/link";
 import { CRYPTO_LINKS } from "./links";
+import { SECTIONS } from "../sections";
+
+// Startups has no nav tab; its card leads the CryptoWallStreet destinations.
+const CARDS = [
+  ...SECTIONS.filter((s) => s.slug === "startups"),
+  ...CRYPTO_LINKS,
+];
 
 export default function CryptoWallStreetPage() {
   return (
@@ -11,11 +18,11 @@ export default function CryptoWallStreetPage() {
         Your money in the universe
       </h1>
       <p className="mt-3 max-w-xl text-white/60">
-        Markets, banking, your wallet, and transfers — all in one place.
+        Startups, markets, banking, your wallet, and transfers — all in one place.
       </p>
 
       <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2">
-        {CRYPTO_LINKS.map(({ name, href, blurb, icon: Icon, accent }) => (
+        {CARDS.map(({ name, href, blurb, icon: Icon, accent }) => (
           <Link
             key={href}
             href={href}

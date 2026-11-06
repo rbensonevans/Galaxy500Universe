@@ -21,10 +21,11 @@ export default function LifeNav() {
   };
 
   // Primary sections (with StarGate after Travel), then CryptoWallStreet. The
-  // profile opens from the photo at the top right of the header.
+  // profile opens from the photo at the top right of the header. Startups
+  // lives on the CryptoWallStreet page instead of the nav.
   const links = [
     { name: "Life", href: "/life", exact: true, extra: [] as string[] },
-    ...SECTIONS.flatMap((s) => [
+    ...SECTIONS.filter((s) => s.slug !== "startups").flatMap((s) => [
       { name: s.name, href: s.href, exact: false, extra: [] as string[] },
       ...(s.slug === "travel" ? [stargate] : []),
     ]),
@@ -32,8 +33,9 @@ export default function LifeNav() {
       name: "CryptoWallStreet",
       href: "/life/cryptowallstreet",
       exact: false,
-      // Highlight when on any of its finance pages (excluding /life/profile/*).
-      extra: CRYPTO_LINKS.map((l) => l.href).filter(
+      // Highlight when on Startups or any of its finance pages (excluding
+      // /life/profile/*).
+      extra: ["/life/startups", ...CRYPTO_LINKS.map((l) => l.href)].filter(
         (h) => !h.startsWith("/life/profile"),
       ),
     },

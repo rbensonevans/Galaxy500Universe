@@ -282,4 +282,5 @@ migration (if any).
 | 24 | New "Space" feed (`/life/space`, "The final frontier"), between StarGate and Startups | `db0c84f` | — |
 | 25 | Space card on the StarGate page | `ba6f7af` | — |
 | 26 | Verification badges on photos: Linked (Google/LinkedIn/Facebook sign-in) and Verified (granted by the database only) | `d853a33`, `328a9a5` | `0026_verification.sql` |
-| 27 | Settings → Linked accounts: link or unlink Google and LinkedIn | (this commit) | — (Supabase: Allow manual linking) |
+| 27 | Settings → Linked accounts: link or unlink Google and LinkedIn | `d153833` | — (Supabase: Allow manual linking) |
+| 28 | Startups removed from the top nav; its card now leads the CryptoWallStreet page | (this commit) | — |
