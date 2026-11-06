@@ -155,6 +155,8 @@ Make the site ready for real users.
   Hobby is for non-commercial use.
 - [ ] **Legal review.** Have the Privacy Policy and Terms reviewed; add a
   cookie notice if needed. (Contact address on the new domain: done.)
+  The Privacy Policy should mention WeTube's YouTube embeds (thumbnails load
+  from YouTube; playing a video loads youtube-nocookie.com).
 
 ## Phase 2 — Identity and trust (Sybil resistance)
 
@@ -283,4 +285,5 @@ migration (if any).
 | 25 | Space card on the StarGate page | `ba6f7af` | — |
 | 26 | Verification badges on photos: Linked (Google/LinkedIn/Facebook sign-in) and Verified (granted by the database only) | `d853a33`, `328a9a5` | `0026_verification.sql` |
 | 27 | Settings → Linked accounts: link or unlink Google and LinkedIn | `d153833` | — (Supabase: Allow manual linking) |
-| 28 | Startups removed from the top nav; its card now leads the CryptoWallStreet page | (this commit) | — |
+| 28 | Startups removed from the top nav; its card now leads the CryptoWallStreet page | `5468b89` | — |
+| 29 | New "WeTube" feed (`/life/wetube`, "Watch together") between Sports and Travel; YouTube links in any post play inline | (this commit) | — |

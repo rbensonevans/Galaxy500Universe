@@ -5,6 +5,8 @@ import { type ReactionSummary } from "./reactions";
 import ReactionBar from "./ReactionBar";
 import CommentForm from "./CommentForm";
 import Avatar from "@/app/components/Avatar";
+import YouTubeEmbed from "./YouTubeEmbed";
+import { youtubeId } from "@/lib/youtube";
 import type { Verification } from "@/lib/verification";
 
 export type FeedComment = {
@@ -88,6 +90,7 @@ export default function PostCard({
   post: FeedPost;
   currentUserId: string;
 }) {
+  const videoId = youtubeId(post.content);
   return (
     <article className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-md">
       <header className="flex items-center gap-3">
@@ -145,8 +148,11 @@ export default function PostCard({
       </header>
 
       {post.content && (
-        <p className="mt-3 whitespace-pre-wrap text-white/85">{post.content}</p>
+        <p className="mt-3 whitespace-pre-wrap break-words text-white/85">{post.content}</p>
       )}
+
+      {/* A YouTube link anywhere in the post plays inline (any feed). */}
+      {videoId && <YouTubeEmbed id={videoId} />}
 
       {post.image_url && (
         // User-uploaded images of arbitrary dimensions — plain img avoids

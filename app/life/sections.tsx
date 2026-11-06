@@ -69,6 +69,15 @@ function GlobeIcon(props: IconProps) {
   );
 }
 
+function PlayIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <rect x="2.5" y="5" width="19" height="14" rx="4" />
+      <path d="M10 9.5v5l4.5-2.5z" fill="currentColor" />
+    </svg>
+  );
+}
+
 function PlanetIcon(props: IconProps) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" {...props}>
@@ -172,6 +181,14 @@ export const SECTIONS: Section[] = [
     blurb: "Game day, teams, and everything in play.",
     icon: SportsIcon,
     accent: "from-emerald-500/30 to-lime-500/10",
+  },
+  {
+    slug: "wetube",
+    name: "WeTube",
+    href: "/life/wetube",
+    blurb: "Share and watch videos with fellow citizens.",
+    icon: PlayIcon,
+    accent: "from-rose-500/30 to-orange-500/10",
   },
   {
     slug: "travel",

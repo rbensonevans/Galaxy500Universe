@@ -20,6 +20,7 @@ const FEED_PATHS: Record<string, string> = {
   movies: "/life/movies",
   music: "/life/music",
   sports: "/life/sports",
+  wetube: "/life/wetube",
   travel: "/life/travel",
   space: "/life/space",
   communities: "/life/communities",
