@@ -286,4 +286,5 @@ migration (if any).
 | 26 | Verification badges on photos: Linked (Google/LinkedIn/Facebook sign-in) and Verified (granted by the database only) | `d853a33`, `328a9a5` | `0026_verification.sql` |
 | 27 | Settings → Linked accounts: link or unlink Google and LinkedIn | `d153833` | — (Supabase: Allow manual linking) |
 | 28 | Startups removed from the top nav; its card now leads the CryptoWallStreet page | `5468b89` | — |
-| 29 | New "WeTube" feed (`/life/wetube`, "Watch together") between Sports and Travel; YouTube links in any post play inline | (this commit) | — |
+| 29 | New "WeTube" feed (`/life/wetube`, "Watch together") between Sports and Travel; YouTube links in any post play inline | `8416f56` | — |
+| 30 | WeTube Universal tab: every public video from any feed, newest first, with search by title or description (titles looked up from YouTube when posted) | (this commit) | `0027_post_videos.sql` |

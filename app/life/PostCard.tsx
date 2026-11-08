@@ -28,6 +28,8 @@ export type FeedPost = {
   id: string;
   content: string | null;
   image_url: string | null;
+  /** YouTube title of the post's video, when known. */
+  videoTitle?: string | null;
   created_at: string;
   user_id: string;
   authorName: string;
@@ -153,6 +155,9 @@ export default function PostCard({
 
       {/* A YouTube link anywhere in the post plays inline (any feed). */}
       {videoId && <YouTubeEmbed id={videoId} />}
+      {videoId && post.videoTitle && (
+        <p className="mt-2 text-sm font-medium text-white/80">{post.videoTitle}</p>
+      )}
 
       {post.image_url && (
         // User-uploaded images of arbitrary dimensions — plain img avoids

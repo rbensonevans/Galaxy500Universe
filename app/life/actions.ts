@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { fetchYouTubeTitle, youtubeId } from "@/lib/youtube";
 import { EMOJIS } from "./reactions";
 
 export type PostState = {
@@ -83,6 +84,11 @@ export async function createPost(
     ? supabase.storage.from("post-images").getPublicUrl(imagePath).data.publicUrl
     : null;
 
+  // A YouTube link gets its title saved for WeTube search (the database sets
+  // video_id from the link itself).
+  const videoId = youtubeId(content);
+  const videoTitle = videoId ? await fetchYouTubeTitle(videoId) : null;
+
   const { error } = await supabase.from("posts").insert({
     user_id: user.id,
     content: content || null,
@@ -90,6 +96,7 @@ export async function createPost(
     feed,
     startup_id: startupId,
     is_public: isPublic,
+    video_title: videoTitle,
   });
 
   if (error) {

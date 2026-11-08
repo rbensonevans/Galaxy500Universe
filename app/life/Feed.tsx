@@ -57,6 +57,8 @@ export default async function Feed({
   postAuthorName,
   placeholder,
   emptyText = "No posts yet. Be the first to share something.",
+  videos = false,
+  search,
 }: {
   feed: string;
   /** Aggregate public + Startup Feed posts from every feed (no composer). */
@@ -71,6 +73,10 @@ export default async function Feed({
   postAuthorName?: string;
   placeholder?: string;
   emptyText?: string;
+  /** Only posts with a YouTube video (WeTube's Universal tab). */
+  videos?: boolean;
+  /** With `videos`: match the video title or the post text. */
+  search?: string;
 }) {
   const supabase = await createClient();
   const {
@@ -80,18 +86,27 @@ export default async function Feed({
 
   const base = supabase
     .from("posts")
-    .select("id, user_id, content, image_url, created_at, feed, startup_id, is_public");
+    .select("id, user_id, content, image_url, created_at, feed, startup_id, is_public, video_title");
   // Made during the XRP LEDGER HACKATHON
   // Visibility is enforced by RLS (own, public, Startup Feed, and Friends /
   // Family posts from accepted connections); these filters pick the stream.
-  const { data: postRows, error } = await (universal
+  let query = universal
     ? base.or("is_public.eq.true,startup_id.not.is.null")
     : authorId
       ? base.eq("user_id", authorId)
       : startupId
         ? base.eq("startup_id", startupId)
-        : base.eq("feed", feed)
-  )
+        : base.eq("feed", feed);
+  if (videos) {
+    query = query.not("video_id", "is", null);
+    // Quotes and backslashes would break PostgREST's quoted filter value.
+    const term = search?.replace(/["\\]/g, "").trim();
+    if (term) {
+      const pattern = `"%${term}%"`;
+      query = query.or(`video_title.ilike.${pattern},content.ilike.${pattern}`);
+    }
+  }
+  const { data: postRows, error } = await query
     .order("created_at", { ascending: false })
     .limit(50);
 
@@ -225,6 +240,7 @@ export default async function Feed({
     id: p.id,
     content: p.content,
     image_url: p.image_url,
+    videoTitle: p.video_title,
     created_at: p.created_at,
     user_id: p.user_id,
     authorName: postAuthorName ?? authorName(p.user_id),
@@ -248,8 +264,9 @@ export default async function Feed({
 
   // Made during the XRP LEDGER HACKATHON
   // Universal Feed ranking, a first interest signal: posts by members you
-  // follow get a 24-hour boost over strictly newest-first ordering.
-  if (universal) {
+  // follow get a 24-hour boost over strictly newest-first ordering. WeTube's
+  // Universal tab stays newest-first for now (its ranking comes later).
+  if (universal && !videos) {
     const BOOST_MS = 24 * 60 * 60 * 1000;
     const score = (p: FeedPost) =>
       new Date(p.created_at).getTime() + (followed.has(p.user_id) ? BOOST_MS : 0);
