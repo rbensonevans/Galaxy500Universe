@@ -289,4 +289,5 @@ migration (if any).
 | 29 | New "WeTube" feed (`/life/wetube`, "Watch together") between Sports and Travel; YouTube links in any post play inline | `8416f56` | — |
 | 30 | WeTube Universal tab: every public video from any feed, newest first, with search by title or description (titles looked up from YouTube when posted) | `d5da555` | `0027_post_videos.sql` |
 | 31 | WeTube headings: "My Videos" on the WeTube tab ("Watch together" stays on Universal); new subtitle | `2013d7c` | — |
-| 32 | Links in posts, comments, messages and profile bios are clickable (open in a new tab); X/other non-YouTube videos open on their site | (this commit) | — |
+| 32 | Links in posts, comments, messages and profile bios are clickable (open in a new tab); X/other non-YouTube videos open on their site | `e657436` | — |
+| 33 | Universal tab (public posts on the topic, newest first, with search) on Music, Sports and Travel; shared TopicPage also used by WeTube | (this commit) | — |

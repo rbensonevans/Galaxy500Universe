@@ -58,6 +58,7 @@ export default async function Feed({
   placeholder,
   emptyText = "No posts yet. Be the first to share something.",
   videos = false,
+  topic = false,
   search,
 }: {
   feed: string;
@@ -75,7 +76,9 @@ export default async function Feed({
   emptyText?: string;
   /** Only posts with a YouTube video (WeTube's Universal tab). */
   videos?: boolean;
-  /** With `videos`: match the video title or the post text. */
+  /** With `universal`: only this feed's public posts (a topic's Universal tab). */
+  topic?: boolean;
+  /** With `videos` or `topic`: match the video title or the post text. */
   search?: string;
 }) {
   const supabase = await createClient();
@@ -97,14 +100,13 @@ export default async function Feed({
       : startupId
         ? base.eq("startup_id", startupId)
         : base.eq("feed", feed);
-  if (videos) {
-    query = query.not("video_id", "is", null);
-    // Quotes and backslashes would break PostgREST's quoted filter value.
-    const term = search?.replace(/["\\]/g, "").trim();
-    if (term) {
-      const pattern = `"%${term}%"`;
-      query = query.or(`video_title.ilike.${pattern},content.ilike.${pattern}`);
-    }
+  if (videos) query = query.not("video_id", "is", null);
+  if (topic) query = query.eq("feed", feed);
+  // Quotes and backslashes would break PostgREST's quoted filter value.
+  const term = search?.replace(/["\\]/g, "").trim();
+  if (term && (videos || topic)) {
+    const pattern = `"%${term}%"`;
+    query = query.or(`video_title.ilike.${pattern},content.ilike.${pattern}`);
   }
   const { data: postRows, error } = await query
     .order("created_at", { ascending: false })
@@ -250,7 +252,8 @@ export default async function Feed({
     // A company-labeled post (Startup Feed page) links to no personal profile.
     authorHref: postAuthorName ? undefined : profileHref(p.user_id, me),
     canFollow: !postAuthorName && p.user_id !== me && !followed.has(p.user_id),
-    source: aggregate ? sourceLabel(p) : undefined,
+    // A topic's Universal tab is all one feed, so no source label.
+    source: aggregate && !topic ? sourceLabel(p) : undefined,
     visibility: p.startup_id
       ? undefined
       : p.is_public
@@ -264,9 +267,10 @@ export default async function Feed({
 
   // Made during the XRP LEDGER HACKATHON
   // Universal Feed ranking, a first interest signal: posts by members you
-  // follow get a 24-hour boost over strictly newest-first ordering. WeTube's
-  // Universal tab stays newest-first for now (its ranking comes later).
-  if (universal && !videos) {
+  // follow get a 24-hour boost over strictly newest-first ordering. Topic
+  // Universal tabs (WeTube, Music, …) stay newest-first for now (their ranking
+  // comes later).
+  if (universal && !videos && !topic) {
     const BOOST_MS = 24 * 60 * 60 * 1000;
     const score = (p: FeedPost) =>
       new Date(p.created_at).getTime() + (followed.has(p.user_id) ? BOOST_MS : 0);
