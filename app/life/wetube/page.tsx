@@ -23,12 +23,12 @@ export default async function WeTubePage({
         WeTube
       </p>
       <h1 className="mt-3 text-3xl font-bold text-white sm:text-4xl">
-        Watch together
+        {universal ? "Watch together" : "My Videos"}
       </h1>
       <p className="mt-2 text-white/60">
         {universal
           ? "Every public video across the galaxy, newest first."
-          : "Paste a YouTube link to share a video with fellow citizens."}
+          : "Paste a YouTube link to view later or share a video with fellow citizens."}
       </p>
 
       <nav className="mt-6 flex gap-1 rounded-full border border-white/10 bg-black/30 p-1 text-sm sm:w-fit">
