@@ -5,6 +5,7 @@ import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { personName, UUID_RE } from "../../citizens/relations";
 import Avatar from "@/app/components/Avatar";
+import Linkify from "@/app/components/Linkify";
 import { deleteMessage, respondMessageRequest } from "../actions";
 import BlockButton from "../BlockButton";
 import ChatComposer from "../ChatComposer";
@@ -220,8 +221,8 @@ export default async function ChatPage({
                       <span className="text-sm font-semibold text-white/60">GLXY</span>
                     </p>
                     {m.body && (
-                      <p className="mt-1 whitespace-pre-wrap text-sm text-white/80">
-                        {m.body}
+                      <p className="mt-1 whitespace-pre-wrap break-words text-sm text-white/80">
+                        <Linkify text={m.body} />
                       </p>
                     )}
                   </div>
@@ -250,7 +251,7 @@ export default async function ChatPage({
                       ))}
                     {m.body && (
                       <p
-                        className={`whitespace-pre-wrap rounded-2xl px-3.5 py-2 text-sm ${
+                        className={`whitespace-pre-wrap break-words rounded-2xl px-3.5 py-2 text-sm ${
                           m.image_path ? "mt-1" : ""
                         } ${
                           mine
@@ -258,7 +259,14 @@ export default async function ChatPage({
                             : "bg-white/10 text-white/90"
                         }`}
                       >
-                        {m.body}
+                        <Linkify
+                          text={m.body}
+                          linkClassName={
+                            mine
+                              ? "text-white underline decoration-white/60 underline-offset-2 hover:decoration-white"
+                              : undefined
+                          }
+                        />
                       </p>
                     )}
                   </>

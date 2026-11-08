@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { isMissingTableError } from "@/lib/supabase/errors";
 import { signOut } from "@/app/auth/actions";
 import AvatarUploader from "./AvatarUploader";
+import Linkify from "@/app/components/Linkify";
 import { BadgeChip } from "@/app/components/VerificationBadge";
 
 // Quick links surfaced on the profile. The destination pages are placeholders
@@ -163,7 +164,9 @@ export default async function ProfilePage() {
       {!tableMissing && (
         <div className="mt-8 max-w-2xl rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md">
           {profile?.bio ? (
-            <p className="whitespace-pre-wrap text-white/80">{profile.bio}</p>
+            <p className="whitespace-pre-wrap break-words text-white/80">
+              <Linkify text={profile.bio} />
+            </p>
           ) : (
             <p className="text-white/40">
               No bio yet.{" "}

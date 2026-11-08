@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Avatar from "@/app/components/Avatar";
+import Linkify from "@/app/components/Linkify";
 import { BadgeChip } from "@/app/components/VerificationBadge";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
@@ -139,7 +140,9 @@ export default async function PersonPage({
       {(profile?.bio || profile?.location || profile?.website) && (
         <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md">
           {profile?.bio && (
-            <p className="whitespace-pre-wrap text-white/80">{profile.bio}</p>
+            <p className="whitespace-pre-wrap break-words text-white/80">
+              <Linkify text={profile.bio} />
+            </p>
           )}
           {(profile?.location || profile?.website) && (
             <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-white/50">

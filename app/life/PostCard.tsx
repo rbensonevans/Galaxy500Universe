@@ -5,6 +5,7 @@ import { type ReactionSummary } from "./reactions";
 import ReactionBar from "./ReactionBar";
 import CommentForm from "./CommentForm";
 import Avatar from "@/app/components/Avatar";
+import Linkify from "@/app/components/Linkify";
 import YouTubeEmbed from "./YouTubeEmbed";
 import { youtubeId } from "@/lib/youtube";
 import type { Verification } from "@/lib/verification";
@@ -150,7 +151,9 @@ export default function PostCard({
       </header>
 
       {post.content && (
-        <p className="mt-3 whitespace-pre-wrap break-words text-white/85">{post.content}</p>
+        <p className="mt-3 whitespace-pre-wrap break-words text-white/85">
+          <Linkify text={post.content} />
+        </p>
       )}
 
       {/* A YouTube link anywhere in the post plays inline (any feed). */}
@@ -196,8 +199,8 @@ export default function PostCard({
                       {formatWhen(c.created_at)}
                     </span>
                   </div>
-                  <p className="mt-0.5 whitespace-pre-wrap text-sm text-white/80">
-                    {c.content}
+                  <p className="mt-0.5 whitespace-pre-wrap break-words text-sm text-white/80">
+                    <Linkify text={c.content} />
                   </p>
                 </div>
                 <div className="mt-1.5 flex items-center gap-3">
