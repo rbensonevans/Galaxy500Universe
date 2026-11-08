@@ -59,6 +59,7 @@ export default async function Feed({
   emptyText = "No posts yet. Be the first to share something.",
   videos = false,
   topic = false,
+  topicSlug,
   search,
 }: {
   feed: string;
@@ -78,6 +79,8 @@ export default async function Feed({
   videos?: boolean;
   /** With `universal`: only this feed's public posts (a topic's Universal tab). */
   topic?: boolean;
+  /** Public posts under this Topics-tab topic or hashtag (keywords or #tag). */
+  topicSlug?: string;
   /** With `videos` or `topic`: match the video title or the post text. */
   search?: string;
 }) {
@@ -87,9 +90,9 @@ export default async function Feed({
   } = await supabase.auth.getUser();
   const me = user!.id;
 
-  const base = supabase
-    .from("posts")
-    .select("id, user_id, content, image_url, created_at, feed, startup_id, is_public, video_title");
+  const POST_COLUMNS =
+    "id, user_id, content, image_url, created_at, feed, startup_id, is_public, video_title";
+  const base = supabase.from("posts").select(POST_COLUMNS);
   // Made during the XRP LEDGER HACKATHON
   // Visibility is enforced by RLS (own, public, Startup Feed, and Friends /
   // Family posts from accepted connections); these filters pick the stream.
@@ -108,9 +111,17 @@ export default async function Feed({
     const pattern = `"%${term}%"`;
     query = query.or(`video_title.ilike.${pattern},content.ilike.${pattern}`);
   }
-  const { data: postRows, error } = await query
-    .order("created_at", { ascending: false })
-    .limit(50);
+  // A topic's posts come from topic_posts() (keyword and hashtag matching,
+  // see supabase/migrations/0028_topics.sql); RLS still applies.
+  // Query builders run only when awaited, so just one of these is sent.
+  const listQuery = query.order("created_at", { ascending: false }).limit(50);
+  const { data: postRows, error } = topicSlug
+    ? ((await supabase
+        .rpc("topic_posts", { p_topic: topicSlug })
+        .select(POST_COLUMNS)
+        .order("created_at", { ascending: false })
+        .limit(50)) as unknown as Awaited<typeof listQuery>)
+    : await listQuery;
 
   const tableMissing = isMissingTableError(error);
 
@@ -199,7 +210,7 @@ export default async function Feed({
   // Made during the XRP LEDGER HACKATHON
   // Posts gathered from several feeds are labeled with where they came from,
   // and Startup Feed posts with the company.
-  const aggregate = universal || Boolean(authorId);
+  const aggregate = universal || Boolean(authorId) || Boolean(topicSlug);
   const startupIds = aggregate
     ? Array.from(new Set(posts.flatMap((p) => (p.startup_id ? [p.startup_id] : []))))
     : [];
@@ -270,7 +281,7 @@ export default async function Feed({
   // follow get a 24-hour boost over strictly newest-first ordering. Topic
   // Universal tabs (WeTube, Music, …) stay newest-first for now (their ranking
   // comes later).
-  if (universal && !videos && !topic) {
+  if (universal && !videos && !topic && !topicSlug) {
     const BOOST_MS = 24 * 60 * 60 * 1000;
     const score = (p: FeedPost) =>
       new Date(p.created_at).getTime() + (followed.has(p.user_id) ? BOOST_MS : 0);
