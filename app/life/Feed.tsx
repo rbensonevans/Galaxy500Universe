@@ -91,7 +91,7 @@ export default async function Feed({
   const me = user!.id;
 
   const POST_COLUMNS =
-    "id, user_id, content, image_url, created_at, feed, startup_id, is_public, video_title";
+    "id, user_id, content, image_url, created_at, edited_at, feed, startup_id, is_public, video_title";
   const base = supabase.from("posts").select(POST_COLUMNS);
   // Made during the XRP LEDGER HACKATHON
   // Visibility is enforced by RLS (own, public, Startup Feed, and Friends /
@@ -148,7 +148,7 @@ export default async function Feed({
   const { data: commentRows } = postIds.length
     ? await supabase
         .from("comments")
-        .select("id, post_id, user_id, content, created_at")
+        .select("id, post_id, user_id, content, created_at, edited_at")
         .in("post_id", postIds)
         .order("created_at", { ascending: true })
     : { data: [] };
@@ -240,6 +240,7 @@ export default async function Feed({
       id: c.id,
       content: c.content,
       created_at: c.created_at,
+      editedAt: c.edited_at,
       user_id: c.user_id,
       authorName: authorName(c.user_id),
       authorAvatar: avatarById.get(c.user_id) ?? null,
@@ -254,6 +255,7 @@ export default async function Feed({
     content: p.content,
     image_url: p.image_url,
     videoTitle: p.video_title,
+    editedAt: p.edited_at,
     created_at: p.created_at,
     user_id: p.user_id,
     authorName: postAuthorName ?? authorName(p.user_id),

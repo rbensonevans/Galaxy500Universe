@@ -162,6 +162,34 @@ export async function deleteComment(formData: FormData) {
   revalidateFeeds();
 }
 
+// Edit your own post's caption or comment. The database functions only let
+// the author change the text (see supabase/migrations/0029_edits.sql).
+export async function editPost(id: string, content: string): Promise<{ error?: string }> {
+  const supabase = await createClient();
+  const { data: post } = await supabase.from("posts").select("content").eq("id", id).maybeSingle();
+  if (!post) return { error: "Post not found." };
+  // A newly linked YouTube video gets its title looked up, as when posting.
+  const videoId = youtubeId(content);
+  const videoTitle =
+    videoId && videoId !== youtubeId(post.content) ? await fetchYouTubeTitle(videoId) : null;
+  const { error } = await supabase.rpc("edit_post", {
+    p_id: id,
+    p_content: content,
+    p_video_title: videoTitle,
+  });
+  if (error) return { error: error.message };
+  revalidateFeeds();
+  return {};
+}
+
+export async function editComment(id: string, content: string): Promise<{ error?: string }> {
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("edit_comment", { p_id: id, p_content: content });
+  if (error) return { error: error.message };
+  revalidateFeeds();
+  return {};
+}
+
 // Toggle the current user's emoji reaction on a post or comment: if it already
 // exists it is removed, otherwise it is added.
 export async function toggleReaction(formData: FormData) {
