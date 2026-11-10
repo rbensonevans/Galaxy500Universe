@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { updatePassword, type AuthState } from "@/app/auth/actions";
+import { MIN_PASSWORD_LENGTH } from "@/lib/password";
 
 const initialState: AuthState = {};
 
@@ -22,7 +23,7 @@ export default function ResetPasswordForm() {
           type="password"
           name="password"
           required
-          minLength={6}
+          minLength={MIN_PASSWORD_LENGTH}
           autoComplete="new-password"
           placeholder="••••••••"
           className={INPUT}
@@ -34,7 +35,7 @@ export default function ResetPasswordForm() {
           type="password"
           name="confirm"
           required
-          minLength={6}
+          minLength={MIN_PASSWORD_LENGTH}
           autoComplete="new-password"
           placeholder="••••••••"
           className={INPUT}

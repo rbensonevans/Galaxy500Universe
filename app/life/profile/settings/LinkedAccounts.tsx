@@ -1,6 +1,14 @@
 import { linkProvider, unlinkProvider } from "@/app/auth/actions";
 import { LINKABLE_PROVIDERS, PROVIDER_LABELS } from "@/lib/verification";
 
+// Where each provider's password is managed, for accounts without a password
+// here.
+const SECURITY_PAGES: Record<string, string> = {
+  google: "https://myaccount.google.com/security",
+  linkedin_oidc: "https://www.linkedin.com/mypreferences/d/sign-in-and-security",
+  facebook: "https://accountscenter.facebook.com/password_and_security",
+};
+
 const button =
   "rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-sm text-white/80 transition hover:bg-white/10 hover:text-white";
 
@@ -69,6 +77,28 @@ export default function LinkedAccounts({
           );
         })}
       </ul>
+
+      {!hasEmail && providers.length > 0 && (
+        <p className="mt-3 text-xs text-white/40">
+          You don&apos;t have a password here. Your password is managed by{" "}
+          {providers
+            .filter((p) => SECURITY_PAGES[p])
+            .map((p, i, list) => (
+              <span key={p}>
+                {i > 0 && (i === list.length - 1 ? " and " : ", ")}
+                <a
+                  href={SECURITY_PAGES[p]}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-violet-300 hover:text-violet-200"
+                >
+                  {PROVIDER_LABELS[p]}
+                </a>
+              </span>
+            ))}
+          .
+        </p>
+      )}
     </section>
   );
 }

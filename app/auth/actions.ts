@@ -5,6 +5,7 @@ import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { LINKABLE_PROVIDERS, LINK_COOKIE } from "@/lib/verification";
+import { MIN_PASSWORD_LENGTH } from "@/lib/password";
 
 export type AuthState = {
   error?: string;
@@ -53,8 +54,8 @@ export async function signup(
   if (!email || !password) {
     return { error: "Enter your email and password." };
   }
-  if (password.length < 6) {
-    return { error: "Password must be at least 6 characters." };
+  if (password.length < MIN_PASSWORD_LENGTH) {
+    return { error: `Password must be at least ${MIN_PASSWORD_LENGTH} characters.` };
   }
 
   const supabase = await createClient();
@@ -211,8 +212,8 @@ export async function updatePassword(
   const password = String(formData.get("password") ?? "");
   const confirm = String(formData.get("confirm") ?? "");
 
-  if (password.length < 6) {
-    return { error: "Password must be at least 6 characters." };
+  if (password.length < MIN_PASSWORD_LENGTH) {
+    return { error: `Password must be at least ${MIN_PASSWORD_LENGTH} characters.` };
   }
   if (password !== confirm) {
     return { error: "The passwords don't match." };
@@ -233,4 +234,58 @@ export async function updatePassword(
 
   revalidatePath("/", "layout");
   redirect("/life");
+}
+
+// Change the password of the signed-in member (Settings → Change password).
+// The current password is checked first, so someone at an unlocked computer
+// can't take over the account; afterwards every other session is signed out.
+export async function changePassword(
+  _prevState: AuthState,
+  formData: FormData,
+): Promise<AuthState> {
+  const current = String(formData.get("current") ?? "");
+  const password = String(formData.get("password") ?? "");
+  const confirm = String(formData.get("confirm") ?? "");
+
+  if (!current) {
+    return { error: "Enter your current password." };
+  }
+  if (password.length < MIN_PASSWORD_LENGTH) {
+    return { error: `New password must be at least ${MIN_PASSWORD_LENGTH} characters.` };
+  }
+  if (password !== confirm) {
+    return { error: "The new passwords don't match." };
+  }
+  if (password === current) {
+    return { error: "Choose a password different from your current one." };
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user?.email) {
+    return { error: "You must be signed in." };
+  }
+
+  const { error: checkError } = await supabase.auth.signInWithPassword({
+    email: user.email,
+    password: current,
+  });
+  if (checkError) {
+    return {
+      error:
+        checkError.status === 429
+          ? "Too many attempts. Please wait a few minutes and try again."
+          : "Your current password is incorrect.",
+    };
+  }
+
+  const { error } = await supabase.auth.updateUser({ password });
+  if (error) {
+    return { error: error.message };
+  }
+  await supabase.auth.signOut({ scope: "others" });
+
+  redirect("/life/profile/settings?password_changed=1");
 }

@@ -297,4 +297,5 @@ migration (if any).
 | 32 | Links in posts, comments, messages and profile bios are clickable (open in a new tab); X/other non-YouTube videos open on their site | `e657436` | — |
 | 33 | Universal tab (public posts on the topic, newest first, with search) on Music, Sports and Travel; shared TopicPage also used by WeTube | `4f6b40f` | — |
 | 34 | Universal Feed Topics tab: keyword topics (full-text search) and #hashtags (clickable; any hashtag is a topic), trending hashtags | `a91f41e` | `0028_topics.sql` |
-| 35 | Edit your own captions and comments; "…" menu (Edit / Delete with confirm) on posts and comments; "edited" label | (this commit) | `0029_edits.sql` |
+| 35 | Edit your own captions and comments; "…" menu (Edit / Delete with confirm) on posts and comments; "edited" label | `bb2d1f8` | `0029_edits.sql` |
+| 36 | Settings → Change password (current password required; other sessions signed out; shown only to accounts with a password; Google/LinkedIn-only accounts are pointed to their provider's security page); minimum password length 8 | (this commit) | — (Supabase: minimum password length 8) |

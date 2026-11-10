@@ -8,7 +8,12 @@ import { PROVIDER_LABELS } from "@/lib/verification";
 export default async function ProfileSettingsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ linked?: string; unlinked?: string; link_error?: string }>;
+  searchParams: Promise<{
+    linked?: string;
+    unlinked?: string;
+    link_error?: string;
+    password_changed?: string;
+  }>;
 }) {
   const params = await searchParams;
   const supabase = await createClient();
@@ -29,6 +34,9 @@ export default async function ProfileSettingsPage({
   const { data: idData } = await supabase.auth.getUserIdentities();
   const identities = idData?.identities ?? [];
   const providers = identities.map((i) => i.provider).filter((p) => p !== "email");
+  // Google/LinkedIn-only accounts have no password here; theirs is managed by
+  // the provider, so there's nothing to change.
+  const hasPassword = identities.some((i) => i.provider === "email");
   const notice = params.linked
     ? "Account linked."
     : params.unlinked
@@ -37,15 +45,35 @@ export default async function ProfileSettingsPage({
 
   return (
     <div>
-      <Link
-        href="/life/profile"
-        className="inline-flex items-center gap-1 text-sm text-white/50 transition hover:text-white"
-      >
-        <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-          <path d="M19 12H5M11 18l-6-6 6-6" />
-        </svg>
-        Back to profile
-      </Link>
+      <div className="flex items-center justify-between gap-4">
+        <Link
+          href="/life/profile"
+          className="inline-flex items-center gap-1 text-sm text-white/50 transition hover:text-white"
+        >
+          <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+            <path d="M19 12H5M11 18l-6-6 6-6" />
+          </svg>
+          Back to profile
+        </Link>
+        {hasPassword && (
+          <Link
+            href="/life/profile/settings/password"
+            className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-sm text-white/80 backdrop-blur transition hover:bg-white/10 hover:text-white"
+          >
+            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round">
+              <rect x="4" y="11" width="16" height="10" rx="2" />
+              <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+            </svg>
+            Change password
+          </Link>
+        )}
+      </div>
+
+      {params.password_changed && (
+        <p className="mt-4 max-w-2xl rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-100">
+          Password changed. Other browsers and devices have been signed out.
+        </p>
+      )}
 
       <p className="mt-3 text-sm font-medium uppercase tracking-[0.35em] text-violet-300/80">
         Settings
@@ -85,7 +113,7 @@ export default async function ProfileSettingsPage({
       <div className="mt-8 max-w-2xl">
         <LinkedAccounts
           providers={providers}
-          hasEmail={identities.some((i) => i.provider === "email")}
+          hasEmail={hasPassword}
           notice={notice}
           error={params.link_error}
         />
