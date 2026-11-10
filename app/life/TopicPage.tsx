@@ -43,8 +43,11 @@ export default async function TopicPage({
     { label: "Universal", href: `${path}?tab=universal`, active: universal },
   ];
 
+  // WeTube's Universal tab is a video grid, so it uses the full page width.
+  const wide = universal && videos;
+
   return (
-    <div className="mx-auto max-w-2xl">
+    <div className={wide ? "w-full" : "mx-auto max-w-2xl"}>
       <p className="text-sm font-medium uppercase tracking-[0.35em] text-violet-300/80">
         {name}
       </p>
@@ -70,7 +73,7 @@ export default async function TopicPage({
 
       {universal ? (
         <>
-          <form action={path} className="mt-6 flex gap-2">
+          <form action={path} className="mt-6 flex max-w-2xl gap-2">
             <input type="hidden" name="tab" value="universal" />
             <input
               type="search"
@@ -93,6 +96,7 @@ export default async function TopicPage({
             universal
             videos={videos}
             topic={!videos}
+            grid={videos}
             search={search}
             emptyText={
               search

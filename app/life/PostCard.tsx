@@ -92,11 +92,67 @@ function formatWhen(iso: string) {
 export default function PostCard({
   post,
   currentUserId,
+  compact = false,
 }: {
   post: FeedPost;
   currentUserId: string;
+  /** Grid card (WeTube Universal): video first, short caption, comments folded. */
+  compact?: boolean;
 }) {
   const videoId = youtubeId(post.content);
+  // A YouTube link anywhere in the post plays inline (any feed).
+  const videoMedia = videoId && (
+    <>
+      <YouTubeEmbed id={videoId} />
+      {post.videoTitle && (
+        <p className="mt-2 text-sm font-medium text-white/80">{post.videoTitle}</p>
+      )}
+    </>
+  );
+  const commentsBlock = (
+    <div className={compact ? "mt-3" : "mt-4 border-t border-white/10 pt-4"}>
+      <div className="flex flex-col gap-3">
+        {post.comments.map((c) => (
+          <EditScope key={c.id}>
+            <div className="flex gap-3">
+              <Avatar path={c.authorAvatar} name={c.authorName} verification={c.authorVerification} />
+              <div className="flex-1">
+                <div className="rounded-2xl bg-black/30 px-3 py-2">
+                  <div className="flex items-center justify-between gap-2">
+                    <AuthorName
+                      name={c.authorName}
+                      href={c.authorHref}
+                      className="text-xs font-semibold text-white/90"
+                    />
+                    <span className="flex items-center gap-1 text-[10px] text-white/30">
+                      {formatWhen(c.created_at)}
+                      {c.editedAt && <> · edited</>}
+                      {c.user_id === currentUserId && <EditMenu kind="comment" id={c.id} />}
+                    </span>
+                  </div>
+                  <EditableText
+                    kind="comment"
+                    id={c.id}
+                    text={c.content}
+                    className="mt-0.5 whitespace-pre-wrap break-words text-sm text-white/80"
+                  />
+                </div>
+                <div className="mt-1.5 flex items-center gap-3">
+                  <ReactionBar
+                    targetType="comment"
+                    targetId={c.id}
+                    summary={c.reactions}
+                  />
+                </div>
+              </div>
+            </div>
+          </EditScope>
+        ))}
+      </div>
+
+      <CommentForm postId={post.id} />
+    </div>
+  );
   return (
     <EditScope>
       {/* Raised while its menu is open so the menu isn't hidden under the next post. */}
@@ -145,18 +201,16 @@ export default function PostCard({
           {post.user_id === currentUserId && <EditMenu kind="post" id={post.id} />}
         </header>
 
+        {/* Grid cards lead with the video; full cards lead with the caption. */}
+        {compact && videoMedia}
         <EditableText
           kind="post"
           id={post.id}
           text={post.content}
-          className="mt-3 whitespace-pre-wrap break-words text-white/85"
+          className={`mt-3 whitespace-pre-wrap break-words text-white/85 ${compact ? "line-clamp-3 text-sm" : ""}`}
         />
 
-        {/* A YouTube link anywhere in the post plays inline (any feed). */}
-        {videoId && <YouTubeEmbed id={videoId} />}
-        {videoId && post.videoTitle && (
-          <p className="mt-2 text-sm font-medium text-white/80">{post.videoTitle}</p>
-        )}
+        {!compact && videoMedia}
 
         {post.image_url && (
           // User-uploaded images of arbitrary dimensions — plain img avoids
@@ -177,49 +231,17 @@ export default function PostCard({
           />
         </div>
 
-        {/* Comments */}
-        <div className="mt-4 border-t border-white/10 pt-4">
-          <div className="flex flex-col gap-3">
-            {post.comments.map((c) => (
-              <EditScope key={c.id}>
-                <div className="flex gap-3">
-                  <Avatar path={c.authorAvatar} name={c.authorName} verification={c.authorVerification} />
-                  <div className="flex-1">
-                    <div className="rounded-2xl bg-black/30 px-3 py-2">
-                      <div className="flex items-center justify-between gap-2">
-                        <AuthorName
-                          name={c.authorName}
-                          href={c.authorHref}
-                          className="text-xs font-semibold text-white/90"
-                        />
-                        <span className="flex items-center gap-1 text-[10px] text-white/30">
-                          {formatWhen(c.created_at)}
-                          {c.editedAt && <> · edited</>}
-                          {c.user_id === currentUserId && <EditMenu kind="comment" id={c.id} />}
-                        </span>
-                      </div>
-                      <EditableText
-                        kind="comment"
-                        id={c.id}
-                        text={c.content}
-                        className="mt-0.5 whitespace-pre-wrap break-words text-sm text-white/80"
-                      />
-                    </div>
-                    <div className="mt-1.5 flex items-center gap-3">
-                      <ReactionBar
-                        targetType="comment"
-                        targetId={c.id}
-                        summary={c.reactions}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </EditScope>
-            ))}
-          </div>
-
-          <CommentForm postId={post.id} />
-        </div>
+        {/* Comments (folded on grid cards) */}
+        {compact ? (
+          <details className="mt-3 border-t border-white/10 pt-3">
+            <summary className="cursor-pointer text-xs text-white/50 transition hover:text-white/80">
+              Comments ({post.comments.length})
+            </summary>
+            {commentsBlock}
+          </details>
+        ) : (
+          commentsBlock
+        )}
       </article>
     </EditScope>
   );

@@ -61,6 +61,7 @@ export default async function Feed({
   topic = false,
   topicSlug,
   search,
+  grid = false,
 }: {
   feed: string;
   /** Aggregate public + Startup Feed posts from every feed (no composer). */
@@ -83,6 +84,8 @@ export default async function Feed({
   topicSlug?: string;
   /** With `videos` or `topic`: match the video title or the post text. */
   search?: string;
+  /** Lay posts out as compact cards: 1 column on phones, 2 on tablets, 3 on laptops. */
+  grid?: boolean;
 }) {
   const supabase = await createClient();
   const {
@@ -304,14 +307,20 @@ export default async function Feed({
         </div>
       )}
 
-      <div className="mt-6 flex flex-col gap-5">
+      <div
+        className={
+          grid
+            ? "mt-6 grid grid-cols-1 items-start gap-5 sm:grid-cols-2 lg:grid-cols-3"
+            : "mt-6 flex flex-col gap-5"
+        }
+      >
         {items.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-white/15 bg-white/[0.03] p-10 text-center text-white/50">
+          <div className="col-span-full rounded-2xl border border-dashed border-white/15 bg-white/[0.03] p-10 text-center text-white/50">
             {emptyText}
           </div>
         ) : (
           items.map((post) => (
-            <PostCard key={post.id} post={post} currentUserId={me} />
+            <PostCard key={post.id} post={post} currentUserId={me} compact={grid} />
           ))
         )}
       </div>
