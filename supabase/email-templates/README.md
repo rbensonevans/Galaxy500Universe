@@ -16,6 +16,7 @@ below and save.
 | Change email address | `change-email.html` | Confirm your new Galaxy500Universe email |
 | Reset password | `reset-password.html` | Reset your Galaxy500Universe password |
 | Reauthentication | `reauthentication.html` | Your Galaxy500Universe verification code |
+| Password changed (Security notifications) | `password-changed.html` | Your Galaxy500Universe password was changed |
 
 The `{{ .ConfirmationURL }}`, `{{ .SiteURL }}`, `{{ .TokenHash }}`,
 `{{ .Email }}`, `{{ .NewEmail }}`, and `{{ .Token }}` placeholders are filled
